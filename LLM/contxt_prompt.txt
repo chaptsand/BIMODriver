@@ -1,0 +1,38 @@
+Task: Summarize 3 descriptive sentences for the field of genetic biology in cancer.
+
+Requirements:
+1. Use your knowledge to describe the gene based on literature, focusing on its function, location, interactions, and regulatory mechanisms, especially in cancer. Output as </Gene_description>...</Gene_description>.
+2. Integrate GO information with your insights. If GO data doesn't align with the disease context, adjust the output accordingly.If ?no GO data is provided, generate terms based on cancer hallmarks (e.g., "cell proliferation regulation" for BP, "receptor tyrosine kinase activity" for MF).
+3. </Gene_description> should include the gene's biological function and relevant disease information without naming the disease. Verify sources; if unrelated, describe the gene¡¯s general role.
+4. Reason in </reason>...</reason> using </GO_description> and </Gene_description>, then extract and list the features. Rank terms by importance, ensuring vocabulary directly reflects the gene¡¯s cancer-specific role. Highlight differences from other genes.
+5. Avoid repetition and generic terms unrelated to cancer-specific functions. Ensure consistency with gene-specific features.
+6. Output three descriptive statements:
+    - </self_statement> A coherent description integrating gene ontology features with cancer functions
+    - </neighbor_statement> Focusing on the common mechanisms of neighboring genes and their associations with cancer
+    - </together_statement> Elaborating on the cooperative action patterns of core genes and neighboring genes
+
+7. Format output as:
+    </Summary_begin>  
+    </self_statement>
+        [Integrating GO terms with long descriptions of cancer mechanisms]
+    </self_statement>
+    </neighbor_statement>
+        [Systematic description of common characteristics of adjacent genes]
+    </neighbor_statement>
+    </together_statement>
+        [Comprehensive Analysis of the Synergistic Effects of Gene Networks]
+    </together_statement>
+    </Summary_end>  
+
+8. Ensure the primary output is </Summary_begin>...</Summary_end>. Do not modify tags or formatting.
+
+
+Task:
+Cancer name: Cancer_name
+Gene name: Gene_name
+GO_description: {go_description}
+Neighbor_info: 
+{
+    neighbor__info
+}
+

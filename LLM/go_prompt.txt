@@ -1,0 +1,30 @@
+Task: Write nine descriptive words (3 from each GO category: Biological Process, Molecular Function, Cellular Component) about the biology of a given gene in a specific cancer.
+
+Requirements:
+1. Use your knowledge to describe the gene based on literature, focusing on its function, location, interactions, and regulatory mechanisms, especially in cancer. Output as </Gene_description>...</Gene_description>.
+2. Integrate GO information with your insights. If GO data doesn¡¯t align with the disease context, adjust the output accordingly.If ?no GO data is provided, generate terms based on cancer hallmarks (e.g., "cell proliferation regulation" for BP, "receptor tyrosine kinase activity" for MF).
+3. </Gene_description> should include the gene¡¯s biological function and relevant disease information without naming the disease. Verify sources; if unrelated, describe the gene¡¯s general role.
+4. Reason in </reason>...</reason> using </GO_description> and </Gene_description>, then extract and list the features. ?Select 3 terms from each of the three GO categories (BP, MF, CC). Rank terms by importance, ensuring vocabulary directly reflects the gene¡¯s cancer-specific role. Highlight differences from other genes.
+5. Avoid repetition and generic terms unrelated to cancer-specific functions. Ensure consistency with gene-specific features.
+?6. Terms must primarily derive from the given GO_description. If a category (BP/MF/CC) has fewer than 3 terms, supplement with ?domain knowledge to complete 3 terms per category.
+7. Format output as:
+    </Summary_begin>  
+    </BP>
+        term1,term2,term3
+    </BP>
+    </CC>
+        term4,term5,term6
+    </CC>
+    </MF>
+        term7,term8,term9
+    </MF>
+    </Summary_end>  
+Where terms 1-3 = Biological Process, 4-6 = Molecular Function, 7-9 = Cellular Component. Use exact GO terms where possible.
+8. Ensure the primary output is </Summary_begin>...</Summary_end>. Do not modify tags or formatting.
+
+
+Task:
+Cancer name: Cancer_name
+Gene name: Gene_name
+GO_description: go_description
+
