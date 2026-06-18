@@ -77,7 +77,6 @@ def sample_division_single(pos_label, neg_label, l, l1, l2, i):
     return tr_mask, val_mask
 def get_class_weights(labels):
     pos_counts = labels.sum(dim=0)
-    # neg_counts = 2983 - pos_counts
     neg_counts = labels.shape[0] - pos_counts
     weights = (neg_counts / (pos_counts + 1e-6))
     return weights
@@ -95,7 +94,7 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
         
         # 模型前向传播
         edge_index_train = dropout_adj(edge_index, p=0.3)[0]
-        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index, L_emb, L_emb_edge)
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index_train, L_emb, L_emb_edge)
 
         class_weights = get_class_weights(Y[tr_mask])
         loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
@@ -207,23 +206,13 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
             else:
                 np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auroc.txt', list_aurocs, fmt='%.6f')
                 np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auprc.txt', list_auprcs, fmt='%.6f')
-        # print(f"Exp {exp_id+1}/10 completed.")
-        # print(f"AUROC: {all_aurocs[:, exp_id, :].mean():.4f} ± {all_aurocs[:, exp_id, :].std():.4f}")
     save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
-    # 计算统计量
-    save_best_epoch_results(
-        list_aurocs, list_auprcs,
-        all_aurocs, all_auprcs,
-        cancerType=cancerType, dataset=dataset,
-        lr=lr, dropout=dropout, lambdinter=lambdinter,
-        epochs=epochs
-    )
     results = 0
     
     return results
 
 cancers = ['pan-cancer']
-dataset = 'string'  # 'cpdb' or 'string'
+dataset = 'cpdb'  # 'cpdb' or 'string'
 for cancerType in cancers:
     if dataset == 'cpdb':
         data = torch.load(r"./data/CPDB/CPDB_new_data.pt")

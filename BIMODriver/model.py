@@ -38,9 +38,9 @@ def sim(z1: torch.Tensor, z2: torch.Tensor):
 def diagonal_contrastive_loss(h1, h2, tau=0.1):
 
     sim_matrix = sim(h1, h2)  # [N, N]
-    pos_mask = torch.eye(h1.size(0), device=h1.device)  # ï¿½Ô½ï¿½ï¿½ï¿½Îª1ï¿½Ä¾ï¿½ï¿½ï¿½
-    numerator = torch.exp(sim_matrix.diag() / tau)  # ï¿½Ô½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
-    denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # ï¿½ï¿½ï¿½ï¿½ï¿½
+    pos_mask = torch.eye(h1.size(0), device=h1.device)  # ¶Ô½ÇÏßÎª1µÄ¾ØÕó
+    numerator = torch.exp(sim_matrix.diag() / tau)  # ¶Ô½ÇÏßÔªËØ
+    denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # ÐÐÇóºÍ
     loss = -torch.log(numerator / denominator).mean()
     return loss
 
@@ -76,16 +76,16 @@ def save_best_epoch_results(
     best_auroc_matrix = selected_aurocs[best_idx]  # shape: [n_exp, n_fold]
     best_auprc_matrix = selected_auprcs[best_idx]
 
-    # ===== ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =====
+    # ===== ±£´æÄÚÈÝ =====
     with open(path, 'a') as f:
         f.write('--' * 20 + '\n')
         if txt != 'none':
             f.write(f"{txt}\n")
         f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
         f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {list_aurocs.mean():.4f} ï¿½ï¿½ {list_aurocs.std():.4f}\n")
+        f.write(f"AUPR: {list_aurocs.mean():.4f} ¡À {list_aurocs.std():.4f}\n")
         f.write(str(list_aurocs) + '\n')
-        f.write(f"AUC: {list_auprcs.mean():.4f} ï¿½ï¿½ {list_auprcs.std():.4f}\n")
+        f.write(f"AUC: {list_auprcs.mean():.4f} ¡À {list_auprcs.std():.4f}\n")
         f.write(str(list_auprcs) + '\n')
 
         f.write(f"# Best Epoch: {best_epoch + 1} | Mean AUROC: {best_auroc_matrix .mean():.4f} +- {best_auroc_matrix.std():.4f} | Mean AUPRC: {best_auprc_matrix.mean():.4f} +- {best_auprc_matrix.std():.4f}\n")
@@ -96,17 +96,17 @@ def save_best_epoch_results(
 class combine_net_gate_without_ac(torch.nn.Module):
     def __init__(self,input_dim=64 , lambdinter=0.005,dropout=0.1):
         super(combine_net_gate_without_ac, self).__init__()
-        self.lambdinter = lambdinter    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§Ïµï¿½ï¿½
+        self.lambdinter = lambdinter    # ÌØÕ÷¶ÔÆëËðÊ§ÏµÊý
         self.dropout = dropout
         self.g_net = G_Net(in_channels=input_dim, hidden_channels=256, out_channels=1, dropout=dropout)
         self.l_net = L_net(in_channels=768, hidden_channels=256, out_channels=1, dropout=dropout)
-        self.top_k = 4
+        self.top_k = 5
 
 
         self.gating_layer = torch.nn.Sequential(
-            torch.nn.Linear(6, 64),
+            torch.nn.Linear(6, 32),
             torch.nn.ReLU(),
-            torch.nn.Linear(64, 6) 
+            torch.nn.Linear(32, 6) 
         )
 
     def forward(self, x, ppi_edge, L_emb, L_emb_edge):
@@ -116,7 +116,7 @@ class combine_net_gate_without_ac(torch.nn.Module):
         input_neighbor  = self.l_net(L_emb['neighbor_emb'], L_emb_edge)
         input_together  = self.l_net(L_emb['together_emb'], L_emb_edge)
 
-        # ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½
+        # ·ÖÀàÔ¤²â
         label_G = self.g_net.classfy(input_G, ppi_edge)
         label_self = self.l_net.classfy(input_self,         L_emb_edge)
         label_neighbor = self.l_net.classfy(input_neighbor, L_emb_edge)
@@ -138,12 +138,12 @@ class combine_net_gate_without_ac(torch.nn.Module):
         gating_score = self.gating_layer(logits_all)
         topk_weights, topk_indices = torch.topk(gating_score, k=self.top_k, dim=1)
 
-        # È¡ï¿½ï¿½ top-k ï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½
+        # È¡³ö top-k µÄ×¨¼ÒÊä³ö
         # batch_size = logits_all.size(0)
         topk_outputs = torch.gather(logits_all, 1, topk_indices)
         topk_weights = F.softmax(topk_weights, dim=1)
 
-        # ï¿½ï¿½È¨Æ½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        # ¼ÓÈ¨Æ½¾ùµÃµ½×îÖÕÊä³ö
         final_output = torch.sum(topk_outputs * topk_weights, dim=1, keepdim=True)  # shape: [N, 1]
 
         return loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output
@@ -207,4 +207,4 @@ class L_net(torch.nn.Module):
         h3 = self.conv3(L_emb, edge_index)
         L_emb = L_emb + h3
 
-        return L_emb 
+        return L_emb
