@@ -115,7 +115,7 @@ class combine_net_gate_without_ac(torch.nn.Module):
             torch.nn.Linear(32, 6) 
         )
 
-    def forward(self, x, ppi_edge, L_emb, L_emb_edge):
+    def forward(self, x, ppi_edge, L_emb, L_emb_edge, tr_mask=None):
         input_G = self.g_net(x, ppi_edge)
         input_self = self.l_net(L_emb['self_emb'], L_emb_edge)
         input_neighbor = self.l_net(L_emb['neighbor_emb'], L_emb_edge)
@@ -131,10 +131,20 @@ class combine_net_gate_without_ac(torch.nn.Module):
         label_satment = torch.einsum('ij,ij->i', input_self, input_together).unsqueeze(1)
 
         if self.training:
+            # 严格限制对比损失仅在实际训练节点上计算，防止测试节点与未知节点泄露
+            if tr_mask is not None:
+                h_G = input_G[tr_mask]
+                h_self = input_self[tr_mask]
+                h_together = input_together[tr_mask]
+            else:
+                h_G = input_G
+                h_self = input_self
+                h_together = input_together
+
             loss_inter = (
-                diagonal_contrastive_loss(input_G, input_self, tau=0.04) +
-                diagonal_contrastive_loss(input_self, input_together, tau=0.04) +
-                diagonal_contrastive_loss(input_G, input_together, tau=0.04)
+                diagonal_contrastive_loss(h_G, h_self, tau=0.04) +
+                diagonal_contrastive_loss(h_self, h_together, tau=0.04) +
+                diagonal_contrastive_loss(h_G, h_together, tau=0.04)
             )
         else:
             loss_inter = torch.tensor(0.0).to(x.device)

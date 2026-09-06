@@ -38,6 +38,7 @@ os.makedirs(os.path.join(RESULT_DIR, "single"), exist_ok=True)
 
 
 def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001, dropout=0.2, lambdinter=0.005):
+    """保存实验结果至汇总文本（已纠正 AUROC 与 AUPRC 变量和输出标签对应关系）"""
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
     if cancerType == 'pan-cancer':
@@ -56,10 +57,10 @@ def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001, dro
         f.write('--' * 20 + '\n')
         f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
         f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {auroc.mean():.4f} ± {auroc.std():.4f}\n")
+        f.write(f"AUROC: {auroc.mean():.4f} ± {auroc.std():.4f}\n")
         f.write(str(auroc))
         f.write("\n")
-        f.write(f"AUC: {auprc.mean():.4f} ± {auprc.std():.4f}\n")
+        f.write(f"AUPRC: {auprc.mean():.4f} ± {auprc.std():.4f}\n")
         f.write(str(auprc))
         f.write("\n")
 
@@ -102,7 +103,10 @@ def get_class_weights(labels):
 
 def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
                tr_mask, te_mask, epochs, Y):
-    """返回每个epoch的指标"""
+    """
+    基础训练与评估函数（用于 5 折交叉验证模式）。
+    分类损失和对比损失均严格仅在实际训练节点 tr_mask 上计算，防止测试与未知节点信息泄露。
+    """
     model = data_model['model']
     epoch_aurocs = []
     epoch_auprcs = []
@@ -112,10 +116,10 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
         model.train()
         optimizer.zero_grad()
         
-        # 模型前向传播
+        # 模型前向传播（对比损失与分类损失均严格只使用实际训练节点 tr_mask）
         edge_index_train = dropout_adj(edge_index, p=0.3)[0]
         loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
-            data.x, edge_index_train, L_emb, L_emb_edge
+            data.x, edge_index_train, L_emb, L_emb_edge, tr_mask=tr_mask
         )
 
         class_weights = get_class_weights(Y[tr_mask])
@@ -140,20 +144,21 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
             )
 
             pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
-            precision, recall, _thresholds = metrics.precision_recall_curve(Y[te_mask].cpu().numpy(), pred)
-            auc = metrics.roc_auc_score(Y[te_mask].cpu().numpy(), pred)
+            y_eval = Y[te_mask].cpu().numpy().ravel()
+            precision, recall, _thresholds = metrics.precision_recall_curve(y_eval, pred)
+            auroc = metrics.roc_auc_score(y_eval, pred)
             auprc = metrics.auc(recall, precision)
-            epoch_aurocs.append(auc)
+            epoch_aurocs.append(auroc)
             epoch_auprcs.append(auprc)
-            print(f"Epoch {epoch+1}, Test AUC: {auc:.4f}, Test AUPRC: {auprc:.4f}")
+            print(f"Epoch {epoch+1}, Test AUROC: {auroc:.4f}, Test AUPRC: {auprc:.4f}")
 
-    return epoch_aurocs, epoch_auprcs, auc, auprc
+    return epoch_aurocs, epoch_auprcs, auroc, auprc
 
 
 def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
                      dropout=0.2, cancerType='pan-cancer', dataset='cpdb'):
-    """收集每个epoch的指标（5折交叉验证）"""
+    """收集每个 epoch 的指标（5 折交叉验证，已修正 auroc/auprc 对应关系）"""
     all_aurocs = np.zeros((epochs, 10, 5))
     all_auprcs = np.zeros((epochs, 10, 5))
     if cancerType == 'pan-cancer':
@@ -201,7 +206,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-            aurocs, auprcs, auc, auprc = train_test(
+            aurocs, auprcs, auroc, auprc = train_test(
                 data_model={
                     'model': model,
                     'lambdinter': lambdinter
@@ -217,10 +222,11 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                 Y=Y
             )
             
+            # 正确存储 AUROC 和 AUPRC（避免原代码的变量倒置）
             all_aurocs[:, exp_id, fold_id] = aurocs
             all_auprcs[:, exp_id, fold_id] = auprcs
-            list_aurocs[exp_id, fold_id] = auprc
-            list_auprcs[exp_id, fold_id] = auc
+            list_aurocs[exp_id, fold_id] = auroc  # 严格对应 AUROC
+            list_auprcs[exp_id, fold_id] = auprc  # 严格对应 AUPRC
             if cancerType == 'pan-cancer':
                 np.savetxt(os.path.join(RESULT_DIR, 'pan-cancer_auroc.txt'), list_aurocs, fmt='%.6f')
                 np.savetxt(os.path.join(RESULT_DIR, 'pan-cancer_auprc.txt'), list_auprcs, fmt='%.6f')
@@ -269,36 +275,40 @@ def load_leakage_splits(audit_file_path=None):
     return clean_mask, hit_mask, df
 
 
-def trainPred_fixed_split(input_dim, train_mask, test_mask, data, L_emb, edge_index, L_emb_edge,
+def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data, L_emb, edge_index, L_emb_edge,
                           lr=0.0005, epochs=160, lambdinter=0.001, dropout=0.3,
-                          split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42):
+                          split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2):
     """
-    针对标签泄露词审计的固定划分训练评估函数。
-    不使用 k_sets.pkl 划分，而是使用由审计文件确定的固定 train_mask 和 test_mask。
-    保留原有 CPDB 数据、网络、LLM embedding、模型结构与超参数。
+    严格的标签泄露词审计划分实验流程：
+    1. 分类损失和对比损失都严格仅在实际训练节点上计算（防止测试节点和 Unknown 节点泄露）。
+    2. 从训练候选组内部划分训练集/验证集（如 8:2 分层划分）。
+    3. 每个 epoch 仅评估验证集，根据验证集指标（AUPRC）保存最佳 Checkpoint。
+    4. 训练完成后加载最佳 Checkpoint，仅对固定的最终测试集执行一次最终评估。
+    5. 变量、输出内容与文件名中 AUROC 与 AUPRC 严格一致。
     """
-    tr_indices = train_mask.nonzero().squeeze()
-    te_indices = test_mask
+    cand_indices = np.where(train_candidate_mask)[0]
+    cand_labels = Y[cand_indices].cpu().numpy().ravel().astype(int)
 
-    train_drivers = (Y[train_mask] == 1).sum().item()
-    train_nondrivers = (Y[train_mask] == 0).sum().item()
-    test_drivers = (Y[test_mask] == 1).sum().item()
-    test_nondrivers = (Y[test_mask] == 0).sum().item()
+    fixed_test_tensor = torch.tensor(fixed_test_mask).bool().to(device)
+    y_test_np = Y[fixed_test_tensor].cpu().numpy().ravel()
+    test_drivers = int((y_test_np == 1).sum())
+    test_nondrivers = int((y_test_np == 0).sum())
 
-    print(f"\n{'='*60}")
+    print(f"\n{'='*75}")
     print(f"Running Leakage Split Experiment: [{split_name}]")
-    print(f"  Training set : {train_mask.sum().item()} genes (Drivers: {int(train_drivers)}, Non-drivers: {int(train_nondrivers)})")
-    print(f"  Testing set  : {test_mask.sum().item()} genes (Drivers: {int(test_drivers)}, Non-drivers: {int(test_nondrivers)})")
-    print(f"  Experiments  : {n_exp} independent runs, {epochs} epochs each")
-    print(f"  Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}")
-    print(f"{'='*60}\n")
+    print(f"  Training Candidate Pool : {len(cand_indices)} genes (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})")
+    print(f"  Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Validation (Stratified by Driver label)")
+    print(f"  Fixed Testing Set       : {len(y_test_np)} genes (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})")
+    print(f"  Evaluation Protocol     : Model checkpoint selected ONLY by validation set, test set evaluated ONCE at end")
+    print(f"  Experiments             : {n_exp} independent runs, {epochs} epochs each")
+    print(f"  Hyperparameters         : lr={lr}, dropout={dropout}, lambdinter={lambdinter}")
+    print(f"{'='*75}\n")
 
-    all_aurocs = np.zeros((epochs, n_exp))
-    all_auprcs = np.zeros((epochs, n_exp))
-    final_aurocs = np.zeros(n_exp)
-    final_auprcs = np.zeros(n_exp)
-    best_aurocs = np.zeros(n_exp)
-    best_auprcs = np.zeros(n_exp)
+    all_test_aurocs = np.zeros(n_exp)
+    all_test_auprcs = np.zeros(n_exp)
+    all_best_val_aurocs = np.zeros(n_exp)
+    all_best_val_auprcs = np.zeros(n_exp)
+    all_best_epochs = np.zeros(n_exp, dtype=int)
 
     for exp_id in range(n_exp):
         seed = base_seed + exp_id
@@ -308,73 +318,143 @@ def trainPred_fixed_split(input_dim, train_mask, test_mask, data, L_emb, edge_in
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
 
+        # 1. 在训练候选组内部划分训练集与验证集（保持 Driver 类别比例分层划分）
+        inner_tr_idx, inner_val_idx = train_test_split(
+            cand_indices,
+            test_size=val_ratio,
+            stratify=cand_labels,
+            random_state=seed
+        )
+
+        inner_tr_bool = np.zeros(data.x.shape[0], dtype=bool)
+        inner_tr_bool[inner_tr_idx] = True
+        inner_val_bool = np.zeros(data.x.shape[0], dtype=bool)
+        inner_val_bool[inner_val_idx] = True
+
+        inner_tr_tensor = torch.tensor(inner_tr_bool).bool().to(device)
+        inner_tr_indices = inner_tr_tensor.nonzero().squeeze()
+        inner_val_tensor = torch.tensor(inner_val_bool).bool().to(device)
+        y_val_np = Y[inner_val_tensor].cpu().numpy().ravel()
+
         print(f"\n--- [Split: {split_name}] Experiment {exp_id + 1}/{n_exp} (Seed: {seed}) ---")
+        print(f"  Inner Train: {len(inner_tr_idx)} genes | Inner Val: {len(inner_val_idx)} genes")
 
         model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-        aurocs, auprcs, auc, auprc = train_test(
-            data_model={
-                'model': model,
-                'lambdinter': lambdinter
-            },
-            optimizer=optimizer,
-            data=data,
-            L_emb=L_emb,
-            edge_index=edge_index.to(device),
-            L_emb_edge=L_emb_edge,
-            tr_mask=tr_indices,
-            te_mask=te_indices,
-            epochs=epochs,
-            Y=Y
-        )
+        best_val_auprc = -1.0
+        best_val_auroc = -1.0
+        best_epoch = -1
+        best_model_state = None
 
-        all_aurocs[:, exp_id] = aurocs
-        all_auprcs[:, exp_id] = auprcs
-        final_aurocs[exp_id] = auc
-        final_auprcs[exp_id] = auprc
+        # 2. 训练循环：每轮仅在验证集上评估，挑选最佳 Checkpoint
+        for epoch in range(epochs):
+            model.train()
+            optimizer.zero_grad()
 
-        best_epoch_idx = np.argmax(auprcs)
-        best_aurocs[exp_id] = aurocs[best_epoch_idx]
-        best_auprcs[exp_id] = auprcs[best_epoch_idx]
+            # 前向传播：tr_mask 严格限定在实际训练节点上，对比损失绝不包含验证、测试或 Unknown 节点
+            edge_index_train = dropout_adj(edge_index, p=0.3)[0]
+            loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+                data.x, edge_index_train, L_emb, L_emb_edge, tr_mask=inner_tr_indices
+            )
 
-    mean_auc, std_auc = final_aurocs.mean(), final_aurocs.std()
-    mean_auprc, std_auprc = final_auprcs.mean(), final_auprcs.std()
-    mean_best_auc, std_best_auc = best_aurocs.mean(), best_aurocs.std()
-    mean_best_auprc, std_best_auprc = best_auprcs.mean(), best_auprcs.std()
+            # 分类损失：严格仅在实际训练节点上计算
+            class_weights = get_class_weights(Y[inner_tr_indices])
+            loss_G = F.binary_cross_entropy_with_logits(label_G[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_self = F.binary_cross_entropy_with_logits(label_self[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_together = F.binary_cross_entropy_with_logits(label_together[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_concat = F.binary_cross_entropy_with_logits(label_concat[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_satment = F.binary_cross_entropy_with_logits(label_satment[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
 
-    print(f"\n{'='*60}")
-    print(f"Summary Results for Leakage Split: [{split_name}]")
-    print(f"Final Epoch  -> AUROC: {mean_auc:.4f} ± {std_auc:.4f} | AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}")
-    print(f"Best  Epoch  -> AUROC: {mean_best_auc:.4f} ± {std_best_auc:.4f} | AUPRC: {mean_best_auprc:.4f} ± {std_best_auprc:.4f}")
-    print(f"{'='*60}\n")
+            loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
+            total_loss = loss_cls + lambdinter * loss_inter
 
+            total_loss.backward()
+            optimizer.step()
+
+            # 验证集评估（绝不触碰固定测试集）
+            model.eval()
+            with torch.no_grad():
+                _, _, _, _, _, _, _, final_output_val = model(data.x, edge_index, L_emb, L_emb_edge)
+                pred_val = torch.sigmoid(final_output_val[inner_val_tensor]).cpu().numpy().ravel()
+                val_auroc = metrics.roc_auc_score(y_val_np, pred_val)
+                p_val, r_val, _ = metrics.precision_recall_curve(y_val_np, pred_val)
+                val_auprc = metrics.auc(r_val, p_val)
+
+            # 根据验证集 AUPRC 挑选最佳 Checkpoint
+            if val_auprc > best_val_auprc:
+                best_val_auprc = val_auprc
+                best_val_auroc = val_auroc
+                best_epoch = epoch + 1
+                best_model_state = copy.deepcopy(model.state_dict())
+
+            if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
+                print(f"  Epoch {epoch+1:3d}/{epochs} | Val AUROC: {val_auroc:.4f}, Val AUPRC: {val_auprc:.4f} (Best Epoch: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
+
+        # 3. 训练完成后，加载验证集最优 Checkpoint，对固定测试集仅评估一次
+        model.load_state_dict(best_model_state)
+        model.eval()
+        with torch.no_grad():
+            _, _, _, _, _, _, _, final_output_test = model(data.x, edge_index, L_emb, L_emb_edge)
+            pred_test = torch.sigmoid(final_output_test[fixed_test_tensor]).cpu().numpy().ravel()
+            test_auroc = metrics.roc_auc_score(y_test_np, pred_test)
+            p_te, r_te, _ = metrics.precision_recall_curve(y_test_np, pred_test)
+            test_auprc = metrics.auc(r_te, p_te)
+
+        print(f"  >> [Exp {exp_id+1}/{n_exp} Result] Best Val Epoch: {best_epoch} (Val AUPRC: {best_val_auprc:.4f}, Val AUROC: {best_val_auroc:.4f}) | Final Test AUROC: {test_auroc:.4f}, Test AUPRC: {test_auprc:.4f}")
+
+        all_test_aurocs[exp_id] = test_auroc
+        all_test_auprcs[exp_id] = test_auprc
+        all_best_val_aurocs[exp_id] = best_val_auroc
+        all_best_val_auprcs[exp_id] = best_val_auprc
+        all_best_epochs[exp_id] = best_epoch
+
+    # 4. 汇总多轮实验统计指标
+    mean_test_auroc, std_test_auroc = all_test_aurocs.mean(), all_test_aurocs.std()
+    mean_test_auprc, std_test_auprc = all_test_auprcs.mean(), all_test_auprcs.std()
+    mean_val_auroc, std_val_auroc = all_best_val_aurocs.mean(), all_best_val_aurocs.std()
+    mean_val_auprc, std_val_auprc = all_best_val_auprcs.mean(), all_best_val_auprcs.std()
+
+    print(f"\n{'='*75}")
+    print(f"Summary Results for Leakage Split: [{split_name}] (over {n_exp} independent runs)")
+    print(f"Validation Metrics (Best Checkpoint Average):")
+    print(f"  AUROC : {mean_val_auroc:.4f} ± {std_val_auroc:.4f}")
+    print(f"  AUPRC : {mean_val_auprc:.4f} ± {std_val_auprc:.4f}")
+    print(f"Final Fixed Test Metrics (Evaluated ONCE with Best Checkpoint):")
+    print(f"  AUROC : {mean_test_auroc:.4f} ± {std_test_auroc:.4f}")
+    print(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}")
+    print(f"{'='*75}\n")
+
+    # 5. 保存结果文件（AUROC 与 AUPRC 文件名及内容严格对应）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
     summary_path = os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_summary.txt")
-    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auroc.txt"), final_aurocs, fmt='%.6f')
-    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auprc.txt"), final_auprcs, fmt='%.6f')
+    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
+    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
 
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write(f"Leakage Split Experiment: {split_name}\n")
-        f.write(f"Training set: {train_mask.sum().item()} (Drivers: {int(train_drivers)}, Non-drivers: {int(train_nondrivers)})\n")
-        f.write(f"Testing set:  {test_mask.sum().item()} (Drivers: {int(test_drivers)}, Non-drivers: {int(test_nondrivers)})\n")
-        f.write(f"Experiments: {n_exp}, Epochs per exp: {epochs}\n")
-        f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}\n")
-        f.write('-' * 40 + '\n')
-        f.write(f"Final Epoch Metric:\n")
-        f.write(f"  AUROC: {mean_auc:.4f} ± {std_auc:.4f}\n")
-        f.write(f"  AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}\n")
-        f.write(f"  All AUROC per exp: {np.array2string(final_aurocs, precision=4)}\n")
-        f.write(f"  All AUPRC per exp: {np.array2string(final_auprcs, precision=4)}\n")
-        f.write('-' * 40 + '\n')
-        f.write(f"Best Epoch Metric:\n")
-        f.write(f"  AUROC: {mean_best_auc:.4f} ± {std_best_auc:.4f}\n")
-        f.write(f"  AUPRC: {mean_best_auprc:.4f} ± {std_best_auprc:.4f}\n")
-        f.write(f"  All Best AUROC per exp: {np.array2string(best_aurocs, precision=4)}\n")
-        f.write(f"  All Best AUPRC per exp: {np.array2string(best_auprcs, precision=4)}\n")
+        f.write(f"Training Candidate Pool : {len(cand_indices)} (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})\n")
+        f.write(f"Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Val\n")
+        f.write(f"Fixed Testing Set       : {len(y_test_np)} (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})\n")
+        f.write(f"Protocol                : Checkpoint selected on validation set, test set evaluated ONCE\n")
+        f.write(f"Experiments             : {n_exp} independent runs, {epochs} epochs each\n")
+        f.write(f"Hyperparameters         : lr={lr}, dropout={dropout}, lambdinter={lambdinter}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Final Fixed Test Metrics (Evaluated ONCE with Best Checkpoint):\n")
+        f.write(f"  AUROC : {mean_test_auroc:.4f} ± {std_test_auroc:.4f}\n")
+        f.write(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}\n")
+        f.write(f"  All Test AUROC per exp: {np.array2string(all_test_aurocs, precision=4)}\n")
+        f.write(f"  All Test AUPRC per exp: {np.array2string(all_test_auprcs, precision=4)}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Validation Metrics (Best Checkpoint Average):\n")
+        f.write(f"  Val AUROC : {mean_val_auroc:.4f} ± {std_val_auroc:.4f}\n")
+        f.write(f"  Val AUPRC : {mean_val_auprc:.4f} ± {std_val_auprc:.4f}\n")
+        f.write(f"  Best Epochs per exp: {all_best_epochs.tolist()}\n")
 
-    return final_aurocs, final_auprcs
+    return all_test_aurocs, all_test_auprcs
 
 
 def main():
@@ -389,6 +469,8 @@ def main():
                         help="训练轮数 (默认 160)")
     parser.add_argument('--n_exp', type=int, default=int(os.environ.get('N_EXP', 10)),
                         help="独立实验次数 (默认 10)")
+    parser.add_argument('--val_ratio', type=float, default=0.2,
+                        help="候选训练集中切分为验证集的比例 (默认 0.2，即 8:2)")
     parser.add_argument('--lr', type=float, default=0.0005,
                         help="学习率 (默认 0.0005)")
     parser.add_argument('--dropout', type=float, default=0.3,
@@ -477,18 +559,16 @@ def main():
         clean_mask, hit_mask, audit_df = load_leakage_splits(args.audit_file)
 
         if split_mode == 'clean_to_hit':
-            train_mask = torch.tensor(clean_mask).bool().to(device)
-            test_mask = torch.tensor(hit_mask).bool().to(device)
-            split_display_name = 'Clean -> Hit'
+            train_candidate_mask = clean_mask
+            fixed_test_mask = hit_mask
         else:
-            train_mask = torch.tensor(hit_mask).bool().to(device)
-            test_mask = torch.tensor(clean_mask).bool().to(device)
-            split_display_name = 'Hit -> Clean'
+            train_candidate_mask = hit_mask
+            fixed_test_mask = clean_mask
 
         trainPred_fixed_split(
             input_dim=input_dim,
-            train_mask=train_mask,
-            test_mask=test_mask,
+            train_candidate_mask=train_candidate_mask,
+            fixed_test_mask=fixed_test_mask,
             data=data,
             L_emb=L_emb,
             edge_index=pb,
@@ -500,7 +580,8 @@ def main():
             split_name=split_mode,
             n_exp=args.n_exp,
             Y=Y,
-            base_seed=args.base_seed
+            base_seed=args.base_seed,
+            val_ratio=args.val_ratio
         )
 
     # 分支 2：原始 5 折交叉验证实验
