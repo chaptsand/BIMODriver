@@ -188,6 +188,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     n_fold = int(os.environ.get('N_FOLD', 5))
 
     feat_tag = "pan-cancer_masked" if masked else "pan-cancer"
+    start_total_time = time.time()
 
     for exp_id in range(n_exp):
         for fold_id in range(n_fold):
@@ -250,6 +251,12 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                 np.savetxt(os.path.join(single_dir, f'{tag}_auroc.txt'), list_aurocs, fmt='%.6f')
                 np.savetxt(os.path.join(single_dir, f'{tag}_auprc.txt'), list_auprcs, fmt='%.6f')
 
+    total_elapsed = time.time() - start_total_time
+    minutes = int(total_elapsed // 60)
+    seconds = total_elapsed % 60
+    avg_fold = total_elapsed / max(1, n_exp * n_fold)
+    time_desc = f"{minutes}分 {seconds:.1f}秒 (总计 {total_elapsed:.2f}s, 平均每折 {avg_fold:.2f}s)"
+
     mean_auc, std_auc = list_aurocs[:n_exp, :n_fold].mean(), list_aurocs[:n_exp, :n_fold].std()
     mean_auprc, std_auprc = list_auprcs[:n_exp, :n_fold].mean(), list_auprcs[:n_exp, :n_fold].std()
     desc = "Masked Features (关键词遮蔽)" if masked else "Original Features (原始基线)"
@@ -258,6 +265,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     print(f"Summary Results for 5-Fold CV [{desc}] ({cancerType}):")
     print(f"  Overall AUROC: {mean_auc:.4f} ± {std_auc:.4f}")
     print(f"  Overall AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}")
+    print(f"  Elapsed Time : {time_desc}")
     print(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}")
     print(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
     print(f"{'='*75}\n")
@@ -268,6 +276,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         f.write(f"Cancer Type: {cancerType}, Dataset: {dataset}\n")
         f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
         f.write(f"Base Seed: {base_seed}\n")
+        f.write(f"Total Elapsed Time: {time_desc}\n")
         f.write('-' * 60 + '\n')
         f.write(f"Overall Metrics (over {n_exp}x{n_fold} = {n_exp * n_fold} folds):\n")
         f.write(f"  AUROC : {mean_auc:.4f} ± {std_auc:.4f}\n")
