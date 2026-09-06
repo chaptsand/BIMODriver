@@ -108,6 +108,27 @@ def main():
     model = BertModel.from_pretrained(model_id).to(device)
     model.eval()
 
+    # 严格检验 0：BioBERT 本地 checkpoint 与原始特征编码模型的一致性检查
+    print("  [Checkpoint Check] 正在比对 BioBERT 本地模型输出与原始特征 PAN-CANCER_statement_features.pt ...")
+    test_gene_indices = [0, 1, 2, 5, 10, 50, 100]
+    for test_idx in test_gene_indices:
+        if hit_mask[test_idx]:
+            continue
+        test_row = df_csv.iloc[test_idx]
+        test_texts = [str(test_row[field]) if pd.notna(test_row[field]) else "" for field, _ in fields]
+        test_inputs = tokenizer(test_texts, return_tensors='pt', padding=True, truncation=True, max_length=1024)
+        test_inputs = {k: v.to(device) for k, v in test_inputs.items()}
+        with torch.no_grad():
+            test_out = model(**test_inputs)
+        test_cls = test_out.last_hidden_state[:, 0, :]
+        test_combined = torch.cat([test_cls[0], test_cls[1], test_cls[2]], dim=0).cpu()
+
+        diff_orig = (test_combined - orig_tensor[test_idx]).abs().max().item()
+        sim_orig = torch.cosine_similarity(test_combined.unsqueeze(0), orig_tensor[test_idx].unsqueeze(0)).item()
+        assert sim_orig > 0.99999, f"Index {test_idx} 余弦相似度过低 ({sim_orig:.6f})，说明加载的模型与原编码模型不一致！"
+        assert diff_orig < 1e-4, f"Index {test_idx} 绝对误差过大 ({diff_orig:.6f})，说明加载的模型与原编码模型不一致！"
+    print(f"  [Checkpoint Check Passed] 本地 BioBERT checkpoint 与原始编码完全一致 (余弦相似度 > 0.99999, 绝对差 < 1e-4)")
+
     new_tensor = orig_tensor.clone()
 
     start_time = time.time()
@@ -122,6 +143,11 @@ def main():
             for field, _ in fields:
                 orig_text = str(row[field]) if pd.notna(row[field]) else ""
                 masked_text = combined_pattern.sub('[MASK]', orig_text)
+                
+                # 严格 assert 检查：Mask 后文本绝不能再命中任何目标关键词正则表达式
+                assert not combined_pattern.search(masked_text), (
+                    f"Gene {row['Gene_Symbol']} (Index {idx}) 的 {field} 文本 Mask 后仍然命中目标关键词: {masked_text}"
+                )
                 masked_texts.append(masked_text)
 
             inputs = tokenizer(masked_texts, return_tensors='pt', padding=True, truncation=True, max_length=1024)
@@ -140,6 +166,16 @@ def main():
 
     print("\n" + "=" * 75)
     print("4. 全面一致性与正确性严格校验")
+    # 校验 0：全量 Mask 文本零命中目标正则表达式严格 assert 检查
+    print("  [Check 0] 全量扫描所有修改文本，assert 确认无任何目标关键词残留 ...")
+    for idx in hit_indices:
+        row = df_csv.iloc[idx]
+        for field, _ in fields:
+            t = str(row[field]) if pd.notna(row[field]) else ""
+            m_t = combined_pattern.sub('[MASK]', t)
+            assert not combined_pattern.search(m_t), f"Gene {row['Gene_Symbol']} {field} 仍包含目标关键词!"
+    print(f"  [Check 0 Passed] 所有修改后文本 100% 确认不再命中目标正则表达式 (零残留)")
+
     # 校验 1：张量形状
     assert new_tensor.shape == (13627, 2304), f"新特征形状错误: {new_tensor.shape}"
     print(f"  [Check 1 Passed] 新特征张量形状: {new_tensor.shape} (严格等于 [13627, 2304])")

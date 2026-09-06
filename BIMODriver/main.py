@@ -116,10 +116,10 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
         model.train()
         optimizer.zero_grad()
         
-        # 模型前向传播（对比损失与分类损失均严格只使用实际训练节点 tr_mask）
+        # 模型前向传播（原始 10次5折 CV 训练协议：不传 tr_mask，对比损失在全部图节点上计算）
         edge_index_train = dropout_adj(edge_index, p=0.3)[0]
         loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
-            data.x, edge_index_train, L_emb, L_emb_edge, tr_mask=tr_mask
+            data.x, edge_index_train, L_emb, L_emb_edge
         )
 
         class_weights = get_class_weights(Y[tr_mask])
