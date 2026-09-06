@@ -157,8 +157,9 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
 
 def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
-                     dropout=0.2, cancerType='pan-cancer', dataset='cpdb'):
-    """收集每个 epoch 的指标（5 折交叉验证，已修正 auroc/auprc 对应关系）"""
+                     dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
+                     masked=False, base_seed=42):
+    """收集每个 epoch 的指标（5 折交叉验证，已修正 auroc/auprc 对应关系并支持 Masked 消融）"""
     all_aurocs = np.zeros((epochs, 10, 5))
     all_auprcs = np.zeros((epochs, 10, 5))
     if cancerType == 'pan-cancer':
@@ -186,9 +187,19 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     n_exp = int(os.environ.get('N_EXP', 10))
     n_fold = int(os.environ.get('N_FOLD', 5))
 
+    feat_tag = "pan-cancer_masked" if masked else "pan-cancer"
+
     for exp_id in range(n_exp):
         for fold_id in range(n_fold):
-            print(f"\nExp {exp_id+1}/{n_exp} | Fold {fold_id+1}/{n_fold}")
+            # 固定随机种子保证基线与 Masked 实验完全公平对照
+            seed = base_seed + exp_id * 100 + fold_id
+            torch.manual_seed(seed)
+            random.seed(seed)
+            np.random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+
+            print(f"\nExp {exp_id+1}/{n_exp} | Fold {fold_id+1}/{n_fold} (Seed: {seed})")
             
             if cancerType == 'pan-cancer':
                 _, _, tr_mask, te_mask = k_sets[exp_id][fold_id]
@@ -227,16 +238,46 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             all_auprcs[:, exp_id, fold_id] = auprcs
             list_aurocs[exp_id, fold_id] = auroc  # 严格对应 AUROC
             list_auprcs[exp_id, fold_id] = auprc  # 严格对应 AUPRC
+
+            # 实时保存独立文件
             if cancerType == 'pan-cancer':
-                np.savetxt(os.path.join(RESULT_DIR, 'pan-cancer_auroc.txt'), list_aurocs, fmt='%.6f')
-                np.savetxt(os.path.join(RESULT_DIR, 'pan-cancer_auprc.txt'), list_auprcs, fmt='%.6f')
+                np.savetxt(os.path.join(RESULT_DIR, f'{feat_tag}_auroc.txt'), list_aurocs, fmt='%.6f')
+                np.savetxt(os.path.join(RESULT_DIR, f'{feat_tag}_auprc.txt'), list_auprcs, fmt='%.6f')
             else:
                 single_dir = os.path.join(RESULT_DIR, 'single')
                 os.makedirs(single_dir, exist_ok=True)
-                np.savetxt(os.path.join(single_dir, dataset + '_' + cancerType + '_auroc.txt'), list_aurocs, fmt='%.6f')
-                np.savetxt(os.path.join(single_dir, dataset + '_' + cancerType + '_auprc.txt'), list_auprcs, fmt='%.6f')
+                tag = f"{dataset}_{cancerType}_masked" if masked else f"{dataset}_{cancerType}"
+                np.savetxt(os.path.join(single_dir, f'{tag}_auroc.txt'), list_aurocs, fmt='%.6f')
+                np.savetxt(os.path.join(single_dir, f'{tag}_auprc.txt'), list_auprcs, fmt='%.6f')
 
-    save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
+    mean_auc, std_auc = list_aurocs[:n_exp, :n_fold].mean(), list_aurocs[:n_exp, :n_fold].std()
+    mean_auprc, std_auprc = list_auprcs[:n_exp, :n_fold].mean(), list_auprcs[:n_exp, :n_fold].std()
+    desc = "Masked Features (关键词遮蔽)" if masked else "Original Features (原始基线)"
+
+    print(f"\n{'='*75}")
+    print(f"Summary Results for 5-Fold CV [{desc}] ({cancerType}):")
+    print(f"  Overall AUROC: {mean_auc:.4f} ± {std_auc:.4f}")
+    print(f"  Overall AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}")
+    print(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}")
+    print(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
+    print(f"{'='*75}\n")
+
+    summary_file = os.path.join(RESULT_DIR, f'{feat_tag}_summary.txt')
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write(f"Experiment: 10x5 Cross-Validation [{desc}]\n")
+        f.write(f"Cancer Type: {cancerType}, Dataset: {dataset}\n")
+        f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
+        f.write(f"Base Seed: {base_seed}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Overall Metrics (over {n_exp}x{n_fold} = {n_exp * n_fold} folds):\n")
+        f.write(f"  AUROC : {mean_auc:.4f} ± {std_auc:.4f}\n")
+        f.write(f"  AUPRC : {mean_auprc:.4f} ± {std_auprc:.4f}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}\n")
+        f.write(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}\n")
+
+    if not masked:
+        save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
     results = 0
     return results
 
@@ -481,6 +522,10 @@ def main():
                         help="审计文件路径 (默认 src/Gemma_Vocabulary_Leakage_Audit.xlsx)")
     parser.add_argument('--base_seed', type=int, default=42,
                         help="随机种子基准值 (默认 42)")
+    parser.add_argument('--masked', action='store_true',
+                        help="使用关键词遮蔽后的语义特征 (PAN-CANCER_statement_features_masked.pt)")
+    parser.add_argument('--statement_file', type=str, default=None,
+                        help="自定义语义特征文件路径 (覆盖默认特征文件)")
 
     args = parser.parse_args()
 
@@ -505,7 +550,18 @@ def main():
         data.x = torch.cat((data.x, datas), 1)
         data = data.to(device)
 
-        statement = torch.load(os.path.join(DATA_DIR, "CPDB", "PAN-CANCER_statement_features.pt")).to(device)
+        if args.statement_file:
+            statement_path = args.statement_file
+        elif args.masked:
+            statement_path = os.path.join(DATA_DIR, "CPDB", "PAN-CANCER_statement_features_masked.pt")
+        else:
+            statement_path = os.path.join(DATA_DIR, "CPDB", "PAN-CANCER_statement_features.pt")
+
+        if not os.path.exists(statement_path):
+            raise FileNotFoundError(f"未找到语义特征文件: {statement_path}")
+
+        print(f"Loading statement features from: {statement_path}")
+        statement = torch.load(statement_path).to(device)
         L_emb = {
             'self_emb': statement[:, 0:768],
             'neighbor_emb': statement[:, 768:1536],
@@ -602,7 +658,9 @@ def main():
             lambdinter=args.lambdinter,
             dropout=args.dropout,
             cancerType=args.cancerType,
-            dataset=args.dataset
+            dataset=args.dataset,
+            masked=args.masked,
+            base_seed=args.base_seed
         )
     else:
         raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'clean_to_hit', 'hit_to_clean'")
