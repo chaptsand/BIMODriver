@@ -155,11 +155,87 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
     return epoch_aurocs, epoch_auprcs, auroc, auprc
 
 
+def train_test_inductive(data_model, optimizer, data, L_emb,
+                         edge_index_train, L_emb_edge_train,
+                         edge_index_full, L_emb_edge_full,
+                         tr_mask, te_mask, epochs, Y):
+    """
+    归纳式训练与评估函数（Inductive 5-Fold CV）：
+    1. 训练阶段严格仅使用已剔除所有测试基因相连边的归纳网络 (edge_index_train 与 L_emb_edge_train)。
+    2. 严格断言检查：确认归纳训练网络中绝无以测试基因为端点的边，且 tr_mask 不包含任何测试基因。
+    3. 对比损失与分类损失均严格仅在训练基因 tr_mask 上计算，测试基因绝不参与对比损失或分类损失。
+    4. 模型 160 轮训练完成后，恢复完整 CPDB 网络和完整语义 KNN 网络，在 torch.no_grad() 下无更新预测当前折测试基因。
+    """
+    model = data_model['model']
+
+    # 严格检验 1 & 2: 确认训练网络中没有任何以测试基因为端点的边（源节点与目标节点双重确认）
+    assert not (te_mask[edge_index_train[0]].any() or te_mask[edge_index_train[1]].any()), \
+        "归纳式训练 CPDB 网络中发现以测试基因为端点的边！"
+    assert not (te_mask[L_emb_edge_train[0]].any() or te_mask[L_emb_edge_train[1]].any()), \
+        "归纳式训练语义 KNN 网络中发现以测试基因为端点的边！"
+    # 严格检验 3: 确认对比损失与分类损失的训练节点中无任何测试基因
+    assert not te_mask[tr_mask].any(), \
+        "归纳式训练对比损失节点集合 tr_mask 中包含测试基因！"
+
+    for epoch in range(epochs):
+        # ===== 训练阶段（归纳子图） =====
+        model.train()
+        optimizer.zero_grad()
+
+        # 归纳子图上的边 dropout
+        edge_index_train_drop = dropout_adj(edge_index_train, p=0.3)[0]
+
+        # 再次确保 dropout 未引入测试基因边
+        assert not (te_mask[edge_index_train_drop[0]].any() or te_mask[edge_index_train_drop[1]].any()), \
+            "dropout_adj 后检测到以测试基因为端点的边！"
+
+        # 前向传播：tr_mask 严格限定对比损失仅在训练基因上计算，测试基因绝不参与
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_train_drop, L_emb, L_emb_edge_train, tr_mask=tr_mask
+        )
+
+        class_weights = get_class_weights(Y[tr_mask])
+        loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_self = F.binary_cross_entropy_with_logits(label_self[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_together = F.binary_cross_entropy_with_logits(label_together[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_concat = F.binary_cross_entropy_with_logits(label_concat[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_satment = F.binary_cross_entropy_with_logits(label_satment[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[tr_mask], Y[tr_mask], pos_weight=class_weights)
+
+        loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
+        total_loss = loss_cls + data_model['lambdinter'] * loss_inter
+
+        total_loss.backward()
+        optimizer.step()
+
+        if (epoch + 1) % 40 == 0 or (epoch + 1) == epochs:
+            print(f"  Epoch {epoch+1:3d}/{epochs} | Total Loss: {total_loss.item():.4f} (Cls: {loss_cls.item():.4f}, Inter: {loss_inter.item():.4f})")
+
+    # ===== 训练完成：恢复完整 CPDB 网络和完整语义 KNN 网络，在不更新参数的情况下预测当前折测试基因 =====
+    model.eval()
+    with torch.no_grad():
+        _, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_full, L_emb, L_emb_edge_full
+        )
+
+        pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
+        y_eval = Y[te_mask].cpu().numpy().ravel()
+        precision, recall, _thresholds = metrics.precision_recall_curve(y_eval, pred)
+        auroc = metrics.roc_auc_score(y_eval, pred)
+        auprc = metrics.auc(recall, precision)
+        print(f"  --> [Inductive Fold Finished] Test AUROC: {auroc:.4f}, Test AUPRC: {auprc:.4f}")
+
+    epoch_aurocs = [auroc] * epochs
+    epoch_auprcs = [auprc] * epochs
+    return epoch_aurocs, epoch_auprcs, auroc, auprc
+
+
 def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
                      dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
-                     masked=False, base_seed=42):
-    """收集每个 epoch 的指标（5 折交叉验证，已修正 auroc/auprc 对应关系并支持 Masked 消融）"""
+                     masked=False, inductive=False, base_seed=42):
+    """收集每个 epoch 的指标（5 折交叉验证，支持传导式与归纳式消融）"""
     all_aurocs = np.zeros((epochs, 10, 5))
     all_auprcs = np.zeros((epochs, 10, 5))
     if cancerType == 'pan-cancer':
@@ -187,12 +263,16 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     n_exp = int(os.environ.get('N_EXP', 10))
     n_fold = int(os.environ.get('N_FOLD', 5))
 
-    feat_tag = "pan-cancer_masked" if masked else "pan-cancer"
+    if cancerType == 'pan-cancer':
+        feat_tag = f"pan-cancer{'_masked' if masked else ''}{'_inductive' if inductive else ''}"
+    else:
+        feat_tag = f"{dataset}_{cancerType}{'_masked' if masked else ''}{'_inductive' if inductive else ''}"
+
     start_total_time = time.time()
 
     for exp_id in range(n_exp):
         for fold_id in range(n_fold):
-            # 固定随机种子保证基线与 Masked 实验完全公平对照
+            # 固定随机种子保证基线、Masked 与归纳式实验完全公平对照
             seed = base_seed + exp_id * 100 + fold_id
             torch.manual_seed(seed)
             random.seed(seed)
@@ -218,21 +298,62 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-            aurocs, auprcs, auroc, auprc = train_test(
-                data_model={
-                    'model': model,
-                    'lambdinter': lambdinter
-                },
-                optimizer=optimizer,
-                data=data,
-                L_emb=L_emb,
-                edge_index=edge_index.to(device),
-                L_emb_edge=L_emb_edge,
-                tr_mask=train_mask.nonzero().squeeze(),
-                te_mask=test_mask,
-                epochs=epochs,
-                Y=Y
-            )
+            if inductive:
+                pb_full = edge_index.to(device)
+                L_emb_edge_full = L_emb_edge.to(device)
+
+                # 归纳式：从 CPDB 网络和语义 KNN 网络中删除所有与当前折测试基因相连的边
+                pb_train_edges = pb_full[:, ~(test_mask[pb_full[0]] | test_mask[pb_full[1]])]
+                L_emb_train_edges = L_emb_edge_full[:, ~(test_mask[L_emb_edge_full[0]] | test_mask[L_emb_edge_full[1]])]
+
+                tr_indices = train_mask.nonzero().squeeze()
+                te_indices = test_mask.nonzero().squeeze()
+
+                # 严格断言检查（Requirement 7）
+                assert not test_mask[pb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络源节点中检测到测试基因！"
+                assert not test_mask[pb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络目标节点中检测到测试基因！"
+                assert not test_mask[L_emb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络源节点中检测到测试基因！"
+                assert not test_mask[L_emb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络目标节点中检测到测试基因！"
+                assert not test_mask[tr_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 训练节点集合中检测到测试基因！"
+                assert (train_mask & test_mask).sum().item() == 0, f"Exp {exp_id+1} Fold {fold_id+1}: 训练集与测试集存在交集！"
+
+                if exp_id == 0 and fold_id == 0:
+                    print(f"  [Inductive Graph & Loss Checks Passed]")
+                    print(f"   * CPDB 网络: 原始边数 {pb_full.shape[1]} -> 归纳训练边数 {pb_train_edges.shape[1]} (已剔除 {pb_full.shape[1] - pb_train_edges.shape[1]} 条测试基因相连边)")
+                    print(f"   * 语义 KNN 网络: 原始边数 {L_emb_edge_full.shape[1]} -> 归纳训练边数 {L_emb_train_edges.shape[1]} (已剔除 {L_emb_edge_full.shape[1] - L_emb_train_edges.shape[1]} 条测试基因相连边)")
+                    print(f"   * 训练节点数: {len(tr_indices)} | 测试节点数: {len(te_indices)} (交集严格为 0)")
+                    print(f"   * 对比损失计算范围: 严格仅限 {len(tr_indices)} 个训练节点 (测试基因 0 参与)")
+
+                aurocs, auprcs, auroc, auprc = train_test_inductive(
+                    data_model={'model': model, 'lambdinter': lambdinter},
+                    optimizer=optimizer,
+                    data=data,
+                    L_emb=L_emb,
+                    edge_index_train=pb_train_edges,
+                    L_emb_edge_train=L_emb_train_edges,
+                    edge_index_full=pb_full,
+                    L_emb_edge_full=L_emb_edge_full,
+                    tr_mask=tr_indices,
+                    te_mask=test_mask,
+                    epochs=epochs,
+                    Y=Y
+                )
+            else:
+                aurocs, auprcs, auroc, auprc = train_test(
+                    data_model={
+                        'model': model,
+                        'lambdinter': lambdinter
+                    },
+                    optimizer=optimizer,
+                    data=data,
+                    L_emb=L_emb,
+                    edge_index=edge_index.to(device),
+                    L_emb_edge=L_emb_edge,
+                    tr_mask=train_mask.nonzero().squeeze(),
+                    te_mask=test_mask,
+                    epochs=epochs,
+                    Y=Y
+                )
             
             # 正确存储 AUROC 和 AUPRC（避免原代码的变量倒置）
             all_aurocs[:, exp_id, fold_id] = aurocs
@@ -247,9 +368,8 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             else:
                 single_dir = os.path.join(RESULT_DIR, 'single')
                 os.makedirs(single_dir, exist_ok=True)
-                tag = f"{dataset}_{cancerType}_masked" if masked else f"{dataset}_{cancerType}"
-                np.savetxt(os.path.join(single_dir, f'{tag}_auroc.txt'), list_aurocs, fmt='%.6f')
-                np.savetxt(os.path.join(single_dir, f'{tag}_auprc.txt'), list_auprcs, fmt='%.6f')
+                np.savetxt(os.path.join(single_dir, f'{feat_tag}_auroc.txt'), list_aurocs, fmt='%.6f')
+                np.savetxt(os.path.join(single_dir, f'{feat_tag}_auprc.txt'), list_auprcs, fmt='%.6f')
 
     total_elapsed = time.time() - start_total_time
     minutes = int(total_elapsed // 60)
@@ -259,7 +379,11 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
 
     mean_auc, std_auc = list_aurocs[:n_exp, :n_fold].mean(), list_aurocs[:n_exp, :n_fold].std()
     mean_auprc, std_auprc = list_auprcs[:n_exp, :n_fold].mean(), list_auprcs[:n_exp, :n_fold].std()
-    desc = "Masked Features (关键词遮蔽)" if masked else "Original Features (原始基线)"
+    
+    if inductive:
+        desc = "Masked Features (关键词遮蔽) - 归纳式 (Inductive)" if masked else "Original Features (原始基线) - 归纳式 (Inductive)"
+    else:
+        desc = "Masked Features (关键词遮蔽)" if masked else "Original Features (原始基线)"
 
     print(f"\n{'='*75}")
     print(f"Summary Results for 5-Fold CV [{desc}] ({cancerType}):")
@@ -274,6 +398,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     with open(summary_file, 'w', encoding='utf-8') as f:
         f.write(f"Experiment: 10x5 Cross-Validation [{desc}]\n")
         f.write(f"Cancer Type: {cancerType}, Dataset: {dataset}\n")
+        f.write(f"Protocol: Inductive Training (Removed all test node edges from CPDB & Semantic KNN graphs; Test nodes excluded from contrastive loss; Full graph restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
         f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
         f.write(f"Base Seed: {base_seed}\n")
         f.write(f"Total Elapsed Time: {time_desc}\n")
@@ -285,7 +410,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         f.write(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}\n")
         f.write(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}\n")
 
-    if not masked:
+    if not masked and not inductive:
         save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
     results = 0
     return results
@@ -510,7 +635,9 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
 def main():
     parser = argparse.ArgumentParser(description="BIMODriver Training and Evaluation")
     parser.add_argument('--split', type=str, default=os.environ.get('SPLIT', 'cv'),
-                        help="划分模式: 'cv' (默认5折交叉验证), 'clean_to_hit' (Clean训练->Hit测试), 'hit_to_clean' (Hit训练->Clean测试)")
+                        help="划分模式: 'cv' (默认5折交叉验证), 'inductive' (归纳式5折交叉验证), 'clean_to_hit' (Clean训练->Hit测试), 'hit_to_clean' (Hit训练->Clean测试)")
+    parser.add_argument('--inductive', action='store_true',
+                        help="启用严格归纳式训练 (每折训练时删除所有与测试基因相连的边，测试基因不参与对比损失，训练后恢复全图预测)")
     parser.add_argument('--dataset', type=str, default='cpdb', choices=['cpdb', 'string'],
                         help="数据集类型 ('cpdb' 或 'string')")
     parser.add_argument('--cancerType', type=str, default='pan-cancer',
@@ -649,12 +776,15 @@ def main():
             val_ratio=args.val_ratio
         )
 
-    # 分支 2：原始 5 折交叉验证实验
-    elif split_mode == 'cv':
+    # 分支 2：5 折交叉验证实验（支持传导式与归纳式）
+    elif split_mode in ['cv', 'inductive', 'cv_inductive']:
         with open(os.path.join(DATA_DIR, "CPDB", "k_sets.pkl"), 'rb') as handle:
             k_sets = pickle.load(handle)
 
-        print(f"\nRunning original 5-fold CV for {args.cancerType} on {args.dataset}...")
+        is_inductive = args.inductive or split_mode in ['inductive', 'cv_inductive']
+        mode_str = "Inductive 5-fold CV (归纳式)" if is_inductive else "Transductive 5-fold CV (传导式)"
+        feat_str = "Masked Features (关键词遮蔽)" if args.masked else "Original Features (原始基线)"
+        print(f"\nRunning {mode_str} [{feat_str}] for {args.cancerType} on {args.dataset}...")
         trainPred_k_sets(
             input_dim=input_dim,
             k_sets=k_sets,
@@ -669,10 +799,11 @@ def main():
             cancerType=args.cancerType,
             dataset=args.dataset,
             masked=args.masked,
+            inductive=is_inductive,
             base_seed=args.base_seed
         )
     else:
-        raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'clean_to_hit', 'hit_to_clean'")
+        raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'inductive', 'clean_to_hit', 'hit_to_clean'")
 
 
 if __name__ == '__main__':
