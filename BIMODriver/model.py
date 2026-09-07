@@ -38,7 +38,6 @@ def sim(z1: torch.Tensor, z2: torch.Tensor):
 
 def diagonal_contrastive_loss(h1, h2, tau=0.1):
     sim_matrix = sim(h1, h2)  # [N, N]
-    pos_mask = torch.eye(h1.size(0), device=h1.device)  # 对角线为1的矩阵
     numerator = torch.exp(sim_matrix.diag() / tau)  # 对角线元素
     denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # 行求和
     loss = -torch.log(numerator / denominator).mean()

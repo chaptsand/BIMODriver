@@ -158,13 +158,18 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
 def train_test_inductive(data_model, optimizer, data, L_emb,
                          edge_index_train, L_emb_edge_train,
                          edge_index_full, L_emb_edge_full,
-                         tr_mask, te_mask, epochs, Y):
+                         cls_tr_mask, contrastive_indices, te_mask,
+                         epochs, Y):
     """
     归纳式训练与评估函数（Inductive 5-Fold CV）：
     1. 训练阶段严格仅使用已剔除所有测试基因相连边的归纳网络 (edge_index_train 与 L_emb_edge_train)。
-    2. 严格断言检查：确认归纳训练网络中绝无以测试基因为端点的边，且 tr_mask 不包含任何测试基因。
-    3. 对比损失与分类损失均严格仅在训练基因 tr_mask 上计算，测试基因绝不参与对比损失或分类损失。
-    4. 模型 160 轮训练完成后，恢复完整 CPDB 网络和完整语义 KNN 网络，在 torch.no_grad() 下无更新预测当前折测试基因。
+    2. 严格断言检查：
+       - 确认归纳训练网络中绝无以测试基因为端点的边；
+       - 确认分类损失训练节点 cls_tr_mask 不包含任何测试基因；
+       - 确认对比损失节点集合 contrastive_indices 不包含任何测试基因，且节点数等于 13627 - test_mask.sum()。
+    3. 分类损失严格仅在有标签训练节点 cls_tr_mask 上计算。
+    4. 对比损失在所有非测试节点 contrastive_indices 上计算（包含 Unknown 节点，只排除当前折测试节点）。
+    5. 模型 160 轮训练完成后，恢复完整 CPDB 网络和完整语义 KNN 网络，在 torch.no_grad() 下无更新预测当前折测试基因。
     """
     model = data_model['model']
 
@@ -173,9 +178,14 @@ def train_test_inductive(data_model, optimizer, data, L_emb,
         "归纳式训练 CPDB 网络中发现以测试基因为端点的边！"
     assert not (te_mask[L_emb_edge_train[0]].any() or te_mask[L_emb_edge_train[1]].any()), \
         "归纳式训练语义 KNN 网络中发现以测试基因为端点的边！"
-    # 严格检验 3: 确认对比损失与分类损失的训练节点中无任何测试基因
-    assert not te_mask[tr_mask].any(), \
-        "归纳式训练对比损失节点集合 tr_mask 中包含测试基因！"
+    # 严格检验 3: 确认分类损失训练节点中无任何测试基因
+    assert not te_mask[cls_tr_mask].any(), \
+        "归纳式训练分类损失节点集合 cls_tr_mask 中包含测试基因！"
+    # 严格检验 4: 确认对比损失节点中无任何测试基因，且节点数严格等于 13627 - test_mask.sum()
+    assert not te_mask[contrastive_indices].any(), \
+        "归纳式训练对比损失节点集合 contrastive_indices 中包含测试基因！"
+    assert len(contrastive_indices) == 13627 - te_mask.sum().item(), \
+        f"对比学习节点数 ({len(contrastive_indices)}) 不等于 13627 - test_mask.sum() ({13627 - te_mask.sum().item()})！"
 
     for epoch in range(epochs):
         # ===== 训练阶段（归纳子图） =====
@@ -189,19 +199,20 @@ def train_test_inductive(data_model, optimizer, data, L_emb,
         assert not (te_mask[edge_index_train_drop[0]].any() or te_mask[edge_index_train_drop[1]].any()), \
             "dropout_adj 后检测到以测试基因为端点的边！"
 
-        # 前向传播：tr_mask 严格限定对比损失仅在训练基因上计算，测试基因绝不参与
+        # 前向传播：tr_mask 传入 contrastive_indices，在所有非测试节点上计算对比损失
         loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
-            data.x, edge_index_train_drop, L_emb, L_emb_edge_train, tr_mask=tr_mask
+            data.x, edge_index_train_drop, L_emb, L_emb_edge_train, tr_mask=contrastive_indices
         )
 
-        class_weights = get_class_weights(Y[tr_mask])
-        loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_self = F.binary_cross_entropy_with_logits(label_self[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_together = F.binary_cross_entropy_with_logits(label_together[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_concat = F.binary_cross_entropy_with_logits(label_concat[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_satment = F.binary_cross_entropy_with_logits(label_satment[tr_mask], Y[tr_mask], pos_weight=class_weights)
-        loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        # 分类损失：严格仅在有标签训练节点 cls_tr_mask 上计算
+        class_weights = get_class_weights(Y[cls_tr_mask])
+        loss_G = F.binary_cross_entropy_with_logits(label_G[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_self = F.binary_cross_entropy_with_logits(label_self[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_together = F.binary_cross_entropy_with_logits(label_together[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_concat = F.binary_cross_entropy_with_logits(label_concat[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_satment = F.binary_cross_entropy_with_logits(label_satment[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
 
         loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
         total_loss = loss_cls + data_model['lambdinter'] * loss_inter
@@ -308,21 +319,26 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
 
                 tr_indices = train_mask.nonzero().squeeze()
                 te_indices = test_mask.nonzero().squeeze()
+                contrastive_indices = (~test_mask).nonzero().squeeze()
 
-                # 严格断言检查（Requirement 7）
+                # 严格断言检查（Requirement 5 & 7）
                 assert not test_mask[pb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络源节点中检测到测试基因！"
                 assert not test_mask[pb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络目标节点中检测到测试基因！"
                 assert not test_mask[L_emb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络源节点中检测到测试基因！"
                 assert not test_mask[L_emb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络目标节点中检测到测试基因！"
-                assert not test_mask[tr_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 训练节点集合中检测到测试基因！"
+                assert not test_mask[tr_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 分类训练节点集合中检测到测试基因！"
+                assert not test_mask[contrastive_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 对比学习节点集合中检测到测试基因！"
                 assert (train_mask & test_mask).sum().item() == 0, f"Exp {exp_id+1} Fold {fold_id+1}: 训练集与测试集存在交集！"
+                assert len(contrastive_indices) == 13627 - test_mask.sum().item(), \
+                    f"Exp {exp_id+1} Fold {fold_id+1}: 对比学习节点数 ({len(contrastive_indices)}) 不等于 13627 - test_mask.sum() ({13627 - test_mask.sum().item()})！"
 
                 if exp_id == 0 and fold_id == 0:
                     print(f"  [Inductive Graph & Loss Checks Passed]")
                     print(f"   * CPDB 网络: 原始边数 {pb_full.shape[1]} -> 归纳训练边数 {pb_train_edges.shape[1]} (已剔除 {pb_full.shape[1] - pb_train_edges.shape[1]} 条测试基因相连边)")
                     print(f"   * 语义 KNN 网络: 原始边数 {L_emb_edge_full.shape[1]} -> 归纳训练边数 {L_emb_train_edges.shape[1]} (已剔除 {L_emb_edge_full.shape[1] - L_emb_train_edges.shape[1]} 条测试基因相连边)")
-                    print(f"   * 训练节点数: {len(tr_indices)} | 测试节点数: {len(te_indices)} (交集严格为 0)")
-                    print(f"   * 对比损失计算范围: 严格仅限 {len(tr_indices)} 个训练节点 (测试基因 0 参与)")
+                    print(f"   * 分类训练节点数: {len(tr_indices)} (有标签训练基因, 测试基因 0 参与)")
+                    print(f"   * 对比学习节点数: {len(contrastive_indices)} (严格等于 13627 - {test_mask.sum().item()}, 包含 Unknown 节点, 排除测试基因)")
+                    print(f"   * 测试基因节点数: {len(te_indices)} (测试期将在无梯度下恢复全图进行预测)")
 
                 aurocs, auprcs, auroc, auprc = train_test_inductive(
                     data_model={'model': model, 'lambdinter': lambdinter},
@@ -333,7 +349,8 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                     L_emb_edge_train=L_emb_train_edges,
                     edge_index_full=pb_full,
                     L_emb_edge_full=L_emb_edge_full,
-                    tr_mask=tr_indices,
+                    cls_tr_mask=tr_indices,
+                    contrastive_indices=contrastive_indices,
                     te_mask=test_mask,
                     epochs=epochs,
                     Y=Y
@@ -398,7 +415,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     with open(summary_file, 'w', encoding='utf-8') as f:
         f.write(f"Experiment: 10x5 Cross-Validation [{desc}]\n")
         f.write(f"Cancer Type: {cancerType}, Dataset: {dataset}\n")
-        f.write(f"Protocol: Inductive Training (Removed all test node edges from CPDB & Semantic KNN graphs; Test nodes excluded from contrastive loss; Full graph restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
+        f.write(f"Protocol: Inductive Training (Removed all test node edges from CPDB & Semantic KNN graphs; Contrastive loss on all non-test nodes [13627 - test_count]; Classification loss on labeled train nodes; Full graph restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
         f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
         f.write(f"Base Seed: {base_seed}\n")
         f.write(f"Total Elapsed Time: {time_desc}\n")
