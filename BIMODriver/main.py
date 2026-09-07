@@ -1,4 +1,4 @@
-# encoding: gbk
+# encoding: utf-8
 import numpy as np
 import pandas as pd
 import time
@@ -27,28 +27,46 @@ from sklearn import linear_model
 from sklearn.ensemble import StackingClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
-from model import *
+from model_sparse_dense import *
+from pathlib import Path
+from datetime import datetime
+import csv
+import argparse
 
-def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr = 0.001, dropout=0.2,lambdinter=0.005):
-    if cancerType == 'pan-cancer':
-        if dataset == 'cpdb':
-            path = '/home/yuantao/code/my/result/pan-cancer.txt'
-        elif dataset == 'string':
-            path = '/home/yuantao/code/my/result/pan-cancer_string.txt'
-        else:
-            raise ValueError("Unsupported dataset for pan-cancer results.")
-    else:
-        path = '/home/yuantao/code/my/result/single/single.txt'
-    with open(path, 'a') as f:
-        f.write('--' * 20 + '\n')
-        f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
-        f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {auroc.mean():.4f} ¡À {auroc.std():.4f}\n")
-        f.write(str(auroc))
-        f.write("\n")
-        f.write(f"AUC: {auprc.mean():.4f} ¡À {auprc.std():.4f}\n")
-        f.write(str(auprc))
-        f.write("\n")
+parser = argparse.ArgumentParser(description='Sparse/dense BIMODriver comparison')
+parser.add_argument(
+    '--setting', choices=('transductive', 'inductive'), default='inductive',
+    help='inductive removes every held-out OOF gene from both training graphs and contrastive learning'
+)
+parser.add_argument('--experiments', type=int, default=10,
+                    help='number of stored split repetitions to run (1 uses k_sets[0])')
+args = parser.parse_args()
+
+# Original data paths remain relative to the code/ working directory.
+RUN_DIR = Path(__file__).resolve().parents[2] / 'cache' / ('original_framework_sparse_dense_' + args.setting) / datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+N_EXPERIMENTS = args.experiments
+N_FOLDS = 5
+
+
+def remove_held_out_edges(edge_index, held_out_mask):
+    """Return the induced graph on all nodes except the held-out OOF genes."""
+    held_out_mask = held_out_mask.to(edge_index.device).bool()
+    src, dst = edge_index
+    keep = (~held_out_mask[src]) & (~held_out_mask[dst])
+    return edge_index[:, keep]
+
+
+def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001,
+                         dropout=0.2, lambdinter=0.005, fusion='sparse'):
+    output = RUN_DIR / dataset / fusion
+    output.mkdir(parents=True, exist_ok=True)
+    np.savetxt(output / f'final_auroc_{N_EXPERIMENTS}x{N_FOLDS}.csv', auroc, delimiter=',', fmt='%.10f')
+    np.savetxt(output / f'final_auprc_{N_EXPERIMENTS}x{N_FOLDS}.csv', auprc, delimiter=',', fmt='%.10f')
+    with (output / 'summary.csv').open('w', newline='', encoding='utf-8') as handle:
+        writer = csv.writer(handle)
+        writer.writerow(['model', 'metric', 'mean', 'sd', 'n_folds'])
+        for metric, values in [('AUROC', auroc), ('AUPRC', auprc)]:
+            writer.writerow([fusion, metric, values.mean(), values.std(), values.size])
 
 def load_label_single(cancerType):
     path = "/home/yuantao/code/MNGCL-ori/data/CPDB/Specific cancer/"
@@ -77,24 +95,40 @@ def sample_division_single(pos_label, neg_label, l, l1, l2, i):
     return tr_mask, val_mask
 def get_class_weights(labels):
     pos_counts = labels.sum(dim=0)
+    # neg_counts = 2983 - pos_counts
     neg_counts = labels.shape[0] - pos_counts
     weights = (neg_counts / (pos_counts + 1e-6))
     return weights
 def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
-               tr_mask,te_mask, epochs, Y):
-    """·µ»ØÃ¿¸öepochµÄÖ¸±ê"""
+               tr_mask, te_mask, epochs, Y, setting='inductive'):
+    """ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½epochï¿½ï¿½Ö¸ï¿½ï¿½"""
     model = data_model['model']
     epoch_aurocs = []
     epoch_auprcs = []
 
     for epoch in range(epochs):
-        # ===== ÑµÁ·½×¶Î =====
+        # ===== Ñµï¿½ï¿½ï¿½×¶ï¿½ =====
         model.train()
         optimizer.zero_grad()
         
-        # Ä£ÐÍÇ°Ïò´«²¥
-        edge_index_train = dropout_adj(edge_index, p=0.3)[0]
-        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index_train, L_emb, L_emb_edge)
+        # Ä£ï¿½ï¿½Ç°ï¿½ò´«²ï¿½
+        if setting == 'inductive':
+            # Build fold-specific training graphs.  Unknown/background genes
+            # remain available, but every edge incident to an OOF test gene is
+            # removed from both the CPDB and semantic KNN graphs.
+            ppi_train = remove_held_out_edges(edge_index, te_mask)
+            semantic_train = remove_held_out_edges(L_emb_edge, te_mask)
+            contrastive_mask = ~te_mask
+        else:
+            ppi_train = edge_index
+            semantic_train = L_emb_edge
+            contrastive_mask = None
+
+        edge_index_train = dropout_adj(ppi_train, p=0.3)[0]
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_train, L_emb, semantic_train,
+            contrastive_mask=contrastive_mask
+        )
 
         class_weights = get_class_weights(Y[tr_mask])
         loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
@@ -115,6 +149,8 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
 
         model.eval()
         with torch.no_grad():
+            # Inductive inference attaches the unseen genes to the complete
+            # graph only after optimization; no gradient update is performed.
             _, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index, L_emb, L_emb_edge)
 
             pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
@@ -129,11 +165,11 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
 
 def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
                     lr=0.001, epochs=200, lambdinter=0.005,
-                    dropout=0.2,cancerType='pan-cancer', dataset='cpdb'):
-    """ÊÕ¼¯ËùÓÐepochµÄÖ¸±ê"""
-    # ³õÊ¼»¯´æ´¢½á¹¹ [epoch][experiment][fold]
-    all_aurocs = np.zeros((epochs, 10, 5))
-    all_auprcs = np.zeros((epochs, 10, 5))
+                    dropout=0.2,cancerType='pan-cancer', dataset='cpdb', fusion='sparse'):
+    """ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½epochï¿½ï¿½Ö¸ï¿½ï¿½"""
+    # ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½æ´¢ï¿½á¹¹ [epoch][experiment][fold]
+    all_aurocs = np.zeros((epochs, N_EXPERIMENTS, N_FOLDS))
+    all_auprcs = np.zeros((epochs, N_EXPERIMENTS, N_FOLDS))
     if cancerType == 'pan-cancer':
         Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
         y_all = np.logical_or(data.y, data.y_te)
@@ -152,14 +188,14 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
         l1 = int(len(y_train_pos) / 5)
         l2 = int(len(y_train_neg) / 5)
         Y = label
-    list_aurocs = np.zeros((10, 5))
-    list_auprcs = np.zeros((10, 5))
-    # ±éÀú10´Î¶ÀÁ¢ÊµÑé
-    for exp_id in range(10):
+    list_aurocs = np.zeros((N_EXPERIMENTS, N_FOLDS))
+    list_auprcs = np.zeros((N_EXPERIMENTS, N_FOLDS))
+    # Preserve the source main.py protocol: ten stored five-fold split sets.
+    for exp_id in range(N_EXPERIMENTS):
 
-        for fold_id in range(5):
+        for fold_id in range(N_FOLDS):
         # for fold_id, (tr_idx, val_idx) in enumerate(kf.split(valid_indices)):
-            print(f"\nExp {exp_id+1}/10 | Fold {fold_id+1}/5")
+            print(f"\nExp {exp_id+1}/{N_EXPERIMENTS} | Fold {fold_id+1}/{N_FOLDS}")
             
             if cancerType == 'pan-cancer':
                 _, _, tr_mask, te_mask = k_sets[exp_id][fold_id]
@@ -175,8 +211,8 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
                 print(tr_mask.sum())
                 print(te_mask.sum())
             
-            # ³õÊ¼»¯Ä£ÐÍ
-            model = combine_net_gate_without_ac(input_dim = input_dim,lambdinter=lambdinter,dropout=dropout).to(device)
+            # ï¿½ï¿½Ê¼ï¿½ï¿½Ä£ï¿½ï¿½
+            model = combine_net_gate_without_ac(input_dim = input_dim,lambdinter=lambdinter,dropout=dropout, fusion=fusion).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
             aurocs, auprcs, auc, auprc = train_test(
@@ -192,24 +228,51 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
                 tr_mask = train_mask.nonzero().squeeze(),
                 te_mask = test_mask,
                 epochs=epochs,
-                Y = Y
+                Y = Y,
+                setting=args.setting
             )
             
-            # # ´æ´¢½á¹û
+            # # ï¿½æ´¢ï¿½ï¿½ï¿½
             all_aurocs[:, exp_id, fold_id] = aurocs
             all_auprcs[:, exp_id, fold_id] = auprcs
-            list_aurocs[exp_id, fold_id] = auprc
-            list_auprcs[exp_id, fold_id] = auc
-            if cancerType == 'pan-cancer':
-                np.savetxt('/home/yuantao/code/my/result/pan-cancer_auroc.txt', list_aurocs, fmt='%.6f')
-                np.savetxt('/home/yuantao/code/my/result/pan-cancer_auprc.txt', list_auprcs, fmt='%.6f')
-            else:
-                np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auroc.txt', list_aurocs, fmt='%.6f')
-                np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auprc.txt', list_auprcs, fmt='%.6f')
-    save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
-    results = 0
-    
-    return results
+            list_aurocs[exp_id, fold_id] = auc
+            list_auprcs[exp_id, fold_id] = auprc
+            output = RUN_DIR / dataset / fusion
+            output.mkdir(parents=True, exist_ok=True)
+            fold_file = output / 'fold_metrics.csv'
+            exists = fold_file.exists()
+            with fold_file.open('a', newline='', encoding='utf-8') as handle:
+                writer = csv.writer(handle)
+                if not exists:
+                    writer.writerow(['model', 'setting', 'exp_id', 'fold_id', 'top_k',
+                                     'parameter_count', 'train_n', 'test_n', 'auc', 'auprc'])
+                writer.writerow([fusion, args.setting, exp_id, fold_id,
+                                 model.top_k if fusion == 'sparse' else 'all_mlp',
+                                 sum(p.numel() for p in model.parameters()),
+                                 int(train_mask.sum()), int(test_mask.sum()), auc, auprc])
+        # print(f"Exp {exp_id+1}/10 completed.")
+        # print(f"AUROC: {all_aurocs[:, exp_id, :].mean():.4f} ï¿½ï¿½ {all_aurocs[:, exp_id, :].std():.4f}")
+    save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter, fusion=fusion)
+    # ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½
+    # Preserve every original test-epoch metric, without selecting on test data.
+    output = RUN_DIR / dataset / fusion
+    with (output / 'epoch_metrics.csv').open('w', newline='', encoding='utf-8') as handle:
+        writer = csv.writer(handle)
+        writer.writerow(['model', 'exp_id', 'fold_id', 'epoch', 'auc', 'auprc'])
+        for epoch in range(epochs):
+            for exp_id in range(N_EXPERIMENTS):
+                for fold_id in range(N_FOLDS):
+                    writer.writerow([fusion, exp_id, fold_id, epoch + 1,
+                                     all_aurocs[epoch, exp_id, fold_id],
+                                     all_auprcs[epoch, exp_id, fold_id]])
+    return {
+        'fusion': fusion,
+        'auroc_mean': float(list_aurocs.mean()),
+        'auroc_std': float(list_aurocs.std()),
+        'auprc_mean': float(list_auprcs.mean()),
+        'auprc_std': float(list_auprcs.std()),
+        'n_evaluations': int(list_aurocs.size),
+    }
 
 cancers = ['pan-cancer']
 dataset = 'cpdb'  # 'cpdb' or 'string'
@@ -306,21 +369,36 @@ for cancerType in cancers:
     for dropoutrate in dropout_rates:
         for lr in lrs:
             for lambdinter in lambdinters:
-                # ÑµÁ·Ä£ÐÍ
+                # Ñµï¿½ï¿½Ä£ï¿½ï¿½
                 print(f"\nTraining for cancer type: {cancerType}, dropout rate: {dropoutrate}, learning rate: {lr}, lambda inter: {lambdinter}")
 
-                results = trainPred_k_sets(
-                    input_dim = input_dim,      # ÊäÈëÌØÕ÷Î¬¶È
-                    k_sets = k_sets,          # ¼ÓÔØµÄ½»²æÑéÖ¤»®·ÖÊý¾Ý
-                    data = data,              # Í¼Êý¾Ý¶ÔÏó
-                    L_emb = L_emb,            # ÎÄ±¾ÌØÕ÷
-                    edge_index = pb,          # ´¦ÀíºóµÄ±ßË÷Òý£¨´ø×Ô»·£©
-                    L_emb_edge = L_emb_edge,
-                    lr = lr,               # Ñ§Ï°ÂÊ
-                    epochs = EPOCH,             # ×ÜÑµÁ·ÂÖ´Î
-                    lambdinter = lambdinter,       # ÌØÕ÷¶ÔÆëÏµÊý
-                    dropout = dropoutrate,           # ¶ªÆúÂÊ
-                    cancerType=cancerType,
-                    dataset=dataset
-            )
-                
+                comparison_rows = []
+                for fusion in ('sparse', 'dense'):
+                    print('Fusion:', fusion)
+                    results = trainPred_k_sets(
+                        input_dim = input_dim,      # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½
+                        k_sets = k_sets,          # ï¿½ï¿½ï¿½ØµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        data = data,              # Í¼ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½
+                        L_emb = L_emb,            # ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½
+                        edge_index = pb,          # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½
+                        L_emb_edge = L_emb_edge,
+                        lr = lr,               # Ñ§Ï°ï¿½ï¿½
+                        epochs = EPOCH,             # ï¿½ï¿½Ñµï¿½ï¿½ï¿½Ö´ï¿½
+                        lambdinter = lambdinter,       # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+                        dropout = dropoutrate,           # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        cancerType=cancerType,
+                        dataset=dataset,
+                        fusion=fusion
+                    )
+                    comparison_rows.append(results)
+
+                comparison_file = RUN_DIR / dataset / 'dense_sparse_comparison.csv'
+                comparison_file.parent.mkdir(parents=True, exist_ok=True)
+                with comparison_file.open('w', newline='', encoding='utf-8') as handle:
+                    writer = csv.DictWriter(handle, fieldnames=[
+                        'fusion', 'auroc_mean', 'auroc_std',
+                        'auprc_mean', 'auprc_std', 'n_evaluations'
+                    ])
+                    writer.writeheader()
+                    writer.writerows(comparison_rows)
+                    

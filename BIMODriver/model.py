@@ -1,4 +1,4 @@
-# encoding: gbk
+# encoding: utf-8
 import numpy as np
 import pandas as pd
 import time
@@ -38,9 +38,9 @@ def sim(z1: torch.Tensor, z2: torch.Tensor):
 def diagonal_contrastive_loss(h1, h2, tau=0.1):
 
     sim_matrix = sim(h1, h2)  # [N, N]
-    pos_mask = torch.eye(h1.size(0), device=h1.device)  # ¶Ô½ÇÏßÎª1µÄ¾ØÕó
-    numerator = torch.exp(sim_matrix.diag() / tau)  # ¶Ô½ÇÏßÔªËØ
-    denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # ÐÐÇóºÍ
+    pos_mask = torch.eye(h1.size(0), device=h1.device)  # ï¿½Ô½ï¿½ï¿½ï¿½Îª1ï¿½Ä¾ï¿½ï¿½ï¿½
+    numerator = torch.exp(sim_matrix.diag() / tau)  # ï¿½Ô½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
+    denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # ï¿½ï¿½ï¿½ï¿½ï¿½
     loss = -torch.log(numerator / denominator).mean()
     return loss
 
@@ -76,16 +76,16 @@ def save_best_epoch_results(
     best_auroc_matrix = selected_aurocs[best_idx]  # shape: [n_exp, n_fold]
     best_auprc_matrix = selected_auprcs[best_idx]
 
-    # ===== ±£´æÄÚÈÝ =====
+    # ===== ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =====
     with open(path, 'a') as f:
         f.write('--' * 20 + '\n')
         if txt != 'none':
             f.write(f"{txt}\n")
         f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
         f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {list_aurocs.mean():.4f} ¡À {list_aurocs.std():.4f}\n")
+        f.write(f"AUPR: {list_aurocs.mean():.4f} ï¿½ï¿½ {list_aurocs.std():.4f}\n")
         f.write(str(list_aurocs) + '\n')
-        f.write(f"AUC: {list_auprcs.mean():.4f} ¡À {list_auprcs.std():.4f}\n")
+        f.write(f"AUC: {list_auprcs.mean():.4f} ï¿½ï¿½ {list_auprcs.std():.4f}\n")
         f.write(str(list_auprcs) + '\n')
 
         f.write(f"# Best Epoch: {best_epoch + 1} | Mean AUROC: {best_auroc_matrix .mean():.4f} +- {best_auroc_matrix.std():.4f} | Mean AUPRC: {best_auprc_matrix.mean():.4f} +- {best_auprc_matrix.std():.4f}\n")
@@ -94,29 +94,48 @@ def save_best_epoch_results(
         f.write("Best AUPRC matrix:\n")
         np.savetxt(f, best_auprc_matrix, fmt='%.6f')
 class combine_net_gate_without_ac(torch.nn.Module):
-    def __init__(self,input_dim=64 , lambdinter=0.005,dropout=0.1):
+    """BIMODriver with either sparse SMoE or dense MLP expert fusion.
+
+    Both variants use exactly the same six expert logits.  The sparse model is
+    the fusion mechanism from the source model: a gate selects four experts and
+    forms a weighted sum.  The dense model feeds all six expert logits to an MLP
+    and therefore never performs top-k expert selection.
+    """
+
+    def __init__(self,input_dim=64 , lambdinter=0.005,dropout=0.1, fusion='sparse'):
         super(combine_net_gate_without_ac, self).__init__()
-        self.lambdinter = lambdinter    # ÌØÕ÷¶ÔÆëËðÊ§ÏµÊý
+        self.lambdinter = lambdinter    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§Ïµï¿½ï¿½
         self.dropout = dropout
         self.g_net = G_Net(in_channels=input_dim, hidden_channels=256, out_channels=1, dropout=dropout)
         self.l_net = L_net(in_channels=768, hidden_channels=256, out_channels=1, dropout=dropout)
-        self.top_k = 5
+        if fusion not in ('sparse', 'dense'):
+            raise ValueError('fusion must be sparse or dense')
+        self.fusion = fusion
+        self.top_k = 4
+        if fusion == 'sparse':
+            self.gating_layer = torch.nn.Sequential(
+                torch.nn.Linear(6, 64),
+                torch.nn.ReLU(),
+                torch.nn.Linear(64, 6)
+            )
+            self.dense_fusion = None
+        else:
+            self.gating_layer = None
+            self.dense_fusion = torch.nn.Sequential(
+                torch.nn.Linear(6, 64),
+                torch.nn.ReLU(),
+                torch.nn.Dropout(dropout),
+                torch.nn.Linear(64, 1)
+            )
 
-
-        self.gating_layer = torch.nn.Sequential(
-            torch.nn.Linear(6, 32),
-            torch.nn.ReLU(),
-            torch.nn.Linear(32, 6) 
-        )
-
-    def forward(self, x, ppi_edge, L_emb, L_emb_edge):
+    def forward(self, x, ppi_edge, L_emb, L_emb_edge, contrastive_mask=None):
 
         input_G = self.g_net(x, ppi_edge)
         input_self      = self.l_net(L_emb['self_emb']    , L_emb_edge)
         input_neighbor  = self.l_net(L_emb['neighbor_emb'], L_emb_edge)
         input_together  = self.l_net(L_emb['together_emb'], L_emb_edge)
 
-        # ·ÖÀàÔ¤²â
+        # ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½
         label_G = self.g_net.classfy(input_G, ppi_edge)
         label_self = self.l_net.classfy(input_self,         L_emb_edge)
         label_neighbor = self.l_net.classfy(input_neighbor, L_emb_edge)
@@ -126,7 +145,22 @@ class combine_net_gate_without_ac(torch.nn.Module):
         label_satment = torch.einsum('ij,ij->i', input_self, input_together).unsqueeze(1)
 
         if self.training:
-            loss_inter = diagonal_contrastive_loss(input_G, input_self, tau=0.04) + diagonal_contrastive_loss(input_self, input_together, tau=0.04) + diagonal_contrastive_loss(input_G, input_together, tau=0.04)
+            # In strict-inductive training, held-out genes must not occur in
+            # either the positive pairs or the denominator of InfoNCE.
+            if contrastive_mask is not None:
+                contrastive_mask = contrastive_mask.to(input_G.device).bool()
+                contrast_G = input_G[contrastive_mask]
+                contrast_self = input_self[contrastive_mask]
+                contrast_together = input_together[contrastive_mask]
+            else:
+                contrast_G = input_G
+                contrast_self = input_self
+                contrast_together = input_together
+            loss_inter = (
+                diagonal_contrastive_loss(contrast_G, contrast_self, tau=0.04)
+                + diagonal_contrastive_loss(contrast_self, contrast_together, tau=0.04)
+                + diagonal_contrastive_loss(contrast_G, contrast_together, tau=0.04)
+            )
         else:
             loss_inter = torch.tensor(0.0).to(x.device)
         logits_all = torch.cat((
@@ -135,16 +169,20 @@ class combine_net_gate_without_ac(torch.nn.Module):
             label_concat, label_satment
         ), dim=1)
 
-        gating_score = self.gating_layer(logits_all)
-        topk_weights, topk_indices = torch.topk(gating_score, k=self.top_k, dim=1)
-
-        # È¡³ö top-k µÄ×¨¼ÒÊä³ö
-        # batch_size = logits_all.size(0)
-        topk_outputs = torch.gather(logits_all, 1, topk_indices)
-        topk_weights = F.softmax(topk_weights, dim=1)
-
-        # ¼ÓÈ¨Æ½¾ùµÃµ½×îÖÕÊä³ö
-        final_output = torch.sum(topk_outputs * topk_weights, dim=1, keepdim=True)  # shape: [N, 1]
+        if self.fusion == 'sparse':
+            # Source-model SMoE: choose four of the six experts per node.
+            gating_score = self.gating_layer(logits_all)
+            topk_weights, topk_indices = torch.topk(
+                gating_score, k=self.top_k, dim=1
+            )
+            topk_outputs = torch.gather(logits_all, 1, topk_indices)
+            topk_weights = F.softmax(topk_weights, dim=1)
+            final_output = torch.sum(
+                topk_outputs * topk_weights, dim=1, keepdim=True
+            )
+        else:
+            # Dense baseline: every expert participates in an unrestricted MLP.
+            final_output = self.dense_fusion(logits_all)
 
         return loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output
 
