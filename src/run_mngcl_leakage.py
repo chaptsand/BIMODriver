@@ -321,6 +321,7 @@ def main():
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--seed', type=int, default=1234)
+    parser.add_argument('--dense', action='store_true', help='Use original dense similarity matrices for contrastive loss (requires >12GB GPU memory)')
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
 

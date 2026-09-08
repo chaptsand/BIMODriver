@@ -19,6 +19,7 @@ sys.path.append(os.path.join(BASE_DIR, 'src', 'baselines', 'disfusion'))
 
 from alignment_check import assert_data_alignment
 from models import hypergrph_HGNN, graph_ChebNet, DISFusion
+from utils import _generate_G_from_H_weight
 
 def fix_seed(seed):
     random.seed(seed)
@@ -166,7 +167,10 @@ def run_disfusion_cv(args):
                     t_idx = random.randint(0, H.shape[1] - 1)
                     H[i][t_idx] = 0.0001
 
-            G = fast_G_from_H_weight(H, hyperedgeWeight)
+            if getattr(args, 'legacy_g', False):
+                G = np.array(_generate_G_from_H_weight(H, hyperedgeWeight))
+            else:
+                G = fast_G_from_H_weight(H, hyperedgeWeight)
             adj_hyperGraph = torch.Tensor(G).float().to(device)
             fh = torch.eye(N).float().to(device)
 
@@ -292,6 +296,7 @@ def main():
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--legacy_g', action='store_true', help='Use original slow _generate_G_from_H_weight (dense diagonal matrix inversion)')
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
 

@@ -70,23 +70,36 @@ def run_mngcl_cv(args):
     goAdj_index = goAdj.coalesce().indices().to(device)
     del ppiAdj
 
-    print("Preparing sparse similarity matrices for contrastive loss...")
-    n_nodes = data.x.shape[0]
-    diag_indices = torch.arange(n_nodes, device=device).repeat(2, 1)
-    diag_values = torch.ones(n_nodes, device=device)
-    eye_sparse = torch.sparse_coo_tensor(diag_indices, diag_values, (n_nodes, n_nodes), device=device)
+    if getattr(args, 'dense', False):
+        print("Preparing original dense similarity matrices for contrastive loss (large VRAM mode)...")
+        pos1 = ppiAdj_self.to_dense().to(device)
+        del ppiAdj_self
+        pos2 = pathAdj.to_dense().to(device)
+        del pathAdj
+        pos2.fill_diagonal_(1.0)
+        pos3 = goAdj.to_dense().to(device)
+        del goAdj
+        pos3.fill_diagonal_(1.0)
+        torch.cuda.empty_cache()
+        posList = [pos1, pos2, pos3]
+    else:
+        print("Preparing sparse similarity matrices for contrastive loss (memory-optimized mode)...")
+        n_nodes = data.x.shape[0]
+        diag_indices = torch.arange(n_nodes, device=device).repeat(2, 1)
+        diag_values = torch.ones(n_nodes, device=device)
+        eye_sparse = torch.sparse_coo_tensor(diag_indices, diag_values, (n_nodes, n_nodes), device=device)
 
-    pos1 = ppiAdj_self.to(device).coalesce()
-    del ppiAdj_self
+        pos1 = ppiAdj_self.to(device).coalesce()
+        del ppiAdj_self
 
-    pos2 = (pathAdj.to(device) + eye_sparse).coalesce()
-    del pathAdj
+        pos2 = (pathAdj.to(device) + eye_sparse).coalesce()
+        del pathAdj
 
-    pos3 = (goAdj.to(device) + eye_sparse).coalesce()
-    del goAdj
+        pos3 = (goAdj.to(device) + eye_sparse).coalesce()
+        del goAdj
 
-    torch.cuda.empty_cache()
-    posList = [pos1, pos2, pos3]
+        torch.cuda.empty_cache()
+        posList = [pos1, pos2, pos3]
 
     # 3. 读取严格 10x5 划分文件
     ksets_path = os.path.join(data_path, 'k_sets.pkl')
@@ -245,6 +258,7 @@ def main():
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--seed', type=int, default=1234)
+    parser.add_argument('--dense', action='store_true', help='Use original dense similarity matrices for contrastive loss (requires >12GB GPU memory)')
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
 
