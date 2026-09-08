@@ -11,6 +11,8 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.utils import dropout_adj
 from sklearn import linear_model, metrics
+import warnings
+warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'src'))
@@ -167,6 +169,9 @@ def run_mngcl_cv(args):
                 loss.backward()
                 optimizer.step()
 
+                if epoch % 100 == 0 or epoch == epochs or epoch == 1:
+                    print(f"    [Epoch {epoch:4d}/{epochs}] Loss: {loss.item():.4f} (contrastive: {conloss.item():.4f}, cls: {crloss.item():.4f})", flush=True)
+
             # 5. 测试阶段：训练结束后单次测试（按原实现训练 LogisticRegression 分类器）
             model.eval()
             with torch.no_grad():
@@ -188,7 +193,7 @@ def run_mngcl_cv(args):
                 AUPR[exp_id, fold_id] = fold_auprc
 
             fold_elapsed = time.time() - fold_start
-            print(f"  Exp {exp_id+1:02d}/{n_runs:02d} | Fold {fold_id+1}/{n_folds} ({fold_elapsed:.1f}s) -> Test AUROC: {fold_auroc:.4f}, Test AUPRC: {fold_auprc:.4f}")
+            print(f"  >> [Exp {exp_id+1:02d}/{n_runs:02d} | Fold {fold_id+1}/{n_folds}] ({fold_elapsed:.1f}s) -> Test AUROC: {fold_auroc:.4f}, Test AUPRC: {fold_auprc:.4f}\n", flush=True)
 
             del model, optimizer, gcn
             torch.cuda.empty_cache()

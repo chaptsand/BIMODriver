@@ -12,6 +12,8 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from sklearn import metrics
+import warnings
+warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'src'))
@@ -206,6 +208,9 @@ def run_disfusion_cv(args):
                 optimizer_graph.step()
                 schedular_hypergrph.step()
 
+                if (epoch + 1) % 20 == 0 or epoch == 0 or (epoch + 1) == epochs:
+                    print(f"    [Epoch {epoch+1:3d}/{epochs}] Loss: {loss.item():.4f} (self: {loss_self.item():.4f})", flush=True)
+
             # 7. 测试阶段：训练结束后对测试集进行单次评估
             model_hypergrph.eval()
             model_graph.eval()
@@ -226,7 +231,7 @@ def run_disfusion_cv(args):
                 AUPR[exp_id, fold_id] = fold_auprc
 
             fold_elapsed = time.time() - fold_start
-            print(f"  Exp {exp_id+1:02d}/{n_runs:02d} | Fold {fold_id+1}/{n_folds} ({fold_elapsed:.1f}s) -> Test AUROC: {fold_auroc:.4f}, Test AUPRC: {fold_auprc:.4f}")
+            print(f"  >> [Exp {exp_id+1:02d}/{n_runs:02d} | Fold {fold_id+1}/{n_folds}] ({fold_elapsed:.1f}s) -> Test AUROC: {fold_auroc:.4f}, Test AUPRC: {fold_auprc:.4f}\n", flush=True)
 
             del model_hypergrph, model_graph, model_fusion, adj_hyperGraph, fh
             torch.cuda.empty_cache()
