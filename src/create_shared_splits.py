@@ -4,12 +4,16 @@ import numpy as np
 import pandas as pd
 import torch
 from sklearn.model_selection import train_test_split
+from alignment_check import assert_data_alignment
 
-BASE_DIR = '/home/chaptsand/works/BIMODriver'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIT_PATH = os.path.join(BASE_DIR, 'src', 'Gemma_Vocabulary_Leakage_Audit.xlsx')
 SPLIT_OUT_PATH = os.path.join(BASE_DIR, 'data', 'CPDB', 'leakage_splits_10runs.pkl')
 
 def create_and_verify_splits():
+    # 0. 先行执行全局数据与特征一致性断言检查
+    assert_data_alignment(BASE_DIR)
+
     print(f"Reading audit data from: {AUDIT_PATH}")
     df = pd.read_excel(AUDIT_PATH, sheet_name='Gene-level Flags')
     

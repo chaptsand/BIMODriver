@@ -13,10 +13,13 @@ from torch_geometric.utils import dropout_adj
 from sklearn import linear_model, metrics
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, 'src'))
 sys.path.append(os.path.join(BASE_DIR, 'src', 'baselines', 'mngcl'))
 
+from alignment_check import assert_data_alignment
 from gcn import GCN
 from mngcl import MNGCL, contrastive_loss
+
 
 def fix_seed(seed):
     random.seed(seed)
@@ -322,7 +325,11 @@ def main():
 
     device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
 
+    # 0. 先行数据对齐严格断言检查
+    assert_data_alignment(BASE_DIR)
+
     # 读取公共划分与基因注释
+
     splits_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'leakage_splits_10runs.pkl')
     assert os.path.exists(splits_path), f"Shared split file not found at: {splits_path}"
     with open(splits_path, 'rb') as f:

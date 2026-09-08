@@ -36,6 +36,9 @@ RESULT_DIR = os.path.join(BASE_DIR, "result")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(os.path.join(RESULT_DIR, "single"), exist_ok=True)
 
+sys.path.append(os.path.join(BASE_DIR, 'src'))
+from alignment_check import assert_data_alignment
+
 
 def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001, dropout=0.2, lambdinter=0.005):
     """保存实验结果至汇总文本（已纠正 AUROC 与 AUPRC 变量和输出标签对应关系）"""
@@ -470,7 +473,7 @@ def load_leakage_splits(audit_file_path=None):
 def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data, L_emb, edge_index, L_emb_edge,
                           lr=0.0005, epochs=160, lambdinter=0.001, dropout=0.3,
                           split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2,
-                          smoke_test=False):
+                          smoke_test=False, masked=False, statement_path=None):
     """
     严格的标签泄露词审计划分实验流程：
     1. 分类损失和对比损失都严格仅在实际训练节点上计算（防止测试节点和 Unknown 节点泄露）。
@@ -479,6 +482,9 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     4. 训练完成后加载最佳 Checkpoint，仅对固定的最终测试集执行一次最终评估。
     5. 变量、输出内容与文件名中 AUROC 与 AUPRC 严格一致。
     """
+    # 0. 先行数据对齐严格断言检查
+    assert_data_alignment(BASE_DIR)
+
     cand_indices = np.where(train_candidate_mask)[0]
     cand_labels = Y[cand_indices].cpu().numpy().ravel().astype(int)
 
@@ -487,8 +493,11 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     test_drivers = int((y_test_np == 1).sum())
     test_nondrivers = int((y_test_np == 0).sum())
 
+    feat_desc = "Masked Features (关键词遮蔽消融)" if masked else "Original Features (原始基线特征)"
     print(f"\n{'='*75}")
     print(f"Running Leakage Split Experiment: [{split_name}]")
+    print(f"  Method & Feature Mode   : BIMODriver [{feat_desc}]")
+    print(f"  Loaded Statement File   : {statement_path}")
     print(f"  Training Candidate Pool : {len(cand_indices)} genes (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})")
     print(f"  Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Validation (Stratified by Driver label)")
     print(f"  Fixed Testing Set       : {len(y_test_np)} genes (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})")
@@ -640,10 +649,11 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     print(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}")
     print(f"{'='*75}\n")
 
-    # 5. 保存结果文件（同时保存 bimodriver 前缀与 pan-cancer 前缀）
+    # 5. 保存结果文件（严格区分 original 与 masked，避免相互覆盖）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
-    prefix = "smoke_bimodriver" if smoke_test else "bimodriver"
+    feat_tag = "masked" if masked else "original"
+    prefix = f"smoke_bimodriver_{feat_tag}" if smoke_test else f"bimodriver_{feat_tag}"
 
     # 保存测试基因预测概率表
     test_idx = np.where(fixed_test_mask)[0]
@@ -669,14 +679,12 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
     np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
 
-    if not smoke_test:
-        np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
-        np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
-
     summary_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_summary.txt")
     with open(summary_path, 'w', encoding='utf-8') as f:
-        f.write(f"Method: BIMODriver\n")
+        f.write(f"Method: BIMODriver ({feat_tag.capitalize()})\n")
         f.write(f"Leakage Split Experiment: {split_name}\n")
+        f.write(f"Feature Mode: {'Masked Features (消融实验)' if masked else 'Original Features (原始基线特征)'}\n")
+        f.write(f"Loaded Statement Feature File: {statement_path}\n")
         f.write(f"Training Candidate Pool : {len(cand_indices)} (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})\n")
         f.write(f"Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Val\n")
         f.write(f"Fixed Testing Set       : {len(y_test_np)} (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})\n")
@@ -696,6 +704,7 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
         f.write(f"  Best Epochs per exp: {all_best_epochs.tolist()}\n")
 
     return all_test_aurocs, all_test_auprcs, pred_df
+
 
 
 
@@ -847,8 +856,11 @@ def main():
             Y=Y,
             base_seed=args.base_seed,
             val_ratio=args.val_ratio,
-            smoke_test=args.smoke_test
+            smoke_test=args.smoke_test,
+            masked=args.masked,
+            statement_path=statement_path
         )
+
 
 
     # 分支 2：5 折交叉验证实验（支持传导式与归纳式）
