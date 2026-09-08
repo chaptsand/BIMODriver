@@ -469,7 +469,8 @@ def load_leakage_splits(audit_file_path=None):
 
 def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data, L_emb, edge_index, L_emb_edge,
                           lr=0.0005, epochs=160, lambdinter=0.001, dropout=0.3,
-                          split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2):
+                          split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2,
+                          smoke_test=False):
     """
     严格的标签泄露词审计划分实验流程：
     1. 分类损失和对比损失都严格仅在实际训练节点上计算（防止测试节点和 Unknown 节点泄露）。
@@ -501,6 +502,15 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     all_best_val_aurocs = np.zeros(n_exp)
     all_best_val_auprcs = np.zeros(n_exp)
     all_best_epochs = np.zeros(n_exp, dtype=int)
+    pred_runs_matrix = np.zeros((len(y_test_np), n_exp))
+
+    # 加载公共公共划分文件以确保完全严格对齐
+    splits_path = os.path.join(DATA_DIR, "CPDB", "leakage_splits_10runs.pkl")
+    shared_splits = None
+    if os.path.exists(splits_path):
+        with open(splits_path, 'rb') as handle:
+            shared_splits = pickle.load(handle)
+        print(f"  [Info] Loaded shared split file from: {splits_path}")
 
     for exp_id in range(n_exp):
         seed = base_seed + exp_id
@@ -510,13 +520,22 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
 
-        # 1. 在训练候选组内部划分训练集与验证集（保持 Driver 类别比例分层划分）
-        inner_tr_idx, inner_val_idx = train_test_split(
-            cand_indices,
-            test_size=val_ratio,
-            stratify=cand_labels,
-            random_state=seed
-        )
+        # 1. 优先使用公共划分文件，确保与 MNGCL、DISFusion 完全同构划分
+        if shared_splits is not None and split_name in shared_splits:
+            run_info = shared_splits[split_name][exp_id]
+            inner_tr_idx = run_info['train_idx']
+            inner_val_idx = run_info['val_idx']
+            fixed_test_indices = run_info['test_idx']
+            assert np.array_equal(np.where(fixed_test_mask)[0], fixed_test_indices), "Test mask does not match shared split test indices!"
+            assert len(set(inner_tr_idx) & set(inner_val_idx)) == 0, "Train and Val overlap!"
+            assert len(set(inner_tr_idx) & set(fixed_test_indices)) == 0, "Train and Test overlap!"
+        else:
+            inner_tr_idx, inner_val_idx = train_test_split(
+                cand_indices,
+                test_size=val_ratio,
+                stratify=cand_labels,
+                random_state=seed
+            )
 
         inner_tr_bool = np.zeros(data.x.shape[0], dtype=bool)
         inner_tr_bool[inner_tr_idx] = True
@@ -533,6 +552,7 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
 
         model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
 
         best_val_auprc = -1.0
         best_val_auroc = -1.0
@@ -602,6 +622,7 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
         all_best_val_aurocs[exp_id] = best_val_auroc
         all_best_val_auprcs[exp_id] = best_val_auprc
         all_best_epochs[exp_id] = best_epoch
+        pred_runs_matrix[:, exp_id] = pred_test
 
     # 4. 汇总多轮实验统计指标
     mean_test_auroc, std_test_auroc = all_test_aurocs.mean(), all_test_aurocs.std()
@@ -619,14 +640,42 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     print(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}")
     print(f"{'='*75}\n")
 
-    # 5. 保存结果文件（AUROC 与 AUPRC 文件名及内容严格对应）
+    # 5. 保存结果文件（同时保存 bimodriver 前缀与 pan-cancer 前缀）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
-    summary_path = os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_summary.txt")
-    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
-    np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
+    prefix = "smoke_bimodriver" if smoke_test else "bimodriver"
 
+    # 保存测试基因预测概率表
+    test_idx = np.where(fixed_test_mask)[0]
+    audit_path = os.path.join(BASE_DIR, 'src', 'Gemma_Vocabulary_Leakage_Audit.xlsx')
+    gene_df = pd.read_excel(audit_path, sheet_name='Gene-level Flags').sort_values('Code_Index').reset_index(drop=True)
+    test_gene_names = gene_df.iloc[test_idx]['Gene_Name'].values
+
+    preds_table = {
+        'Code_Index': test_idx,
+        'Gene_Name': test_gene_names,
+        'True_Label': y_test_np.astype(int)
+    }
+    for run_i in range(n_exp):
+        preds_table[f'Pred_Prob_Run{run_i}'] = pred_runs_matrix[:, run_i]
+    preds_table['Pred_Prob_Mean'] = pred_runs_matrix.mean(axis=1)
+    preds_table['Pred_Prob_Std'] = pred_runs_matrix.std(axis=1)
+    pred_df = pd.DataFrame(preds_table)
+    preds_csv_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_test_preds.csv")
+    pred_df.to_csv(preds_csv_path, index=False)
+    print(f"  Saved test predictions to: {preds_csv_path} (shape: {pred_df.shape})")
+
+    # 保存指标文件
+    np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
+    np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
+
+    if not smoke_test:
+        np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
+        np.savetxt(os.path.join(res_dir, f"pan-cancer_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
+
+    summary_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_summary.txt")
     with open(summary_path, 'w', encoding='utf-8') as f:
+        f.write(f"Method: BIMODriver\n")
         f.write(f"Leakage Split Experiment: {split_name}\n")
         f.write(f"Training Candidate Pool : {len(cand_indices)} (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})\n")
         f.write(f"Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Val\n")
@@ -646,7 +695,8 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
         f.write(f"  Val AUPRC : {mean_val_auprc:.4f} ± {std_val_auprc:.4f}\n")
         f.write(f"  Best Epochs per exp: {all_best_epochs.tolist()}\n")
 
-    return all_test_aurocs, all_test_auprcs
+    return all_test_aurocs, all_test_auprcs, pred_df
+
 
 
 def main():
@@ -679,8 +729,11 @@ def main():
                         help="使用关键词遮蔽后的语义特征 (PAN-CANCER_statement_features_masked.pt)")
     parser.add_argument('--statement_file', type=str, default=None,
                         help="自定义语义特征文件路径 (覆盖默认特征文件)")
+    parser.add_argument('--smoke_test', action='store_true',
+                        help="运行1次实验且少轮数进行快速冒烟测试")
 
     args = parser.parse_args()
+
 
     split_mode = args.split.lower().replace('->', '_to_').replace('-', '_')
 
@@ -774,6 +827,9 @@ def main():
             train_candidate_mask = hit_mask
             fixed_test_mask = clean_mask
 
+        n_exp = 1 if args.smoke_test else args.n_exp
+        epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
         trainPred_fixed_split(
             input_dim=input_dim,
             train_candidate_mask=train_candidate_mask,
@@ -783,15 +839,17 @@ def main():
             edge_index=pb,
             L_emb_edge=L_emb_edge,
             lr=args.lr,
-            epochs=args.epochs,
+            epochs=epochs,
             lambdinter=args.lambdinter,
             dropout=args.dropout,
             split_name=split_mode,
-            n_exp=args.n_exp,
+            n_exp=n_exp,
             Y=Y,
             base_seed=args.base_seed,
-            val_ratio=args.val_ratio
+            val_ratio=args.val_ratio,
+            smoke_test=args.smoke_test
         )
+
 
     # 分支 2：5 折交叉验证实验（支持传导式与归纳式）
     elif split_mode in ['cv', 'inductive', 'cv_inductive']:
