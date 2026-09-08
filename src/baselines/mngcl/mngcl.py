@@ -35,14 +35,47 @@ def sim(z1: torch.Tensor, z2: torch.Tensor):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
-def contrastive_loss(h1, h2,pos,tau):
+def contrastive_loss(h1, h2, pos, tau, chunk_size=3400):
+    if not pos.is_sparse:
         sim_matrix = sim(h1, h2)
-        f = lambda x: torch.exp(x /tau)
-        matrix_t = f(sim_matrix)
+        matrix_t = torch.exp(sim_matrix / tau)
         numerator = matrix_t.mul(pos).sum(dim=-1)
-        denominator= torch.sum(matrix_t, dim=-1)
-        loss  = -torch.log(numerator/denominator).mean()
-        return loss
+        denominator = torch.sum(matrix_t, dim=-1)
+        return -torch.log(numerator / denominator).mean()
+
+    # Sparse chunked computation to prevent CUDA OOM on full graph
+    N = h1.size(0)
+    h1_norm = F.normalize(h1)
+    h2_norm = F.normalize(h2)
+
+    pos = pos.coalesce()
+    idx = pos.indices()
+    vals = pos.values().to(dtype=h1.dtype)
+
+    splits = list(range(0, N, chunk_size)) + [N]
+    splits_tensor = torch.tensor(splits, device=h1.device)
+    row_offsets = torch.searchsorted(idx[0], splits_tensor)
+
+    losses = []
+    for i in range(len(splits) - 1):
+        start, end = splits[i], splits[i + 1]
+        sim_chunk = torch.mm(h1_norm[start:end], h2_norm.t())
+        matrix_t = torch.exp(sim_chunk / tau)
+        den = torch.sum(matrix_t, dim=-1)
+
+        p_start, p_end = row_offsets[i].item(), row_offsets[i + 1].item()
+        if p_end > p_start:
+            sub_rows = idx[0, p_start:p_end] - start
+            sub_cols = idx[1, p_start:p_end]
+            sub_vals = vals[p_start:p_end]
+            prod = matrix_t[sub_rows, sub_cols] * sub_vals
+            num = torch.zeros(end - start, device=h1.device, dtype=matrix_t.dtype).scatter_add_(0, sub_rows, prod)
+        else:
+            num = torch.zeros(end - start, device=h1.device, dtype=matrix_t.dtype)
+
+        losses.append(-torch.log(num / den))
+
+    return torch.cat(losses).mean()
 
 class MNGCL(nn.Module):
     def __init__(self, 

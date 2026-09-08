@@ -324,14 +324,20 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     return test_aurocs, test_auprcs, pred_df
 
 def main():
-    parser = argparse.ArgumentParser(description="Run DISFusion Baseline on Leakage Splits")
-    parser.add_argument('--split', type=str, default='both', choices=['clean_to_hit', 'hit_to_clean', 'both'])
-    parser.add_argument('--smoke_test', action='store_true', help='Run 1 run with 5 epochs for quick verification')
+    parser = argparse.ArgumentParser(description="Run DISFusion Baseline on Leakage Splits or 10x5 CV")
+    parser.add_argument('--split', type=str, default='both', choices=['clean_to_hit', 'hit_to_clean', 'both', 'cv'])
+    parser.add_argument('--smoke_test', action='store_true', help='Run quick test with 5 epochs')
     parser.add_argument('--n_runs', type=int, default=10)
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=1e-5)
+    parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
+
+    if args.split == 'cv':
+        from run_disfusion_cv import run_disfusion_cv
+        run_disfusion_cv(args)
+        return
 
     device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
 
@@ -339,7 +345,6 @@ def main():
     assert_data_alignment(BASE_DIR)
 
     splits_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'leakage_splits_10runs.pkl')
-
     assert os.path.exists(splits_path), f"Shared split file not found at: {splits_path}"
     with open(splits_path, 'rb') as f:
         splits_data = pickle.load(f)
