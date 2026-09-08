@@ -214,7 +214,7 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
                 val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
                 val_y_eval = Y[val_idx].cpu().numpy().ravel()
 
-                regr = linear_model.LogisticRegression(max_iter=2000)
+                regr = linear_model.LogisticRegression(max_iter=10000)
                 regr.fit(tr_x_eval, tr_y_eval)
                 pred_val = regr.predict_proba(val_x_eval)[:, 1]
 
@@ -241,7 +241,7 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             te_x_eval = torch.sigmoid(emb_eval[test_idx]).cpu().numpy()
             te_y_eval = Y[test_idx].cpu().numpy().ravel()
 
-            regr = linear_model.LogisticRegression(max_iter=2000)
+            regr = linear_model.LogisticRegression(max_iter=10000)
             regr.fit(tr_x_eval, tr_y_eval)
             pred_test = regr.predict_proba(te_x_eval)[:, 1]
 
