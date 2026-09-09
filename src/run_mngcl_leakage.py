@@ -11,6 +11,8 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.utils import dropout_adj
 from sklearn import linear_model, metrics
+import warnings
+warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'src'))
@@ -20,6 +22,16 @@ from alignment_check import assert_data_alignment
 from gcn import GCN
 from mngcl import MNGCL, contrastive_loss
 
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def fix_seed(seed):
     random.seed(seed)
@@ -32,39 +44,84 @@ def fix_seed(seed):
         torch.backends.cudnn.benchmark = False
 
 class SlicedMNGCL(MNGCL):
-    def forward(self, aug_adj_1, aug_adj_2, aug_adj_3, aug_feat_1, aug_feat_2, aug_feat_3, train_idx=None):
-        encoder_one = self.encoder(aug_adj_1, aug_feat_1)
-        encoder_two = self.encoder(aug_adj_2, aug_feat_2)
-        encoder_three = self.encoder(aug_adj_3, aug_feat_3)
-        
-        proj_one = self.projector(encoder_one)
-        proj_two = self.projector(encoder_two)
-        proj_three = self.projector(encoder_three)
+    def forward(self, *args, train_idx=None, **kwargs):
+        if self.use_pathway:
+            if len(args) == 6:
+                aug_adj_1, aug_adj_2, aug_adj_3, aug_feat_1, aug_feat_2, aug_feat_3 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_adj_3 = kwargs.get('aug_adj_3', args[2] if len(args) > 2 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[3] if len(args) > 3 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[4] if len(args) > 4 else None)
+                aug_feat_3 = kwargs.get('aug_feat_3', args[5] if len(args) > 5 else None)
 
-        if train_idx is not None:
-            p1 = proj_one[train_idx]
-            p2 = proj_two[train_idx]
-            p3 = proj_three[train_idx]
-            pos0 = self.posList[0]
-            pos1 = self.posList[1]
-            pos2 = self.posList[2]
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            encoder_three = self.encoder(aug_adj_3, aug_feat_3)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
+            proj_three = self.projector(encoder_three)
 
-            lab = contrastive_loss(p1, p2, pos0, self.tau)
-            lac = contrastive_loss(p1, p3, pos0, self.tau)
-            lba = contrastive_loss(p2, p1, pos1, self.tau)
-            lca = contrastive_loss(p3, p1, pos2, self.tau)
+            if train_idx is not None:
+                p1 = proj_one[train_idx]
+                p2 = proj_two[train_idx]
+                p3 = proj_three[train_idx]
+                pos0 = self.posList[0]
+                pos1 = self.posList[1]
+                pos2 = self.posList[2]
 
-            Conloss = lab + lac + lba + lca
+                lab = contrastive_loss(p1, p2, pos0, self.tau)
+                lac = contrastive_loss(p1, p3, pos0, self.tau)
+                lba = contrastive_loss(p2, p1, pos1, self.tau)
+                lca = contrastive_loss(p3, p1, pos2, self.tau)
+
+                Conloss = lab + lac + lba + lca
+            else:
+                Conloss = torch.tensor(0.0, device=aug_feat_1.device)
+
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+            emb3 = self.conv3(encoder_three, aug_adj_3)
+
+            emb = torch.cat((emb1, emb2, emb3), 1)
+            return emb1, emb2, emb3, emb, Conloss
         else:
-            Conloss = torch.tensor(0.0, device=aug_feat_1.device)
+            if len(args) == 4:
+                aug_adj_1, aug_adj_2, aug_feat_1, aug_feat_2 = args
+            elif len(args) == 6:
+                aug_adj_1, _, aug_adj_2, aug_feat_1, _, aug_feat_2 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[2] if len(args) > 2 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[3] if len(args) > 3 else None)
 
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
 
-        emb1 = self.conv1(encoder_one, aug_adj_1)
-        emb2 = self.conv2(encoder_two, aug_adj_2)
-        emb3 = self.conv3(encoder_three, aug_adj_3)
+            if train_idx is not None:
+                p1 = proj_one[train_idx]
+                p2 = proj_two[train_idx]
+                pos0 = self.posList[0]
+                pos1 = self.posList[1]
 
-        emb = torch.cat((emb1, emb2, emb3), 1)
-        return emb1, emb2, emb3, emb, Conloss
+                lab = contrastive_loss(p1, p2, pos0, self.tau)
+                lba = contrastive_loss(p2, p1, pos1, self.tau)
+
+                Conloss = lab + lba
+            else:
+                Conloss = torch.tensor(0.0, device=aug_feat_1.device)
+
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+
+            emb = torch.cat((emb1, emb2), 1)
+            return emb1, emb2, None, emb, Conloss
 
 def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     runs_info = splits_data[split_name]
@@ -94,18 +151,24 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     # 2. 加载网络结构
     ppiAdj = torch.load(os.path.join(data_dir, 'ppi.pkl'), map_location='cpu')
     ppiAdj_self = torch.load(os.path.join(data_dir, 'ppi_selfloop.pkl'), map_location='cpu')
-    pathAdj = torch.load(os.path.join(data_dir, 'pathway_SimMatrix.pkl'), map_location='cpu')
     goAdj = torch.load(os.path.join(data_dir, 'GO_SimMatrix.pkl'), map_location='cpu')
     
     # CPU 端稠密正样本矩阵（准备切片）
     print("Preparing dense similarity matrices on CPU...")
     pos1_cpu = ppiAdj_self.to_dense().cpu()
-    pos2_cpu = pathAdj.to_dense().cpu() + torch.eye(13627)
     pos3_cpu = goAdj.to_dense().cpu() + torch.eye(13627)
     
     ppiAdj_index = ppiAdj.coalesce().indices().to(device)
-    pathAdj_index = pathAdj.coalesce().indices().to(device)
     goAdj_index = goAdj.coalesce().indices().to(device)
+
+    if args.use_pathway:
+        pathAdj = torch.load(os.path.join(data_dir, 'pathway_SimMatrix.pkl'), map_location='cpu')
+        pos2_cpu = pathAdj.to_dense().cpu() + torch.eye(13627)
+        pathAdj_index = pathAdj.coalesce().indices().to(device)
+    else:
+        pathAdj = None
+        pos2_cpu = None
+        pathAdj_index = None
 
     # 标签
     all_labels = (gene_df['Gene_Label'] == 'Driver').values.astype(float)
@@ -163,9 +226,12 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
 
         # 切片训练集正样本矩阵（仅训练节点相互对比）
         pos1_tr = pos1_cpu[train_idx_tensor][:, train_idx_tensor].to(device)
-        pos2_tr = pos2_cpu[train_idx_tensor][:, train_idx_tensor].to(device)
         pos3_tr = pos3_cpu[train_idx_tensor][:, train_idx_tensor].to(device)
-        posList_tr = [pos1_tr, pos2_tr, pos3_tr]
+        if args.use_pathway:
+            pos2_tr = pos2_cpu[train_idx_tensor][:, train_idx_tensor].to(device)
+            posList_tr = [pos1_tr, pos2_tr, pos3_tr]
+        else:
+            posList_tr = [pos1_tr, pos3_tr]
 
         # 初始化模型
         gcn = GCN(x.shape[1], 300, gnn_outsize).to(device)
@@ -175,7 +241,8 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             tau=tau,
             gnn_outsize=gnn_outsize,
             projection_hidden_size=projection_hidden_size,
-            projection_size=projection_size
+            projection_size=projection_size,
+            use_pathway=args.use_pathway
         ).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
@@ -189,29 +256,48 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             model.train()
             optimizer.zero_grad()
 
-            x_1 = F.dropout(x, drop_feature_rate_1)
-            x_2 = F.dropout(x, drop_feature_rate_2)
-            x_3 = F.dropout(x, drop_feature_rate_3)
-            ppi_drop = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
-            path_drop = dropout_adj(pathAdj_index, p=drop_edge_rate_2, force_undirected=True)[0]
-            go_drop = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+            if args.use_pathway:
+                x_1 = F.dropout(x, drop_feature_rate_1)
+                x_2 = F.dropout(x, drop_feature_rate_2)
+                x_3 = F.dropout(x, drop_feature_rate_3)
+                ppi_drop = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
+                path_drop = dropout_adj(pathAdj_index, p=drop_edge_rate_2, force_undirected=True)[0]
+                go_drop = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
 
-            p1, p2, p3, _, conloss = model(
-                ppi_drop, path_drop, go_drop, x_1, x_2, x_3, train_idx=train_idx_cuda
-            )
+                p1, p2, p3, _, conloss = model(
+                    ppi_drop, path_drop, go_drop, x_1, x_2, x_3, train_idx=train_idx_cuda
+                )
 
-            loss1 = F.binary_cross_entropy_with_logits(p1[train_idx_cuda], Y[train_idx_cuda])
-            loss2 = F.binary_cross_entropy_with_logits(p2[train_idx_cuda], Y[train_idx_cuda])
-            loss3 = F.binary_cross_entropy_with_logits(p3[train_idx_cuda], Y[train_idx_cuda])
-            crloss = LAMBDA * (loss1 + loss2 + loss3)
-            loss = (1 - 3 * LAMBDA) * conloss + crloss
+                loss1 = F.binary_cross_entropy_with_logits(p1[train_idx_cuda], Y[train_idx_cuda])
+                loss2 = F.binary_cross_entropy_with_logits(p2[train_idx_cuda], Y[train_idx_cuda])
+                loss3 = F.binary_cross_entropy_with_logits(p3[train_idx_cuda], Y[train_idx_cuda])
+                crloss = LAMBDA * (loss1 + loss2 + loss3)
+                loss = (1 - 3 * LAMBDA) * conloss + crloss
+            else:
+                x_1 = F.dropout(x, drop_feature_rate_1)
+                x_go = F.dropout(x, drop_feature_rate_3)
+                ppi_drop = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
+                go_drop = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+
+                p1, p2, _, _, conloss = model(
+                    ppi_drop, go_drop, x_1, x_go, train_idx=train_idx_cuda
+                )
+
+                loss1 = F.binary_cross_entropy_with_logits(p1[train_idx_cuda], Y[train_idx_cuda])
+                loss2 = F.binary_cross_entropy_with_logits(p2[train_idx_cuda], Y[train_idx_cuda])
+                crloss = LAMBDA * (loss1 + loss2)
+                loss = (1 - 2 * LAMBDA) * conloss + crloss
+
             loss.backward()
             optimizer.step()
 
             # 验证集评估（严格不触碰测试集）
             model.eval()
             with torch.no_grad():
-                _, _, _, emb_eval, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, x, x, x)
+                if args.use_pathway:
+                    _, _, _, emb_eval, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, x, x, x)
+                else:
+                    _, _, _, emb_eval, _ = model(ppiAdj_index, goAdj_index, x, x)
                 tr_x_eval = torch.sigmoid(emb_eval[train_idx]).cpu().numpy()
                 tr_y_eval = Y[train_idx].cpu().numpy().ravel()
                 val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
@@ -238,7 +324,10 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
         model.load_state_dict(best_model_state)
         model.eval()
         with torch.no_grad():
-            _, _, _, emb_eval, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, x, x, x)
+            if args.use_pathway:
+                _, _, _, emb_eval, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, x, x, x)
+            else:
+                _, _, _, emb_eval, _ = model(ppiAdj_index, goAdj_index, x, x)
             tr_x_eval = torch.sigmoid(emb_eval[train_idx]).cpu().numpy()
             tr_y_eval = Y[train_idx].cpu().numpy().ravel()
             te_x_eval = torch.sigmoid(emb_eval[test_idx]).cpu().numpy()
@@ -290,6 +379,7 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
         f.write(f"Task: {split_name}\n")
         f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
         f.write(f"Epochs: {epochs}\n")
+        f.write(f"Views: {'3 views (PPI + Pathway + GO)' if args.use_pathway else '2 views (PPI + GO similarity, Paper Table Setting)'}\n")
         f.write(f"LR: {LR}, Tau: {tau}, Lambda: {LAMBDA}\n")
         f.write(f"{'-'*60}\n")
         f.write(f"Validation Metrics (Best Checkpoint Average):\n")
@@ -320,10 +410,15 @@ def main():
     parser.add_argument('--n_runs', type=int, default=10)
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--use_pathway', type=str2bool, default=False, help='Whether to use pathway view (default False: 2 views PPI+GO, matching paper table)')
+    parser.add_argument('--no_pathway', action='store_true', help='Exclude pathway view (2 views: PPI + GO similarity, matching paper criteria)')
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--dense', action='store_true', help='Use original dense similarity matrices for contrastive loss (requires >12GB GPU memory)')
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
+
+    if args.no_pathway:
+        args.use_pathway = False
 
     if args.split == 'cv':
         from run_mngcl_cv import run_mngcl_cv

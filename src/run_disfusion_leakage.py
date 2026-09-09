@@ -31,6 +31,16 @@ def fix_seed(seed):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def fast_G_from_H_weight(H, W):
     """
     Mathematically identical to DISFusion's _generate_G_from_H_weight,
@@ -45,32 +55,44 @@ def fast_G_from_H_weight(H, W):
     G = dv_inv_sqrt * A * dv_inv_sqrt.T
     return G
 
-def get_incidence_matrix(data_dir, gene_list):
+def get_incidence_matrix(data_dir, gene_list, use_pathway=True, hypergraph_mode='kegg_go'):
     """
-    Precomputes the incidence matrix from c2 and c5, filtering out cancer/tumor terms.
+    构建超图关联矩阵，严格遵循作者原始过滤逻辑：
+    - 'kegg_go' / use_pathway=True: c2 (KEGG pathways without cancer: 177) + c5 (GO terms: GOMF, GOBP, GOCC: 10,185) = 10,362 hyperedges (Paper main table)
+    - 'kegg_only': 仅包含 177 个非癌症 KEGG 通路 (DISFusion_1 / Disfusion-Pathway)
+    - 'go_only' / use_pathway=False: 仅包含 10,185 个 GO 功能注释 (Disfusion-GO)
     """
-    ids = ['c2', 'c5']
+    if hypergraph_mode in ['kegg_only', 'pathway_only']:
+        ids = ['c2']
+    elif hypergraph_mode == 'go_only' or not use_pathway:
+        ids = ['c5']
+    else:
+        ids = ['c2', 'c5']
+
     incidenceMatrix = pd.DataFrame(index=gene_list)
     for id_name in ids:
-        geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)
-        geneSetNameList = list(geneSetNameList[0].values)
+        geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)[0].values
         idList = []
         for z, name in enumerate(geneSetNameList):
             if id_name == 'c2':
                 q = name.split('_')
-                if not ('CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q):
+                if 'CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q:
+                    pass
+                elif 'KEGG' in q:
                     idList.append(z)
             elif name[:2] == 'HP':
-                q = name.split('_')
-                if not ('CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q):
-                    idList.append(z)
+                pass
             else:
-                idList.append(z)
-        genesetData = sp.load_npz(os.path.join(data_dir, f'{id_name}_GenesetsMatrix.npz'))
-        temp = pd.DataFrame(data=genesetData.A, index=gene_list)
-        temp = temp.iloc[:, idList]
-        incidenceMatrix = pd.concat([incidenceMatrix, temp], axis=1)
-    incidenceMatrix.columns = np.arange(incidenceMatrix.shape[1])
+                q = name.split('_')
+                if 'GOMF' in q or 'GOBP' in q or 'GOCC' in q:
+                    idList.append(z)
+
+        matrix = sp.load_npz(os.path.join(data_dir, f'{id_name}_GenesetsMatrix.npz'))
+        matrix = pd.DataFrame(matrix.toarray(), index=gene_list)
+        matrix = matrix.iloc[:, idList]
+        incidenceMatrix = pd.concat([incidenceMatrix, matrix], axis=1)
+
+    incidenceMatrix.columns = range(incidenceMatrix.shape[1])
     return incidenceMatrix
 
 def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
@@ -89,10 +111,18 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     gene_list = list(gene_df['Gene_Name'].values)
     assert len(gene_list) == 13627
 
-    # 1. 严格检查与加载特征 (48-dim biological features)
-    feature_df = pd.read_csv(os.path.join(data_dir, 'biological features.csv'), sep=',')
-    assert feature_df.shape == (13627, 48), f"Expected (13627, 48), got {feature_df.shape}"
-    feature_tensor = torch.Tensor(feature_df.values).to(device)
+    # 1. 严格检查与加载特征 (64-dim = 48 multi-omics + 16 structural embeddings，严格遵循作者官方代码)
+    cpdb_data_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'CPDB_new_data.pt')
+    str_feat_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'Str_feature.pkl')
+    if os.path.exists(cpdb_data_path) and os.path.exists(str_feat_path):
+        cpdb_data = torch.load(cpdb_data_path)
+        omics = cpdb_data.x[:, :48].to(device)
+        str_feat = torch.load(str_feat_path).to(device)
+        feature_tensor = torch.cat((omics, str_feat), 1).float()
+    else:
+        feat_path = os.path.join(data_dir, 'biological features.csv')
+        feature_tensor = torch.Tensor(pd.read_csv(feat_path, sep=",").values).float().to(device)
+    print(f"Feature matrix loaded: {feature_tensor.shape}")
 
     # 2. 加载 PPI 邻接
     edge_np = np.array(np.loadtxt(os.path.join(data_dir, 'PPI_edge_index.txt')).transpose())
@@ -101,7 +131,11 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     # 3. 预计算超图关联网
     t_inc = time.time()
     print("Loading and filtering incidence matrix...")
-    incidence_matrix = get_incidence_matrix(data_dir, gene_list)
+    hypergraph_mode = getattr(args, 'hypergraph_mode', 'kegg_go')
+    use_pathway = getattr(args, 'use_pathway', True)
+    if not use_pathway:
+        hypergraph_mode = 'go_only'
+    incidence_matrix = get_incidence_matrix(data_dir, gene_list, use_pathway=use_pathway, hypergraph_mode=hypergraph_mode)
     print(f"Incidence matrix ready in {time.time()-t_inc:.2f}s, shape: {incidence_matrix.shape}")
 
     # 4. 标签与恒等基底
@@ -179,8 +213,9 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
         # print(f"  Hypergraph G constructed in {time.time()-t_graph:.2f}s")
 
         # 初始化模型
+        feat_dim = feature_tensor.shape[1]
         model_hypergrph = hypergrph_HGNN(in_ch=N, n_hid=n_hid, dropout=0.2).to(device)
-        model_graph = graph_ChebNet(hdim=n_hid, dropout=0.5).to(device)
+        model_graph = graph_ChebNet(in_ch=feat_dim, hdim=n_hid, dropout=0.5).to(device)
         model_fusion = DISFusion(n_hid, 2, lambdinter, attention=0, nb_classes=2, dropout=dropout).to(device)
 
         optimizer_hypergrph = optim.Adam(model_hypergrph.parameters(), lr=0.005, weight_decay=0.000005)
@@ -300,6 +335,8 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
         f.write(f"Task: {split_name}\n")
         f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
         f.write(f"Epochs: {epochs}\n")
+        f.write(f"Feature Dim: {feature_tensor.shape[1]} (48 omics + 16 topology embeddings)\n")
+        f.write(f"Hypergraph Mode: {getattr(args, 'hypergraph_mode', 'kegg_go')} (Incidence matrix: {incidence_matrix.shape})\n")
         f.write(f"LR: {lr}, w_self: {w_self}, lambdinter: {lambdinter}\n")
         f.write(f"{'-'*60}\n")
         f.write(f"Validation Metrics (Best Checkpoint Average):\n")
@@ -330,6 +367,8 @@ def main():
     parser.add_argument('--n_runs', type=int, default=10)
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=1e-5)
+    parser.add_argument('--use_pathway', type=str2bool, default=True, help='Whether to use KEGG pathways in hypergraph (default True, matching paper)')
+    parser.add_argument('--hypergraph_mode', type=str, default='kegg_go', choices=['kegg_go', 'kegg_only', 'go_only'])
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
