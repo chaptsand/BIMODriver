@@ -109,9 +109,9 @@ class combine_net_gate_without_ac(torch.nn.Module):
         self.top_k = 5
 
         self.gating_layer = torch.nn.Sequential(
-            torch.nn.Linear(6, 32),
+            torch.nn.Linear(6, 64),
             torch.nn.ReLU(),
-            torch.nn.Linear(32, 6) 
+            torch.nn.Linear(64, 6) 
         )
 
     def forward(self, x, ppi_edge, L_emb, L_emb_edge, tr_mask=None):
