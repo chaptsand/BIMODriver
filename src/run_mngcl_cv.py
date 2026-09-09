@@ -31,18 +31,33 @@ def fix_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def run_mngcl_cv(args):
     # 0. 数据对齐严格断言
     assert_data_alignment(BASE_DIR)
 
+    n_runs = 1 if args.smoke_test else args.n_runs
+    n_folds = 2 if args.smoke_test else args.n_folds
+    epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
     device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
     print(f"\n{'='*75}")
-    print(f"Running MNGCL 10x5 Cross-Validation Reproduction (CPDB Pan-Cancer)")
+    print(f"Running MNGCL {n_runs}x{n_folds} Cross-Validation Reproduction (CPDB Pan-Cancer)")
     print(f"  Split Source   : data/CPDB/k_sets.pkl (Strict 10x5 folds)")
+    print(f"  Pathway Used   : {args.use_pathway} ({'3 views: PPI + Pathway + GO' if args.use_pathway else '2 views: PPI + GO (Paper Table Setting)'})")
     print(f"  Protocol       : Transductive full graph, contrastive loss on all nodes,")
     print(f"                   classification loss on train nodes only, test once per fold (no early stopping/checkpoint)")
-    print(f"  Runs / Folds   : {1 if args.smoke_test else args.n_runs} runs x {2 if args.smoke_test else 5} folds")
-    print(f"  Epochs per fold: {5 if args.smoke_test else args.epochs}")
+    print(f"  Runs / Folds   : {n_runs} runs x {n_folds} folds")
+    print(f"  Epochs per fold: {epochs}")
     print(f"  Hyperparameters: LR={args.lr}, tau=0.3, lambda=0.1")
     print(f"  Device         : {device}")
     print(f"{'='*75}\n")
@@ -64,26 +79,32 @@ def run_mngcl_cv(args):
     # 加载多视图网络及正样本矩阵
     ppiAdj = torch.load(os.path.join(data_path, 'ppi.pkl'), map_location='cpu')
     ppiAdj_self = torch.load(os.path.join(data_path, 'ppi_selfloop.pkl'), map_location='cpu')
-    pathAdj = torch.load(os.path.join(data_path, 'pathway_SimMatrix.pkl'), map_location='cpu')
-    goAdj = torch.load(os.path.join(data_path, 'GO_SimMatrix.pkl'), map_location='cpu')
-
     ppiAdj_index = ppiAdj.coalesce().indices().to(device)
-    pathAdj_index = pathAdj.coalesce().indices().to(device)
-    goAdj_index = goAdj.coalesce().indices().to(device)
     del ppiAdj
+
+    goAdj = torch.load(os.path.join(data_path, 'GO_SimMatrix.pkl'), map_location='cpu')
+    goAdj_index = goAdj.coalesce().indices().to(device)
+
+    if args.use_pathway:
+        pathAdj = torch.load(os.path.join(data_path, 'pathway_SimMatrix.pkl'), map_location='cpu')
+        pathAdj_index = pathAdj.coalesce().indices().to(device)
+    else:
+        pathAdj = None
+        pathAdj_index = None
 
     if getattr(args, 'dense', False):
         print("Preparing original dense similarity matrices for contrastive loss (large VRAM mode)...")
         pos1 = ppiAdj_self.to_dense().to(device)
         del ppiAdj_self
-        pos2 = pathAdj.to_dense().to(device)
-        del pathAdj
-        pos2.fill_diagonal_(1.0)
+        if args.use_pathway:
+            pos2 = pathAdj.to_dense().to(device)
+            del pathAdj
+            pos2.fill_diagonal_(1.0)
         pos3 = goAdj.to_dense().to(device)
         del goAdj
         pos3.fill_diagonal_(1.0)
         torch.cuda.empty_cache()
-        posList = [pos1, pos2, pos3]
+        posList = [pos1, pos2, pos3] if args.use_pathway else [pos1, pos3]
     else:
         print("Preparing sparse similarity matrices for contrastive loss (memory-optimized mode)...")
         n_nodes = data.x.shape[0]
@@ -94,24 +115,21 @@ def run_mngcl_cv(args):
         pos1 = ppiAdj_self.to(device).coalesce()
         del ppiAdj_self
 
-        pos2 = (pathAdj.to(device) + eye_sparse).coalesce()
-        del pathAdj
+        if args.use_pathway:
+            pos2 = (pathAdj.to(device) + eye_sparse).coalesce()
+            del pathAdj
 
         pos3 = (goAdj.to(device) + eye_sparse).coalesce()
         del goAdj
 
         torch.cuda.empty_cache()
-        posList = [pos1, pos2, pos3]
+        posList = [pos1, pos2, pos3] if args.use_pathway else [pos1, pos3]
 
     # 3. 读取严格 10x5 划分文件
     ksets_path = os.path.join(data_path, 'k_sets.pkl')
     assert os.path.exists(ksets_path), f"k_sets.pkl not found at {ksets_path}"
     with open(ksets_path, 'rb') as f:
         k_sets = pickle.load(f)
-
-    n_runs = 1 if args.smoke_test else args.n_runs
-    n_folds = 2 if args.smoke_test else 5
-    epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
 
     AUC = np.zeros((n_runs, n_folds))
     AUPR = np.zeros((n_runs, n_folds))
@@ -141,7 +159,8 @@ def run_mngcl_cv(args):
                 tau=tau,
                 gnn_outsize=100,
                 projection_hidden_size=300,
-                projection_size=100
+                projection_size=100,
+                use_pathway=args.use_pathway
             ).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
@@ -150,22 +169,38 @@ def run_mngcl_cv(args):
                 model.train()
                 optimizer.zero_grad()
 
-                x_1 = F.dropout(data.x, drop_feature_rate_1)
-                x_2 = F.dropout(data.x, drop_feature_rate_2)
-                x_3 = F.dropout(data.x, drop_feature_rate_3)
+                if args.use_pathway:
+                    x_1 = F.dropout(data.x, drop_feature_rate_1)
+                    x_2 = F.dropout(data.x, drop_feature_rate_2)
+                    x_3 = F.dropout(data.x, drop_feature_rate_3)
 
-                aug_ppi = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
-                aug_path = dropout_adj(pathAdj_index, p=drop_edge_rate_2, force_undirected=True)[0]
-                aug_go = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+                    aug_ppi = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
+                    aug_path = dropout_adj(pathAdj_index, p=drop_edge_rate_2, force_undirected=True)[0]
+                    aug_go = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
 
-                pred1, pred2, pred3, _, conloss = model(aug_ppi, aug_path, aug_go, x_1, x_2, x_3)
+                    pred1, pred2, pred3, _, conloss = model(aug_ppi, aug_path, aug_go, x_1, x_2, x_3)
 
-                loss1 = F.binary_cross_entropy_with_logits(pred1[train_mask], Y[train_mask])
-                loss2 = F.binary_cross_entropy_with_logits(pred2[train_mask], Y[train_mask])
-                loss3 = F.binary_cross_entropy_with_logits(pred3[train_mask], Y[train_mask])
+                    loss1 = F.binary_cross_entropy_with_logits(pred1[train_mask], Y[train_mask])
+                    loss2 = F.binary_cross_entropy_with_logits(pred2[train_mask], Y[train_mask])
+                    loss3 = F.binary_cross_entropy_with_logits(pred3[train_mask], Y[train_mask])
 
-                crloss = LAMBDA * (loss1 + loss2 + loss3)
-                loss = (1 - 3 * LAMBDA) * conloss + crloss
+                    crloss = LAMBDA * (loss1 + loss2 + loss3)
+                    loss = (1 - 3 * LAMBDA) * conloss + crloss
+                else:
+                    x_1 = F.dropout(data.x, drop_feature_rate_1)
+                    x_go = F.dropout(data.x, drop_feature_rate_3)
+
+                    aug_ppi = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
+                    aug_go = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+
+                    pred1, pred2, _, _, conloss = model(aug_ppi, aug_go, x_1, x_go)
+
+                    loss1 = F.binary_cross_entropy_with_logits(pred1[train_mask], Y[train_mask])
+                    loss2 = F.binary_cross_entropy_with_logits(pred2[train_mask], Y[train_mask])
+
+                    crloss = LAMBDA * (loss1 + loss2)
+                    loss = (1 - 2 * LAMBDA) * conloss + crloss
+
                 loss.backward()
                 optimizer.step()
 
@@ -175,7 +210,11 @@ def run_mngcl_cv(args):
             # 5. 测试阶段：训练结束后单次测试（按原实现训练 LogisticRegression 分类器）
             model.eval()
             with torch.no_grad():
-                _, _, _, emb, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, data.x, data.x, data.x)
+                if args.use_pathway:
+                    _, _, _, emb, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, data.x, data.x, data.x)
+                else:
+                    _, _, _, emb, _ = model(ppiAdj_index, goAdj_index, data.x, data.x)
+
                 train_x = torch.sigmoid(emb[train_mask]).cpu().numpy()
                 train_y = Y[train_mask].cpu().numpy().ravel()
                 test_x = torch.sigmoid(emb[test_mask]).cpu().numpy()
@@ -218,7 +257,12 @@ def run_mngcl_cv(args):
     # 6. 保存结果文件（严格单独命名，避免覆盖 Clean/Hit）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
-    prefix = "smoke_mngcl_cpdb_cv" if args.smoke_test else "mngcl_cpdb_cv"
+    if args.smoke_test:
+        prefix = f"smoke_mngcl_cpdb_cv{'' if args.use_pathway else '_nopathway'}"
+    elif n_runs == 10 and n_folds == 5:
+        prefix = f"mngcl_cpdb_cv{'' if args.use_pathway else '_nopathway'}"
+    else:
+        prefix = f"quick_mngcl_cpdb_cv{'' if args.use_pathway else '_nopathway'}_{n_runs}x{n_folds}"
 
     auroc_path = os.path.join(res_dir, f"{prefix}_auroc.txt")
     auprc_path = os.path.join(res_dir, f"{prefix}_auprc.txt")
@@ -231,6 +275,7 @@ def run_mngcl_cv(args):
         f.write("Method: MNGCL (Bioprompt Implementation)\n")
         f.write("Experiment: 10x5 Cross-Validation Reproduction (CPDB Pan-Cancer)\n")
         f.write("Split Source: data/CPDB/k_sets.pkl (Strict 10x5 folds, no random re-split)\n")
+        f.write(f"Use Pathway: {args.use_pathway} ({'3 views: PPI + Pathway + GO' if args.use_pathway else '2 views: PPI + GO (Paper Table Setting)'})\n")
         f.write(f"Runs: {n_runs}, Folds: {n_folds}, Epochs: {epochs}, LR: {args.lr}\n")
         f.write("Protocol: Transductive full graph, contrastive loss on all nodes, classification loss on train nodes only, tested once after training\n")
         f.write("------------------------------------------------------------\n")
@@ -245,9 +290,9 @@ def run_mngcl_cv(args):
         f.write(f"  Paper AUROC: {paper_auc:.4f} | Diff: {mean_auc - paper_auc:+.4f}\n")
         f.write(f"  Paper AUPRC: {paper_aupr:.4f} | Diff: {mean_aupr - paper_aupr:+.4f}\n")
         f.write("------------------------------------------------------------\n")
-        f.write("10x5 AUROC Matrix:\n")
+        f.write(f"{n_runs}x{n_folds} AUROC Matrix:\n")
         f.write(np.array2string(AUC, precision=4, suppress_small=True) + "\n\n")
-        f.write("10x5 AUPRC Matrix:\n")
+        f.write(f"{n_runs}x{n_folds} AUPRC Matrix:\n")
         f.write(np.array2string(AUPR, precision=4, suppress_small=True) + "\n")
 
     print(f"  Saved AUROC matrix to: {auroc_path}")
@@ -259,7 +304,10 @@ def run_mngcl_cv(args):
 def main():
     parser = argparse.ArgumentParser(description="MNGCL 10x5 CV Reproduction on CPDB k_sets.pkl")
     parser.add_argument('--smoke_test', action='store_true', help='Run quick 1-run 2-fold 5-epoch test')
-    parser.add_argument('--n_runs', type=int, default=10)
+    parser.add_argument('--use_pathway', type=str2bool, default=True, help='Whether to use Pathway similarity network (default: True)')
+    parser.add_argument('--no_pathway', dest='use_pathway', action='store_false', help='Disable Pathway network (use only PPI and GO, paper table setting)')
+    parser.add_argument('--n_runs', type=int, default=10, help='Number of repeat runs (default: 10)')
+    parser.add_argument('--n_folds', type=int, default=5, help='Number of folds per run (1-5, default: 5)')
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--seed', type=int, default=1234)

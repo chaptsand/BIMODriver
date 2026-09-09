@@ -32,6 +32,16 @@ def fix_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def fast_G_from_H_weight(H, W):
     """
     与 DISFusion 的 _generate_G_from_H_weight 数学上严格等价，
@@ -46,11 +56,13 @@ def fast_G_from_H_weight(H, W):
     G = dv_inv_sqrt * A * dv_inv_sqrt.T
     return G
 
-def get_incidence_matrix(data_dir, gene_list):
+def get_incidence_matrix(data_dir, gene_list, use_pathway=True):
     """
-    从 c2 和 c5 构建超图关联矩阵，过滤 cancer/tumor 相关 terms（遵循官方 utils.processingIncidenceMatrix）
+    构建超图关联矩阵，过滤 cancer/tumor 相关 terms（遵循官方 utils.processingIncidenceMatrix）
+    use_pathway=True: 载入 c2 (Curated Pathways) 与 c5 (Gene Ontology / HPO)
+    use_pathway=False: 仅载入 c5 功能注释，不包含 c2 Pathway（论文基线设置）
     """
-    ids = ['c2', 'c5']
+    ids = ['c2', 'c5'] if use_pathway else ['c5']
     incidenceMatrix = pd.DataFrame(index=gene_list)
     for id_name in ids:
         geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)
@@ -80,15 +92,20 @@ def run_disfusion_cv(args):
     # 0. 数据对齐严格断言
     assert_data_alignment(BASE_DIR)
 
+    n_runs = 1 if args.smoke_test else args.n_runs
+    n_folds = 2 if args.smoke_test else args.n_folds
+    epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
     device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
     print(f"\n{'='*75}")
-    print(f"Running DISFusion 10x5 Cross-Validation Reproduction (CPDB Pan-Cancer)")
+    print(f"Running DISFusion {n_runs}x{n_folds} Cross-Validation Reproduction (CPDB Pan-Cancer)")
     print(f"  Split Source   : data/CPDB/k_sets.pkl (Strict 10x5 folds)")
+    print(f"  Pathway Used   : {args.use_pathway} ({'c2 Pathway + c5 Functional Annotations' if args.use_pathway else 'c5 Functional Annotations only (no c2 Pathway, Paper Table Setting)'})")
     print(f"  Protocol       : Transductive full graph, self-supervised Barlow Twins on all nodes,")
     print(f"                   disease-specific hypergraph weighted by train positive genes only,")
     print(f"                   classification loss on train nodes only, test once per fold (no early stopping)")
-    print(f"  Runs / Folds   : {1 if args.smoke_test else args.n_runs} runs x {2 if args.smoke_test else 5} folds")
-    print(f"  Epochs per fold: {5 if args.smoke_test else args.epochs}")
+    print(f"  Runs / Folds   : {n_runs} runs x {n_folds} folds")
+    print(f"  Epochs per fold: {epochs}")
     print(f"  Hyperparameters: lr=1e-5, weight_decay=5e-5, n_hid=256, lambdinter=1e-4, w_self=0.005")
     print(f"  Device         : {device}")
     print(f"{'='*75}\n")
@@ -104,7 +121,7 @@ def run_disfusion_cv(args):
 
     print("Loading and filtering incidence matrix...")
     t0 = time.time()
-    incidenceMatrix = get_incidence_matrix(dis_dir, gene_list)
+    incidenceMatrix = get_incidence_matrix(dis_dir, gene_list, use_pathway=args.use_pathway)
     print(f"Incidence matrix ready in {time.time()-t0:.2f}s, shape: {incidenceMatrix.shape}")
 
     feat_path = os.path.join(dis_dir, 'biological features.csv')
@@ -126,10 +143,6 @@ def run_disfusion_cv(args):
     assert os.path.exists(ksets_path), f"k_sets.pkl not found at {ksets_path}"
     with open(ksets_path, 'rb') as f:
         k_sets = pickle.load(f)
-
-    n_runs = 1 if args.smoke_test else args.n_runs
-    n_folds = 2 if args.smoke_test else 5
-    epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
 
     AUC = np.zeros((n_runs, n_folds))
     AUPR = np.zeros((n_runs, n_folds))
@@ -256,7 +269,12 @@ def run_disfusion_cv(args):
     # 8. 保存结果文件（严格单独命名，避免覆盖 Clean/Hit）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
-    prefix = "smoke_disfusion_cpdb_cv" if args.smoke_test else "disfusion_cpdb_cv"
+    if args.smoke_test:
+        prefix = f"smoke_disfusion_cpdb_cv{'' if args.use_pathway else '_nopathway'}"
+    elif n_runs == 10 and n_folds == 5:
+        prefix = f"disfusion_cpdb_cv{'' if args.use_pathway else '_nopathway'}"
+    else:
+        prefix = f"quick_disfusion_cpdb_cv{'' if args.use_pathway else '_nopathway'}_{n_runs}x{n_folds}"
 
     auroc_path = os.path.join(res_dir, f"{prefix}_auroc.txt")
     auprc_path = os.path.join(res_dir, f"{prefix}_auprc.txt")
@@ -269,6 +287,7 @@ def run_disfusion_cv(args):
         f.write("Method: DISFusion (Official Implementation)\n")
         f.write("Experiment: 10x5 Cross-Validation Reproduction (CPDB Pan-Cancer)\n")
         f.write("Split Source: data/CPDB/k_sets.pkl (Strict 10x5 folds, no random re-split)\n")
+        f.write(f"Use Pathway: {args.use_pathway} ({'c2 + c5' if args.use_pathway else 'c5 only (no c2 pathway, Paper Table Setting)'})\n")
         f.write(f"Runs: {n_runs}, Folds: {n_folds}, Epochs: {epochs}, LR: {lr}\n")
         f.write("Protocol: Transductive full graph, self-supervised Barlow Twins on all nodes, disease-specific hypergraph weighted by train positive genes only, classification loss on train nodes only, tested once after training\n")
         f.write("------------------------------------------------------------\n")
@@ -283,9 +302,9 @@ def run_disfusion_cv(args):
         f.write(f"  Paper AUROC: {paper_auc:.4f} | Diff: {mean_auc - paper_auc:+.4f}\n")
         f.write(f"  Paper AUPRC: {paper_aupr:.4f} | Diff: {mean_aupr - paper_aupr:+.4f}\n")
         f.write("------------------------------------------------------------\n")
-        f.write("10x5 AUROC Matrix:\n")
+        f.write(f"{n_runs}x{n_folds} AUROC Matrix:\n")
         f.write(np.array2string(AUC, precision=4, suppress_small=True) + "\n\n")
-        f.write("10x5 AUPRC Matrix:\n")
+        f.write(f"{n_runs}x{n_folds} AUPRC Matrix:\n")
         f.write(np.array2string(AUPR, precision=4, suppress_small=True) + "\n")
 
     print(f"  Saved AUROC matrix to: {auroc_path}")
@@ -297,7 +316,10 @@ def run_disfusion_cv(args):
 def main():
     parser = argparse.ArgumentParser(description="DISFusion 10x5 CV Reproduction on CPDB k_sets.pkl")
     parser.add_argument('--smoke_test', action='store_true', help='Run quick 1-run 2-fold 5-epoch test')
-    parser.add_argument('--n_runs', type=int, default=10)
+    parser.add_argument('--use_pathway', type=str2bool, default=True, help='Whether to include c2 pathway hyperedges (default: True)')
+    parser.add_argument('--no_pathway', dest='use_pathway', action='store_false', help='Disable c2 pathway hyperedges (use only c5 functional annotations, paper table setting)')
+    parser.add_argument('--n_runs', type=int, default=10, help='Number of repeat runs (default: 10)')
+    parser.add_argument('--n_folds', type=int, default=5, help='Number of folds per run (1-5, default: 5)')
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--seed', type=int, default=42)

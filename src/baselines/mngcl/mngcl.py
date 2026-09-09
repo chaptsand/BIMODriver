@@ -85,39 +85,84 @@ class MNGCL(nn.Module):
                  gnn_outsize,
                  projection_size,
                  projection_hidden_size,
+                 use_pathway=True,
                 ):
         super().__init__()
+        self.use_pathway = use_pathway
         self.encoder = GraphEncoder(gnn)
         self.projector = MLP(gnn_outsize, projection_hidden_size, projection_size)
         self.posList = posList
         self.tau = tau
         self.conv1 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
         self.conv2 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
-        self.conv3 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
+        if self.use_pathway:
+            self.conv3 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
+        else:
+            self.conv3 = None
         
-    def forward(self, aug_adj_1, aug_adj_2, aug_adj_3,aug_feat_1, aug_feat_2,aug_feat_3):
+    def forward(self, *args, **kwargs):
+        if self.use_pathway:
+            if len(args) == 6:
+                aug_adj_1, aug_adj_2, aug_adj_3, aug_feat_1, aug_feat_2, aug_feat_3 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_adj_3 = kwargs.get('aug_adj_3', args[2] if len(args) > 2 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[3] if len(args) > 3 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[4] if len(args) > 4 else None)
+                aug_feat_3 = kwargs.get('aug_feat_3', args[5] if len(args) > 5 else None)
 
-        encoder_one = self.encoder(aug_adj_1,aug_feat_1)
-        encoder_two = self.encoder(aug_adj_2,aug_feat_2)
-        encoder_three = self.encoder(aug_adj_3,aug_feat_3)
-        
-        proj_one = self.projector(encoder_one)
-        proj_two = self.projector(encoder_two)
-        proj_three = self.projector(encoder_three)
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            encoder_three = self.encoder(aug_adj_3, aug_feat_3)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
+            proj_three = self.projector(encoder_three)
 
-        lab = contrastive_loss(proj_one, proj_two, self.posList[0], self.tau)
-        lac = contrastive_loss(proj_one, proj_three, self.posList[0], self.tau)
-        lba = contrastive_loss(proj_two, proj_one, self.posList[1], self.tau)
-        lca = contrastive_loss(proj_three, proj_one, self.posList[2], self.tau)
+            lab = contrastive_loss(proj_one, proj_two, self.posList[0], self.tau)
+            lac = contrastive_loss(proj_one, proj_three, self.posList[0], self.tau)
+            lba = contrastive_loss(proj_two, proj_one, self.posList[1], self.tau)
+            lca = contrastive_loss(proj_three, proj_one, self.posList[2], self.tau)
 
-        #Total contrastive loss
-        Conloss = lab+lac+lba+lca
+            # Total contrastive loss
+            Conloss = lab + lac + lba + lca
 
-        #Learning network-specific gene feature
-        emb1 = self.conv1(encoder_one,aug_adj_1)
-        emb2 = self.conv2(encoder_two,aug_adj_2)
-        emb3 = self.conv3(encoder_three,aug_adj_3)
+            # Learning network-specific gene feature
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+            emb3 = self.conv3(encoder_three, aug_adj_3)
 
-        # Logistic Regression Module input feature
-        emb = torch.cat((emb1,emb2,emb3),1)
-        return emb1,emb2,emb3,emb,Conloss
+            # Logistic Regression Module input feature
+            emb = torch.cat((emb1, emb2, emb3), 1)
+            return emb1, emb2, emb3, emb, Conloss
+        else:
+            if len(args) == 4:
+                aug_adj_1, aug_adj_2, aug_feat_1, aug_feat_2 = args
+            elif len(args) == 6:
+                aug_adj_1, _, aug_adj_2, aug_feat_1, _, aug_feat_2 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[2] if len(args) > 2 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[3] if len(args) > 3 else None)
+
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
+
+            lab = contrastive_loss(proj_one, proj_two, self.posList[0], self.tau)
+            lba = contrastive_loss(proj_two, proj_one, self.posList[1], self.tau)
+
+            # Total contrastive loss
+            Conloss = lab + lba
+
+            # Learning network-specific gene feature
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+
+            # Logistic Regression Module input feature
+            emb = torch.cat((emb1, emb2), 1)
+            return emb1, emb2, None, emb, Conloss
