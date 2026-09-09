@@ -7,9 +7,9 @@ from torch.nn.modules.module import Module
 from torch_geometric.nn import ChebConv
 
 class graph_ChebNet(torch.nn.Module):
-    def __init__(self, hdim = 256, dropout = 0.5):
+    def __init__(self, in_ch = 64, hdim = 256, dropout = 0.5):
         super(graph_ChebNet, self).__init__()
-        self.conv1 = ChebConv(48, hdim, K=2)
+        self.conv1 = ChebConv(in_ch, hdim, K=2)
         self.conv2 = ChebConv(hdim, hdim, K=2)
         self.conv3 = ChebConv(hdim, hdim, K=2)
         self.dropout = dropout

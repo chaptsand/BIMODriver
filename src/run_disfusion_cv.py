@@ -56,29 +56,37 @@ def fast_G_from_H_weight(H, W):
     G = dv_inv_sqrt * A * dv_inv_sqrt.T
     return G
 
-def get_incidence_matrix(data_dir, gene_list, use_pathway=True):
+def get_incidence_matrix(data_dir, gene_list, use_pathway=True, hypergraph_mode='kegg_go'):
     """
-    构建超图关联矩阵，过滤 cancer/tumor 相关 terms（遵循官方 utils.processingIncidenceMatrix）
-    use_pathway=True: 载入 c2 (Curated Pathways) 与 c5 (Gene Ontology / HPO)
-    use_pathway=False: 仅载入 c5 功能注释，不包含 c2 Pathway（论文基线设置）
+    构建超图关联矩阵，严格遵循作者原始过滤逻辑：
+    - 'kegg_go' / use_pathway=True: c2 (KEGG pathways without cancer: 177) + c5 (GO terms: GOMF, GOBP, GOCC: 10,185) = 10,362 hyperedges (Paper main table)
+    - 'kegg_only': 仅包含 177 个非癌症 KEGG 通路 (DISFusion_1 / Disfusion-Pathway)
+    - 'go_only' / use_pathway=False: 仅包含 10,185 个 GO 功能注释 (Disfusion-GO)
     """
-    ids = ['c2', 'c5'] if use_pathway else ['c5']
+    if hypergraph_mode in ['kegg_only', 'pathway_only']:
+        ids = ['c2']
+    elif hypergraph_mode == 'go_only' or not use_pathway:
+        ids = ['c5']
+    else:
+        ids = ['c2', 'c5']
+
     incidenceMatrix = pd.DataFrame(index=gene_list)
     for id_name in ids:
-        geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)
-        geneSetNameList = list(geneSetNameList[0].values)
+        geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)[0].values
         idList = []
         for z, name in enumerate(geneSetNameList):
             if id_name == 'c2':
                 q = name.split('_')
-                if not ('CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q):
+                if 'CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q:
+                    pass
+                elif 'KEGG' in q:
                     idList.append(z)
             elif name[:2] == 'HP':
-                q = name.split('_')
-                if not ('CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q):
-                    idList.append(z)
+                pass
             else:
-                idList.append(z)
+                q = name.split('_')
+                if 'GOMF' in q or 'GOBP' in q or 'GOCC' in q:
+                    idList.append(z)
 
         matrix = sp.load_npz(os.path.join(data_dir, f'{id_name}_GenesetsMatrix.npz'))
         matrix = pd.DataFrame(matrix.toarray(), index=gene_list)
@@ -121,11 +129,24 @@ def run_disfusion_cv(args):
 
     print("Loading and filtering incidence matrix...")
     t0 = time.time()
-    incidenceMatrix = get_incidence_matrix(dis_dir, gene_list, use_pathway=args.use_pathway)
+    hypergraph_mode = getattr(args, 'hypergraph_mode', 'kegg_go')
+    if not args.use_pathway:
+        hypergraph_mode = 'go_only'
+    incidenceMatrix = get_incidence_matrix(dis_dir, gene_list, use_pathway=args.use_pathway, hypergraph_mode=hypergraph_mode)
     print(f"Incidence matrix ready in {time.time()-t0:.2f}s, shape: {incidenceMatrix.shape}")
 
-    feat_path = os.path.join(dis_dir, 'biological features.csv')
-    multi_feature = torch.Tensor(pd.read_csv(feat_path, sep=",").values).float().to(device)
+    # 加载 64 维多组学与网络结构嵌入特征（严格遵循作者原版 main.py 实现）
+    cpdb_data_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'CPDB_new_data.pt')
+    str_feat_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'Str_feature.pkl')
+    if os.path.exists(cpdb_data_path) and os.path.exists(str_feat_path):
+        cpdb_data = torch.load(cpdb_data_path)
+        omics = cpdb_data.x[:, :48].to(device)
+        str_feat = torch.load(str_feat_path).to(device)
+        multi_feature = torch.cat((omics, str_feat), 1).float()
+    else:
+        feat_path = os.path.join(dis_dir, 'biological features.csv')
+        multi_feature = torch.Tensor(pd.read_csv(feat_path, sep=",").values).float().to(device)
+    print(f"Feature matrix loaded: {multi_feature.shape}")
 
     ppi_path = os.path.join(dis_dir, 'PPI_edge_index.txt')
     edge = np.array(np.loadtxt(ppi_path).transpose())
@@ -190,8 +211,9 @@ def run_disfusion_cv(args):
             fh = torch.eye(N).float().to(device)
 
             # 5. 初始化模型与优化器（严格遵循官方参数与结构）
+            feat_dim = multi_feature.shape[1]
             model_hypergrph = hypergrph_HGNN(in_ch=N, n_hid=n_hid, dropout=0.2).to(device)
-            model_graph = graph_ChebNet(hdim=n_hid, dropout=0.5).to(device)
+            model_graph = graph_ChebNet(in_ch=feat_dim, hdim=n_hid, dropout=0.5).to(device)
             optimizer_hypergrph = optim.Adam(model_hypergrph.parameters(), lr=0.005, weight_decay=5e-6)
             optimizer_graph = optim.Adam(model_graph.parameters(), lr=0.001, weight_decay=0)
             schedular_hypergrph = optim.lr_scheduler.MultiStepLR(optimizer_hypergrph, milestones=[100, 200, 300, 400], gamma=0.5)
@@ -324,6 +346,8 @@ def main():
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--legacy_g', action='store_true', help='Use original slow _generate_G_from_H_weight (dense diagonal matrix inversion)')
+    parser.add_argument('--hypergraph_mode', type=str, default='kegg_go', choices=['kegg_go', 'kegg_only', 'go_only'],
+                        help="Hypergraph mode: 'kegg_go' (default, KEGG pathways + GO annotations, matches paper 0.9238/0.8436), 'kegg_only' (only KEGG pathways), 'go_only' (only GO annotations)")
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()
 
