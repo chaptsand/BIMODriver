@@ -36,12 +36,29 @@ def sim(z1: torch.Tensor, z2: torch.Tensor):
     return torch.mm(z1, z2.t())
 
 
-def diagonal_contrastive_loss(h1, h2, tau=0.1):
-    sim_matrix = sim(h1, h2)  # [N, N]
-    numerator = torch.exp(sim_matrix.diag() / tau)  # 对角线元素
-    denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # 行求和
-    loss = -torch.log(numerator / denominator).mean()
-    return loss
+def diagonal_contrastive_loss(h1, h2, tau=0.1, chunk_size=2048):
+    N = h1.size(0)
+    if N <= chunk_size:
+        sim_matrix = sim(h1, h2)  # [N, N]
+        numerator = torch.exp(sim_matrix.diag() / tau)  # 对角线元素
+        denominator = torch.exp(sim_matrix / tau).sum(dim=1)  # 行求和
+        loss = -torch.log(numerator / denominator).mean()
+        return loss
+
+    # 分块计算，数学完全等价，避免在全图节点上分配超大稠密相似度矩阵造成 CUDA OOM
+    h1_norm = F.normalize(h1)
+    h2_norm = F.normalize(h2)
+
+    losses = []
+    for i in range(0, N, chunk_size):
+        end = min(i + chunk_size, N)
+        sim_chunk = torch.mm(h1_norm[i:end], h2_norm.t())  # [chunk, N]
+        diag_chunk = (h1_norm[i:end] * h2_norm[i:end]).sum(dim=-1)
+        num_chunk = torch.exp(diag_chunk / tau)
+        den_chunk = torch.exp(sim_chunk / tau).sum(dim=-1)
+        losses.append(-torch.log(num_chunk / den_chunk))
+
+    return torch.cat(losses).mean()
 
 
 def save_best_epoch_results(

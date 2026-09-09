@@ -190,8 +190,28 @@ def train_test_inductive(data_model, optimizer, data, L_emb,
     assert len(contrastive_indices) == 13627 - te_mask.sum().item(), \
         f"对比学习节点数 ({len(contrastive_indices)}) 不等于 13627 - test_mask.sum() ({13627 - te_mask.sum().item()})！"
 
+    # 严格遵循附录 Table A17 归纳式文字要求：
+    # "the feature vector of every test gene is set to zero... The model therefore receives no structural, feature, or label information from any test gene during training."
+    x_train = data.x.detach().clone()
+    x_train[te_mask] = 0.0
+
+    L_emb_train = {
+        'self_emb': L_emb['self_emb'].detach().clone(),
+        'neighbor_emb': L_emb['neighbor_emb'].detach().clone(),
+        'together_emb': L_emb['together_emb'].detach().clone()
+    }
+    L_emb_train['self_emb'][te_mask] = 0.0
+    L_emb_train['neighbor_emb'][te_mask] = 0.0
+    L_emb_train['together_emb'][te_mask] = 0.0
+
+    # 严格检验 5: 确认测试基因的特征向量在训练期全部置零
+    assert torch.all(x_train[te_mask] == 0.0), "归纳式训练中测试基因组学特征未完全置零！"
+    assert torch.all(L_emb_train['self_emb'][te_mask] == 0.0), "归纳式训练中测试基因 self_emb 未完全置零！"
+    assert torch.all(L_emb_train['neighbor_emb'][te_mask] == 0.0), "归纳式训练中测试基因 neighbor_emb 未完全置零！"
+    assert torch.all(L_emb_train['together_emb'][te_mask] == 0.0), "归纳式训练中测试基因 together_emb 未完全置零！"
+
     for epoch in range(epochs):
-        # ===== 训练阶段（归纳子图） =====
+        # ===== 训练阶段（归纳子图与特征全零） =====
         model.train()
         optimizer.zero_grad()
 
@@ -202,9 +222,9 @@ def train_test_inductive(data_model, optimizer, data, L_emb,
         assert not (te_mask[edge_index_train_drop[0]].any() or te_mask[edge_index_train_drop[1]].any()), \
             "dropout_adj 后检测到以测试基因为端点的边！"
 
-        # 前向传播：tr_mask 传入 contrastive_indices，在所有非测试节点上计算对比损失
+        # 前向传播：传入置零特征 x_train 与 L_emb_train，tr_mask 传入 contrastive_indices（在所有非测试节点上计算对比损失）
         loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
-            data.x, edge_index_train_drop, L_emb, L_emb_edge_train, tr_mask=contrastive_indices
+            x_train, edge_index_train_drop, L_emb_train, L_emb_edge_train, tr_mask=contrastive_indices
         )
 
         # 分类损失：严格仅在有标签训练节点 cls_tr_mask 上计算
@@ -248,10 +268,16 @@ def train_test_inductive(data_model, optimizer, data, L_emb,
 def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
                      dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
-                     masked=False, inductive=False, base_seed=42):
+                     masked=False, inductive=False, base_seed=42,
+                     n_exp=None, n_fold=None, smoke_test=False):
     """收集每个 epoch 的指标（5 折交叉验证，支持传导式与归纳式消融）"""
-    all_aurocs = np.zeros((epochs, 10, 5))
-    all_auprcs = np.zeros((epochs, 10, 5))
+    if n_exp is None:
+        n_exp = 1 if smoke_test else int(os.environ.get('N_EXP', 10))
+    if n_fold is None:
+        n_fold = 1 if smoke_test else int(os.environ.get('N_FOLD', 5))
+
+    all_aurocs = np.zeros((epochs, n_exp, n_fold))
+    all_auprcs = np.zeros((epochs, n_exp, n_fold))
     if cancerType == 'pan-cancer':
         Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
         y_all = np.logical_or(data.y, data.y_te)
@@ -271,16 +297,14 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         l2 = int(len(y_train_neg) / 5)
         Y = label
 
-    list_aurocs = np.zeros((10, 5))
-    list_auprcs = np.zeros((10, 5))
+    list_aurocs = np.zeros((n_exp, n_fold))
+    list_auprcs = np.zeros((n_exp, n_fold))
 
-    n_exp = int(os.environ.get('N_EXP', 10))
-    n_fold = int(os.environ.get('N_FOLD', 5))
-
+    tag_suffix = "_smoke_test" if smoke_test else ""
     if cancerType == 'pan-cancer':
-        feat_tag = f"pan-cancer{'_masked' if masked else ''}{'_inductive' if inductive else ''}"
+        feat_tag = f"pan-cancer{'_masked' if masked else ''}{'_inductive' if inductive else ''}{tag_suffix}"
     else:
-        feat_tag = f"{dataset}_{cancerType}{'_masked' if masked else ''}{'_inductive' if inductive else ''}"
+        feat_tag = f"{dataset}_{cancerType}{'_masked' if masked else ''}{'_inductive' if inductive else ''}{tag_suffix}"
 
     start_total_time = time.time()
 
@@ -410,15 +434,14 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     print(f"  Overall AUROC: {mean_auc:.4f} ± {std_auc:.4f}")
     print(f"  Overall AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}")
     print(f"  Elapsed Time : {time_desc}")
-    print(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}")
-    print(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
+    print(f"{n_exp}x{n_fold} AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}")
+    print(f"{n_exp}x{n_fold} AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
     print(f"{'='*75}\n")
 
     summary_file = os.path.join(RESULT_DIR, f'{feat_tag}_summary.txt')
     with open(summary_file, 'w', encoding='utf-8') as f:
-        f.write(f"Experiment: 10x5 Cross-Validation [{desc}]\n")
-        f.write(f"Cancer Type: {cancerType}, Dataset: {dataset}\n")
-        f.write(f"Protocol: Inductive Training (Removed all test node edges from CPDB & Semantic KNN graphs; Contrastive loss on all non-test nodes [13627 - test_count]; Classification loss on labeled train nodes; Full graph restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
+        f.write(f"Experiment: {n_exp}x{n_fold} Cross-Validation [{desc}]\n")
+        f.write(f"Protocol: Strict Inductive Training (Appendix Table A17: Removed all test node edges from CPDB & Semantic KNN graphs; Set feature vectors of all test genes to zero during training; Excluded test genes from contrastive loss [13627 - test_count]; Classification loss strictly on labeled train nodes; Complete network topology & frozen features restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
         f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
         f.write(f"Base Seed: {base_seed}\n")
         f.write(f"Total Elapsed Time: {time_desc}\n")
@@ -427,10 +450,10 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         f.write(f"  AUROC : {mean_auc:.4f} ± {std_auc:.4f}\n")
         f.write(f"  AUPRC : {mean_auprc:.4f} ± {std_auprc:.4f}\n")
         f.write('-' * 60 + '\n')
-        f.write(f"10x5 AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}\n")
-        f.write(f"10x5 AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}\n")
+        f.write(f"{n_exp}x{n_fold} AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}\n")
+        f.write(f"{n_exp}x{n_fold} AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}\n")
 
-    if not masked and not inductive:
+    if not masked and not inductive and not smoke_test:
         save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
     results = 0
     return results
@@ -872,6 +895,10 @@ def main():
         mode_str = "Inductive 5-fold CV (归纳式)" if is_inductive else "Transductive 5-fold CV (传导式)"
         feat_str = "Masked Features (关键词遮蔽)" if args.masked else "Original Features (原始基线)"
         print(f"\nRunning {mode_str} [{feat_str}] for {args.cancerType} on {args.dataset}...")
+        n_exp = 1 if args.smoke_test else None
+        n_fold = 1 if args.smoke_test else None
+        epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
         trainPred_k_sets(
             input_dim=input_dim,
             k_sets=k_sets,
@@ -880,14 +907,17 @@ def main():
             edge_index=pb,
             L_emb_edge=L_emb_edge,
             lr=args.lr,
-            epochs=args.epochs,
+            epochs=epochs,
             lambdinter=args.lambdinter,
             dropout=args.dropout,
             cancerType=args.cancerType,
             dataset=args.dataset,
             masked=args.masked,
             inductive=is_inductive,
-            base_seed=args.base_seed
+            base_seed=args.base_seed,
+            n_exp=n_exp,
+            n_fold=n_fold,
+            smoke_test=args.smoke_test
         )
     else:
         raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'inductive', 'clean_to_hit', 'hit_to_clean'")
