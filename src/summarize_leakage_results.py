@@ -11,16 +11,21 @@ def parse_summary_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    auroc_match = re.search(r'Test AUROC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)|AUROC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)', content)
-    auprc_match = re.search(r'Test AUPRC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)|AUPRC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)', content)
+    # 严格在 Final Fixed Test Metrics 区块提取最终测试集评估指标，避免误匹配验证集指标
+    test_sec = content
+    if "Final Fixed Test Metrics" in content:
+        test_sec = content.split("Final Fixed Test Metrics")[1]
+
+    auroc_match = re.search(r'(?:Test\s+)?AUROC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)', test_sec)
+    auprc_match = re.search(r'(?:Test\s+)?AUPRC\s*:\s*([\d\.]+)\s*±\s*([\d\.]+)', test_sec)
 
     if not auroc_match or not auprc_match:
         return None
 
-    auroc = float(auroc_match.group(1) or auroc_match.group(3))
-    auroc_std = float(auroc_match.group(2) or auroc_match.group(4))
-    auprc = float(auprc_match.group(1) or auprc_match.group(3))
-    auprc_std = float(auprc_match.group(2) or auprc_match.group(4))
+    auroc = float(auroc_match.group(1))
+    auroc_std = float(auroc_match.group(2))
+    auprc = float(auprc_match.group(1))
+    auprc_std = float(auprc_match.group(2))
 
     return {
         'auroc': auroc,
