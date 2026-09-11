@@ -45,13 +45,19 @@ def fast_G_from_H_weight(H, W):
     """
     Mathematically identical to DISFusion's _generate_G_from_H_weight,
     optimized to avoid allocating multiple 13627x13627 diagonal matrices.
+    Safely handles isolated nodes with DV == 0.
     """
     DV = np.sum(H * W, axis=1)
     DE = np.sum(H, axis=0)
-    invDE_W = W / DE
+    invDE_W = np.zeros_like(DE, dtype=float)
+    nonzero_de = DE > 0
+    invDE_W[nonzero_de] = W[nonzero_de] / DE[nonzero_de]
     H_scaled = H * invDE_W
     A = H_scaled @ H.T
-    dv_inv_sqrt = np.power(DV, -0.5)[:, None]
+    dv_inv_sqrt = np.zeros_like(DV, dtype=float)
+    nonzero_dv = DV > 0
+    dv_inv_sqrt[nonzero_dv] = np.power(DV[nonzero_dv], -0.5)
+    dv_inv_sqrt = dv_inv_sqrt[:, None]
     G = dv_inv_sqrt * A * dv_inv_sqrt.T
     return G
 
@@ -100,8 +106,9 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     n_runs = 1 if args.smoke_test else min(args.n_runs, len(runs_info))
     epochs = args.epochs if not args.smoke_test else min(args.epochs, 5)
 
+    mode_desc = "Strict Inductive (切断测试边+特征置零)" if args.inductive else "Transductive (传导式全图)"
     print(f"\n{'='*75}")
-    print(f"Running DISFusion on Split: [{split_name}]")
+    print(f"Running DISFusion on Split: [{split_name}] [{mode_desc}]")
     print(f"  Total Runs     : {n_runs} (Smoke test: {args.smoke_test})")
     print(f"  Epochs per Run : {epochs}")
     print(f"  Device         : {device}")
@@ -138,9 +145,9 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     incidence_matrix = get_incidence_matrix(data_dir, gene_list, use_pathway=use_pathway, hypergraph_mode=hypergraph_mode)
     print(f"Incidence matrix ready in {time.time()-t_inc:.2f}s, shape: {incidence_matrix.shape}")
 
-    # 4. 标签与恒等基底
+    # 4. 标签与恒等基底（fh 保存在 CPU 上，按需载入 GPU，节省显存）
     N = 13627
-    fh = torch.eye(N).float().to(device)
+    fh_cpu = torch.eye(N).float()
     all_labels = (gene_df['Gene_Label'] == 'Driver').values.astype(int)
     labels_tensor = torch.from_numpy(all_labels).to(device)
 
@@ -170,6 +177,9 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
         'True_Label': test_true_labels
     }
     pred_runs_matrix = np.zeros((len(fixed_test_idx), n_runs))
+
+    test_mask_tensor = torch.zeros(N, dtype=torch.bool, device=device)
+    test_mask_tensor[fixed_test_idx] = True
 
     for run_i in range(n_runs):
         run_info = runs_info[run_i]
@@ -209,8 +219,36 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
                 H[i][t_rand] = 0.0001
 
         G = fast_G_from_H_weight(H, hyperedge_weight)
-        adj_hyperGraph = torch.Tensor(G).float().to(device)
-        # print(f"  Hypergraph G constructed in {time.time()-t_graph:.2f}s")
+        # 全图超图保留在 CPU 上，避免训练期显存占用翻倍
+        adj_hyperGraph_cpu = torch.Tensor(G).float()
+
+        # 训练图与特征构建（归纳式切断测试边与特征置零；传导式保留全图）
+        if args.inductive:
+            edge_mask = ~(test_mask_tensor[PPI_graph[0]] | test_mask_tensor[PPI_graph[1]])
+            PPI_graph_train = PPI_graph[:, edge_mask]
+
+            H_train = H.copy()
+            H_train[fixed_test_idx, :] = 0.0
+            G_train = fast_G_from_H_weight(H_train, hyperedge_weight)
+            adj_hyperGraph_train = torch.Tensor(G_train).float().to(device)
+
+            feature_tensor_train = feature_tensor.detach().clone()
+            feature_tensor_train[fixed_test_idx] = 0.0
+
+            fh_train = fh_cpu.clone()
+            fh_train[fixed_test_idx] = 0.0
+            fh_train = fh_train.to(device)
+
+            assert not (test_mask_tensor[PPI_graph_train[0]].any() or test_mask_tensor[PPI_graph_train[1]].any()), "PPI 训练图中检测到测试基因连边！"
+            assert torch.all(feature_tensor_train[fixed_test_idx] == 0.0), "训练期测试基因生物特征未完全置零！"
+            assert torch.all(fh_train[fixed_test_idx] == 0.0), "训练期测试基因 fh 未完全置零！"
+            assert torch.all(adj_hyperGraph_train[fixed_test_idx, :] == 0.0), "训练期超图检测到测试基因出度连边！"
+            assert torch.all(adj_hyperGraph_train[:, fixed_test_idx] == 0.0), "训练期超图检测到测试基因入度连边！"
+        else:
+            PPI_graph_train = PPI_graph
+            adj_hyperGraph_train = adj_hyperGraph_cpu.to(device)
+            feature_tensor_train = feature_tensor
+            fh_train = fh_cpu.to(device)
 
         # 初始化模型
         feat_dim = feature_tensor.shape[1]
@@ -237,8 +275,8 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             optimizer_graph.zero_grad()
             optimizer_fusion.zero_grad()
 
-            h1 = model_hypergrph(fh, adj_hyperGraph)
-            h2 = model_graph(feature_tensor, PPI_graph)
+            h1 = model_hypergrph(fh_train, adj_hyperGraph_train)
+            h2 = model_graph(feature_tensor_train, PPI_graph_train)
             # 内部训练节点对比/自监督损失，分类损失也仅在训练节点上计算
             loss_self, output_fusion = model_fusion(h1, h2, train_idx=train_idx_cuda)
             loss_cls = F.nll_loss(output_fusion[train_idx_cuda], labels_tensor[train_idx_cuda].long())
@@ -255,8 +293,8 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             model_graph.eval()
             model_fusion.eval()
             with torch.no_grad():
-                h1_val = model_hypergrph(fh, adj_hyperGraph)
-                h2_val = model_graph(feature_tensor, PPI_graph)
+                h1_val = model_hypergrph(fh_train, adj_hyperGraph_train)
+                h2_val = model_graph(feature_tensor_train, PPI_graph_train)
                 _, output_eval = model_fusion(h1_val, h2_val)
                 pred_val = output_eval[val_idx, 1].exp().cpu().numpy()
                 val_y = all_labels[val_idx]
@@ -278,16 +316,24 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             if (epoch + 1) % 50 == 0 or (epoch + 1) == epochs:
                 print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:3d}/{epochs} | Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f} (Best Ep: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
 
-        # 训练结束后加载最佳 checkpoint，评估固定测试集一次
+        # 训练结束后加载最佳 checkpoint，评估固定测试集一次（恢复全图与原始冻结特征）
         model_hypergrph.load_state_dict(best_states['hypergrph'])
         model_graph.load_state_dict(best_states['graph'])
         model_fusion.load_state_dict(best_states['fusion'])
+
+        if args.inductive:
+            del adj_hyperGraph_train, fh_train
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+        adj_hyperGraph_te = adj_hyperGraph_cpu.to(device)
+        fh_te = fh_cpu.to(device)
 
         model_hypergrph.eval()
         model_graph.eval()
         model_fusion.eval()
         with torch.no_grad():
-            h1_te = model_hypergrph(fh, adj_hyperGraph)
+            h1_te = model_hypergrph(fh_te, adj_hyperGraph_te)
             h2_te = model_graph(feature_tensor, PPI_graph)
             _, output_eval = model_fusion(h1_te, h2_te)
             pred_test = output_eval[test_idx, 1].exp().cpu().numpy()
@@ -296,6 +342,10 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             test_auc = metrics.roc_auc_score(te_y, pred_test)
             p_t, r_t, _ = metrics.precision_recall_curve(te_y, pred_test)
             test_prc = metrics.auc(r_t, p_t)
+
+        del adj_hyperGraph_te, fh_te
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
         elapsed = time.time() - t_start
         print(f"  >> Run {run_i+1} Done in {elapsed:.1f}s | Best Ep: {best_epoch} | Test AUROC: {test_auc:.4f}, Test AUPRC: {test_prc:.4f}")
@@ -317,7 +367,8 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     preds_table['Pred_Prob_Std'] = pred_runs_matrix.std(axis=1)
     pred_df = pd.DataFrame(preds_table)
 
-    prefix = "smoke_disfusion" if args.smoke_test else "disfusion"
+    ind_tag = "_inductive" if args.inductive else ""
+    prefix = f"smoke_disfusion{ind_tag}" if args.smoke_test else f"disfusion{ind_tag}"
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
 
@@ -330,9 +381,11 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
     np.savetxt(auprc_path, test_auprcs, fmt='%.6f')
     pred_df.to_csv(preds_path, index=False)
 
+    proto_str = "Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval)" if args.inductive else "Transductive (Full graph message passing during training)"
     with open(summary_path, 'w', encoding='utf-8') as f:
-        f.write(f"Method: DISFusion\n")
+        f.write(f"Method: DISFusion{' (Inductive)' if args.inductive else ''}\n")
         f.write(f"Task: {split_name}\n")
+        f.write(f"Protocol: {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
         f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
         f.write(f"Epochs: {epochs}\n")
         f.write(f"Feature Dim: {feature_tensor.shape[1]} (48 omics + 16 topology embeddings)\n")
@@ -369,6 +422,7 @@ def main():
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--use_pathway', type=str2bool, default=True, help='Whether to use KEGG pathways in hypergraph (default True, matching paper)')
     parser.add_argument('--hypergraph_mode', type=str, default='kegg_go', choices=['kegg_go', 'kegg_only', 'go_only'])
+    parser.add_argument('--inductive', action='store_true', help='Run in strict inductive mode (cut test edges and zero out test features during training, restore at eval)')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--gpu', type=int, default=0)
     args = parser.parse_args()

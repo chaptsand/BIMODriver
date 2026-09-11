@@ -128,8 +128,9 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     n_runs = 1 if args.smoke_test else min(args.n_runs, len(runs_info))
     epochs = args.epochs if not args.smoke_test else min(args.epochs, 5)
     
+    mode_desc = "Strict Inductive (切断测试边+特征置零)" if args.inductive else "Transductive (传导式全图)"
     print(f"\n{'='*75}")
-    print(f"Running MNGCL on Split: [{split_name}]")
+    print(f"Running MNGCL on Split: [{split_name}] [{mode_desc}]")
     print(f"  Total Runs     : {n_runs} (Smoke test: {args.smoke_test})")
     print(f"  Epochs per Run : {epochs}")
     print(f"  Device         : {device}")
@@ -206,6 +207,37 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     }
     pred_runs_matrix = np.zeros((len(fixed_test_idx), n_runs))
 
+    test_mask_tensor = torch.zeros(13627, dtype=torch.bool, device=device)
+    test_mask_tensor[fixed_test_idx] = True
+
+    # 严格归纳式设置：训练期切断测试基因连边，测试特征置零
+    if args.inductive:
+        edge_mask_ppi = ~(test_mask_tensor[ppiAdj_index[0]] | test_mask_tensor[ppiAdj_index[1]])
+        ppiAdj_index_train = ppiAdj_index[:, edge_mask_ppi]
+
+        edge_mask_go = ~(test_mask_tensor[goAdj_index[0]] | test_mask_tensor[goAdj_index[1]])
+        goAdj_index_train = goAdj_index[:, edge_mask_go]
+
+        if args.use_pathway:
+            edge_mask_path = ~(test_mask_tensor[pathAdj_index[0]] | test_mask_tensor[pathAdj_index[1]])
+            pathAdj_index_train = pathAdj_index[:, edge_mask_path]
+        else:
+            pathAdj_index_train = None
+
+        x_train = x.detach().clone()
+        x_train[fixed_test_idx] = 0.0
+
+        assert not (test_mask_tensor[ppiAdj_index_train[0]].any() or test_mask_tensor[ppiAdj_index_train[1]].any()), "PPI 训练图中检测到测试基因连边！"
+        assert not (test_mask_tensor[goAdj_index_train[0]].any() or test_mask_tensor[goAdj_index_train[1]].any()), "GO 训练图中检测到测试基因连边！"
+        if args.use_pathway:
+            assert not (test_mask_tensor[pathAdj_index_train[0]].any() or test_mask_tensor[pathAdj_index_train[1]].any()), "Pathway 训练图中检测到测试基因连边！"
+        assert torch.all(x_train[fixed_test_idx] == 0.0), "训练期测试基因特征未完全置零！"
+    else:
+        ppiAdj_index_train = ppiAdj_index
+        goAdj_index_train = goAdj_index
+        pathAdj_index_train = pathAdj_index
+        x_train = x
+
     for run_i in range(n_runs):
         run_info = runs_info[run_i]
         exp_id = run_info['exp_id']
@@ -257,12 +289,12 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             optimizer.zero_grad()
 
             if args.use_pathway:
-                x_1 = F.dropout(x, drop_feature_rate_1)
-                x_2 = F.dropout(x, drop_feature_rate_2)
-                x_3 = F.dropout(x, drop_feature_rate_3)
-                ppi_drop = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
-                path_drop = dropout_adj(pathAdj_index, p=drop_edge_rate_2, force_undirected=True)[0]
-                go_drop = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+                x_1 = F.dropout(x_train, drop_feature_rate_1)
+                x_2 = F.dropout(x_train, drop_feature_rate_2)
+                x_3 = F.dropout(x_train, drop_feature_rate_3)
+                ppi_drop = dropout_adj(ppiAdj_index_train, p=drop_edge_rate_1, force_undirected=True)[0]
+                path_drop = dropout_adj(pathAdj_index_train, p=drop_edge_rate_2, force_undirected=True)[0]
+                go_drop = dropout_adj(goAdj_index_train, p=drop_edge_rate_3, force_undirected=True)[0]
 
                 p1, p2, p3, _, conloss = model(
                     ppi_drop, path_drop, go_drop, x_1, x_2, x_3, train_idx=train_idx_cuda
@@ -274,10 +306,10 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
                 crloss = LAMBDA * (loss1 + loss2 + loss3)
                 loss = (1 - 3 * LAMBDA) * conloss + crloss
             else:
-                x_1 = F.dropout(x, drop_feature_rate_1)
-                x_go = F.dropout(x, drop_feature_rate_3)
-                ppi_drop = dropout_adj(ppiAdj_index, p=drop_edge_rate_1, force_undirected=True)[0]
-                go_drop = dropout_adj(goAdj_index, p=drop_edge_rate_3, force_undirected=True)[0]
+                x_1 = F.dropout(x_train, drop_feature_rate_1)
+                x_go = F.dropout(x_train, drop_feature_rate_3)
+                ppi_drop = dropout_adj(ppiAdj_index_train, p=drop_edge_rate_1, force_undirected=True)[0]
+                go_drop = dropout_adj(goAdj_index_train, p=drop_edge_rate_3, force_undirected=True)[0]
 
                 p1, p2, _, _, conloss = model(
                     ppi_drop, go_drop, x_1, x_go, train_idx=train_idx_cuda
@@ -295,9 +327,9 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             model.eval()
             with torch.no_grad():
                 if args.use_pathway:
-                    _, _, _, emb_eval, _ = model(ppiAdj_index, pathAdj_index, goAdj_index, x, x, x)
+                    _, _, _, emb_eval, _ = model(ppiAdj_index_train, pathAdj_index_train, goAdj_index_train, x_train, x_train, x_train)
                 else:
-                    _, _, _, emb_eval, _ = model(ppiAdj_index, goAdj_index, x, x)
+                    _, _, _, emb_eval, _ = model(ppiAdj_index_train, goAdj_index_train, x_train, x_train)
                 tr_x_eval = torch.sigmoid(emb_eval[train_idx]).cpu().numpy()
                 tr_y_eval = Y[train_idx].cpu().numpy().ravel()
                 val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
@@ -320,7 +352,7 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             if (epoch + 1) % 100 == 0 or (epoch + 1) == epochs:
                 print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:4d}/{epochs} | Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f} (Best Ep: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
 
-        # 训练结束后加载最佳 checkpoint，评估固定测试集一次
+        # 训练结束后加载最佳 checkpoint，评估固定测试集一次（恢复全图与原始特征）
         model.load_state_dict(best_model_state)
         model.eval()
         with torch.no_grad():
@@ -361,7 +393,8 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     preds_table['Pred_Prob_Std'] = pred_runs_matrix.std(axis=1)
     pred_df = pd.DataFrame(preds_table)
 
-    prefix = "smoke_mngcl" if args.smoke_test else "mngcl"
+    ind_tag = "_inductive" if args.inductive else ""
+    prefix = f"smoke_mngcl{ind_tag}" if args.smoke_test else f"mngcl{ind_tag}"
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
 
@@ -374,9 +407,11 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     np.savetxt(auprc_path, test_auprcs, fmt='%.6f')
     pred_df.to_csv(preds_path, index=False)
 
+    proto_str = "Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval)" if args.inductive else "Transductive (Full graph message passing during training)"
     with open(summary_path, 'w', encoding='utf-8') as f:
-        f.write(f"Method: MNGCL\n")
+        f.write(f"Method: MNGCL{' (Inductive)' if args.inductive else ''}\n")
         f.write(f"Task: {split_name}\n")
+        f.write(f"Protocol: {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
         f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
         f.write(f"Epochs: {epochs}\n")
         f.write(f"Views: {'3 views (PPI + Pathway + GO)' if args.use_pathway else '2 views (PPI + GO similarity, Paper Table Setting)'}\n")
@@ -412,6 +447,7 @@ def main():
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--use_pathway', type=str2bool, default=False, help='Whether to use pathway view (default False: 2 views PPI+GO, matching paper table)')
     parser.add_argument('--no_pathway', action='store_true', help='Exclude pathway view (2 views: PPI + GO similarity, matching paper criteria)')
+    parser.add_argument('--inductive', action='store_true', help='Run in strict inductive mode (cut test edges and zero out test features during training, restore at eval)')
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--dense', action='store_true', help='Use original dense similarity matrices for contrastive loss (requires >12GB GPU memory)')
     parser.add_argument('--gpu', type=int, default=0)

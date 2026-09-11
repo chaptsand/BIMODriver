@@ -496,14 +496,14 @@ def load_leakage_splits(audit_file_path=None):
 def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data, L_emb, edge_index, L_emb_edge,
                           lr=0.0005, epochs=160, lambdinter=0.001, dropout=0.3,
                           split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2,
-                          smoke_test=False, masked=False, statement_path=None):
+                          smoke_test=False, masked=False, statement_path=None, inductive=False):
     """
-    严格的标签泄露词审计划分实验流程：
+    严格的标签泄露词审计划分实验流程（支持传导式与严格归纳式）：
     1. 分类损失和对比损失都严格仅在实际训练节点上计算（防止测试节点和 Unknown 节点泄露）。
-    2. 从训练候选组内部划分训练集/验证集（如 8:2 分层划分）。
-    3. 每个 epoch 仅评估验证集，根据验证集指标（AUPRC）保存最佳 Checkpoint。
-    4. 训练完成后加载最佳 Checkpoint，仅对固定的最终测试集执行一次最终评估。
-    5. 变量、输出内容与文件名中 AUROC 与 AUPRC 严格一致。
+    2. 归纳式模式下：切断所有与测试集基因相连的边，训练期测试基因组学与文本特征全部置零。
+    3. 从训练候选组内部划分训练集/验证集（如 8:2 分层划分）。
+    4. 每个 epoch 仅评估验证集，根据验证集指标（AUPRC）保存最佳 Checkpoint。
+    5. 训练完成后加载最佳 Checkpoint，仅对固定的最终测试集执行一次最终评估（恢复全图与冻结特征）。
     """
     # 0. 先行数据对齐严格断言检查
     assert_data_alignment(BASE_DIR)
@@ -516,9 +516,37 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     test_drivers = int((y_test_np == 1).sum())
     test_nondrivers = int((y_test_np == 0).sum())
 
+    # 归纳式设置：切断测试连边，置零测试特征
+    if inductive:
+        pb_train = edge_index[:, ~(fixed_test_tensor[edge_index[0]] | fixed_test_tensor[edge_index[1]])]
+        L_emb_edge_train = L_emb_edge[:, ~(fixed_test_tensor[L_emb_edge[0]] | fixed_test_tensor[L_emb_edge[1]])]
+
+        x_train = data.x.detach().clone()
+        x_train[fixed_test_tensor] = 0.0
+
+        L_emb_train = {
+            'self_emb': L_emb['self_emb'].detach().clone(),
+            'neighbor_emb': L_emb['neighbor_emb'].detach().clone(),
+            'together_emb': L_emb['together_emb'].detach().clone()
+        }
+        L_emb_train['self_emb'][fixed_test_tensor] = 0.0
+        L_emb_train['neighbor_emb'][fixed_test_tensor] = 0.0
+        L_emb_train['together_emb'][fixed_test_tensor] = 0.0
+
+        assert not (fixed_test_tensor[pb_train[0]].any() or fixed_test_tensor[pb_train[1]].any()), "CPDB 训练图中检测到测试基因连边！"
+        assert not (fixed_test_tensor[L_emb_edge_train[0]].any() or fixed_test_tensor[L_emb_edge_train[1]].any()), "KNN 训练图中检测到测试基因连边！"
+        assert torch.all(x_train[fixed_test_tensor] == 0.0), "训练期测试基因组学特征未完全置零！"
+        assert torch.all(L_emb_train['self_emb'][fixed_test_tensor] == 0.0), "训练期测试基因 self_emb 未完全置零！"
+    else:
+        pb_train = edge_index
+        L_emb_edge_train = L_emb_edge
+        x_train = data.x
+        L_emb_train = L_emb
+
     feat_desc = "Masked Features (关键词遮蔽消融)" if masked else "Original Features (原始基线特征)"
+    mode_desc = "Strict Inductive (严格归纳式: 切断测试边+特征置零)" if inductive else "Transductive (传导式全图)"
     print(f"\n{'='*75}")
-    print(f"Running Leakage Split Experiment: [{split_name}]")
+    print(f"Running Leakage Split Experiment: [{split_name}] [{mode_desc}]")
     print(f"  Method & Feature Mode   : BIMODriver [{feat_desc}]")
     print(f"  Loaded Statement File   : {statement_path}")
     print(f"  Training Candidate Pool : {len(cand_indices)} genes (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})")
@@ -596,10 +624,10 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
             model.train()
             optimizer.zero_grad()
 
-            # 前向传播：tr_mask 严格限定在实际训练节点上，对比损失绝不包含验证、测试或 Unknown 节点
-            edge_index_train = dropout_adj(edge_index, p=0.3)[0]
+            # 前向传播：传入置零特征与切断测试边后的图，tr_mask 严格限定在实际训练节点上（对比损失绝不包含验证、测试或 Unknown 节点）
+            edge_index_train = dropout_adj(pb_train, p=0.3)[0]
             loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
-                data.x, edge_index_train, L_emb, L_emb_edge, tr_mask=inner_tr_indices
+                x_train, edge_index_train, L_emb_train, L_emb_edge_train, tr_mask=inner_tr_indices
             )
 
             # 分类损失：严格仅在实际训练节点上计算
@@ -672,11 +700,12 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
     print(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}")
     print(f"{'='*75}\n")
 
-    # 5. 保存结果文件（严格区分 original 与 masked，避免相互覆盖）
+    # 5. 保存结果文件（严格区分 original 与 masked, transductive 与 inductive，避免相互覆盖）
     res_dir = os.path.join(BASE_DIR, 'result')
     os.makedirs(res_dir, exist_ok=True)
     feat_tag = "masked" if masked else "original"
-    prefix = f"smoke_bimodriver_{feat_tag}" if smoke_test else f"bimodriver_{feat_tag}"
+    ind_tag = "_inductive" if inductive else ""
+    prefix = f"smoke_bimodriver_{feat_tag}{ind_tag}" if smoke_test else f"bimodriver_{feat_tag}{ind_tag}"
 
     # 保存测试基因预测概率表
     test_idx = np.where(fixed_test_mask)[0]
@@ -704,14 +733,15 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
 
     summary_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_summary.txt")
     with open(summary_path, 'w', encoding='utf-8') as f:
-        f.write(f"Method: BIMODriver ({feat_tag.capitalize()})\n")
+        f.write(f"Method: BIMODriver ({feat_tag.capitalize()}{' Inductive' if inductive else ''})\n")
         f.write(f"Leakage Split Experiment: {split_name}\n")
         f.write(f"Feature Mode: {'Masked Features (消融实验)' if masked else 'Original Features (原始基线特征)'}\n")
         f.write(f"Loaded Statement Feature File: {statement_path}\n")
         f.write(f"Training Candidate Pool : {len(cand_indices)} (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})\n")
         f.write(f"Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Val\n")
         f.write(f"Fixed Testing Set       : {len(y_test_np)} (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})\n")
-        f.write(f"Protocol                : Checkpoint selected on validation set, test set evaluated ONCE\n")
+        proto_str = "Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval)" if inductive else "Transductive (Full graph message passing during training)"
+        f.write(f"Protocol                : {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
         f.write(f"Experiments             : {n_exp} independent runs, {epochs} epochs each\n")
         f.write(f"Hyperparameters         : lr={lr}, dropout={dropout}, lambdinter={lambdinter}\n")
         f.write('-' * 60 + '\n')
@@ -881,7 +911,8 @@ def main():
             val_ratio=args.val_ratio,
             smoke_test=args.smoke_test,
             masked=args.masked,
-            statement_path=statement_path
+            statement_path=statement_path,
+            inductive=args.inductive
         )
 
 
