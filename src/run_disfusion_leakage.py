@@ -325,9 +325,11 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             del adj_hyperGraph_train, fh_train
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
-
-        adj_hyperGraph_te = adj_hyperGraph_cpu.to(device)
-        fh_te = fh_cpu.to(device)
+            adj_hyperGraph_te = adj_hyperGraph_cpu.to(device)
+            fh_te = fh_cpu.to(device)
+        else:
+            adj_hyperGraph_te = adj_hyperGraph_train
+            fh_te = fh_train
 
         model_hypergrph.eval()
         model_graph.eval()
@@ -343,9 +345,10 @@ def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
             p_t, r_t, _ = metrics.precision_recall_curve(te_y, pred_test)
             test_prc = metrics.auc(r_t, p_t)
 
-        del adj_hyperGraph_te, fh_te
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+        if args.inductive:
+            del adj_hyperGraph_te, fh_te
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
 
         elapsed = time.time() - t_start
         print(f"  >> Run {run_i+1} Done in {elapsed:.1f}s | Best Ep: {best_epoch} | Test AUROC: {test_auc:.4f}, Test AUPRC: {test_prc:.4f}")
