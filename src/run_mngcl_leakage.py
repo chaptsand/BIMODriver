@@ -318,42 +318,51 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
                 loss1 = F.binary_cross_entropy_with_logits(p1[train_idx_cuda], Y[train_idx_cuda])
                 loss2 = F.binary_cross_entropy_with_logits(p2[train_idx_cuda], Y[train_idx_cuda])
                 crloss = LAMBDA * (loss1 + loss2)
-                loss = (1 - 2 * LAMBDA) * conloss + crloss
+                lambda_fac = args.loss_lambda_factor if hasattr(args, 'loss_lambda_factor') else 2
+                loss = (1 - lambda_fac * LAMBDA) * conloss + crloss
 
             loss.backward()
             optimizer.step()
 
-            # 验证集评估（严格不触碰测试集）
-            model.eval()
-            with torch.no_grad():
-                if args.use_pathway:
-                    _, _, _, emb_eval, _ = model(ppiAdj_index_train, pathAdj_index_train, goAdj_index_train, x_train, x_train, x_train)
-                else:
-                    _, _, _, emb_eval, _ = model(ppiAdj_index_train, goAdj_index_train, x_train, x_train)
-                tr_x_eval = torch.sigmoid(emb_eval[train_idx]).cpu().numpy()
-                tr_y_eval = Y[train_idx].cpu().numpy().ravel()
-                val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
-                val_y_eval = Y[val_idx].cpu().numpy().ravel()
+            # 评估逻辑：根据 eval_mode 选择动态挑 Checkpoint 或固定轮数评估
+            if args.eval_mode == 'checkpoint':
+                model.eval()
+                with torch.no_grad():
+                    if args.use_pathway:
+                        _, _, _, emb_eval, _ = model(ppiAdj_index_train, pathAdj_index_train, goAdj_index_train, x_train, x_train, x_train)
+                    else:
+                        _, _, _, emb_eval, _ = model(ppiAdj_index_train, goAdj_index_train, x_train, x_train)
+                    tr_x_eval = torch.sigmoid(emb_eval[train_idx]).cpu().numpy()
+                    tr_y_eval = Y[train_idx].cpu().numpy().ravel()
+                    val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
+                    val_y_eval = Y[val_idx].cpu().numpy().ravel()
 
-                regr = linear_model.LogisticRegression(max_iter=10000)
-                regr.fit(tr_x_eval, tr_y_eval)
-                pred_val = regr.predict_proba(val_x_eval)[:, 1]
+                    regr = linear_model.LogisticRegression(max_iter=10000)
+                    regr.fit(tr_x_eval, tr_y_eval)
+                    pred_val = regr.predict_proba(val_x_eval)[:, 1]
 
-                val_auc = metrics.roc_auc_score(val_y_eval, pred_val)
-                p_v, r_v, _ = metrics.precision_recall_curve(val_y_eval, pred_val)
-                val_prc = metrics.auc(r_v, p_v)
+                    val_auc = metrics.roc_auc_score(val_y_eval, pred_val)
+                    p_v, r_v, _ = metrics.precision_recall_curve(val_y_eval, pred_val)
+                    val_prc = metrics.auc(r_v, p_v)
 
-            if val_prc > best_val_auprc:
-                best_val_auprc = val_prc
-                best_val_auroc = val_auc
-                best_epoch = epoch + 1
-                best_model_state = copy.deepcopy(model.state_dict())
+                if val_prc > best_val_auprc:
+                    best_val_auprc = val_prc
+                    best_val_auroc = val_auc
+                    best_epoch = epoch + 1
+                    best_model_state = copy.deepcopy(model.state_dict())
 
-            if (epoch + 1) % 100 == 0 or (epoch + 1) == epochs:
-                print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:4d}/{epochs} | Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f} (Best Ep: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
+                if (epoch + 1) % 100 == 0 or (epoch + 1) == epochs:
+                    print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:4d}/{epochs} | Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f} (Best Ep: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
+            else:
+                # Fixed epoch 模式 (原版 MNGCL 协议)：训练期不进行繁重的单轮 LR 评估，极大加速运行
+                if (epoch + 1) % 100 == 0 or (epoch + 1) == epochs:
+                    print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:4d}/{epochs} | Train Loss: {loss.item():.4f}")
 
-        # 训练结束后加载最佳 checkpoint，评估固定测试集一次（恢复全图与原始特征）
-        model.load_state_dict(best_model_state)
+        # 训练结束后评估固定测试集一次（恢复全图与原始特征）
+        if args.eval_mode == 'checkpoint':
+            model.load_state_dict(best_model_state)
+        else:
+            best_epoch = epochs
         model.eval()
         with torch.no_grad():
             if args.use_pathway:
@@ -373,8 +382,18 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
             p_t, r_t, _ = metrics.precision_recall_curve(te_y_eval, pred_test)
             test_prc = metrics.auc(r_t, p_t)
 
+            val_x_eval = torch.sigmoid(emb_eval[val_idx]).cpu().numpy()
+            val_y_eval = Y[val_idx].cpu().numpy().ravel()
+            pred_val = regr.predict_proba(val_x_eval)[:, 1]
+            val_auc = metrics.roc_auc_score(val_y_eval, pred_val)
+            p_v, r_v, _ = metrics.precision_recall_curve(val_y_eval, pred_val)
+            val_prc = metrics.auc(r_v, p_v)
+            if args.eval_mode != 'checkpoint':
+                best_val_auroc = val_auc
+                best_val_auprc = val_prc
+
         elapsed = time.time() - t_start
-        print(f"  >> Run {run_i+1} Done in {elapsed:.1f}s | Best Ep: {best_epoch} | Test AUROC: {test_auc:.4f}, Test AUPRC: {test_prc:.4f}")
+        print(f"  >> Run {run_i+1} Done in {elapsed:.1f}s | Ep: {best_epoch} | Test AUROC: {test_auc:.4f}, Test AUPRC: {test_prc:.4f} (Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f})")
 
         test_aurocs.append(test_auc)
         test_auprcs.append(test_prc)
@@ -411,9 +430,11 @@ def run_mngcl_for_split(split_name, splits_data, gene_df, device, args):
     with open(summary_path, 'w', encoding='utf-8') as f:
         f.write(f"Method: MNGCL{' (Inductive)' if args.inductive else ''}\n")
         f.write(f"Task: {split_name}\n")
-        f.write(f"Protocol: {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
+        eval_desc = "Checkpoint selected on validation set" if getattr(args, 'eval_mode', 'fixed') == 'checkpoint' else "Fixed Epoch Protocol (Paper Native Evaluation)"
+        f.write(f"Protocol: {proto_str}, {eval_desc}, test set evaluated ONCE\n")
         f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
         f.write(f"Epochs: {epochs}\n")
+        f.write(f"Eval Mode: {getattr(args, 'eval_mode', 'fixed')}\n")
         f.write(f"Views: {'3 views (PPI + Pathway + GO)' if args.use_pathway else '2 views (PPI + GO similarity, Paper Table Setting)'}\n")
         f.write(f"LR: {LR}, Tau: {tau}, Lambda: {LAMBDA}\n")
         f.write(f"{'-'*60}\n")
@@ -443,7 +464,11 @@ def main():
     parser.add_argument('--split', type=str, default='both', choices=['clean_to_hit', 'hit_to_clean', 'both', 'cv'])
     parser.add_argument('--smoke_test', action='store_true', help='Run quick test with 5 epochs')
     parser.add_argument('--n_runs', type=int, default=10)
-    parser.add_argument('--epochs', type=int, default=1000)
+    parser.add_argument('--epochs', type=int, default=500, help='训练轮数 (默认 500)')
+    parser.add_argument('--eval_mode', type=str, default='fixed', choices=['fixed', 'checkpoint'],
+                        help="评估模式: 'fixed' (MNGCL原论文固定轮数评估协议, 默认), 'checkpoint' (验证集动态挑最佳checkpoint)")
+    parser.add_argument('--loss_lambda_factor', type=int, default=2, choices=[2, 3],
+                        help="分类损失权重乘数: 2表示(1-2*LAMBDA)*conloss+crloss(2视角理论归一化, 默认), 3表示(1-3*LAMBDA)")
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--use_pathway', type=str2bool, default=False, help='Whether to use pathway view (default False: 2 views PPI+GO, matching paper table)')
     parser.add_argument('--no_pathway', action='store_true', help='Exclude pathway view (2 views: PPI + GO similarity, matching paper criteria)')

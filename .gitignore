@@ -9,7 +9,9 @@ __pycache__/
 
 # Runtime experiment results and output logs
 result/
+result_backup*/
 *.log
+*.zip
 
 # Editor and OS files
 .vscode/

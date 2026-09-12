@@ -26,8 +26,8 @@ run_transductive() {
     echo ">>> [2/3] Running DISFusion (Transductive, Paper Setting: 64-dim, 10362 hyperedges)..."
     $PYTHON_EXEC src/run_disfusion_leakage.py --split both --n_runs 10 --epochs 200 2>&1 | tee result/server_disfusion_leakage.log
 
-    echo ">>> [3/3] Running MNGCL (Transductive, Paper Setting: 64-dim, 2 views PPI+GO)..."
-    $PYTHON_EXEC src/run_mngcl_leakage.py --split both --n_runs 10 --epochs 1000 --no_pathway 2>&1 | tee result/server_mngcl_leakage.log
+    echo ">>> [3/3] Running MNGCL (Transductive, Paper Setting: 64-dim, 2 views PPI+GO, 500 epochs fixed eval)..."
+    $PYTHON_EXEC src/run_mngcl_leakage.py --split both --n_runs 10 --epochs 500 --eval_mode fixed --no_pathway 2>&1 | tee result/server_mngcl_leakage.log
 }
 
 run_inductive() {
@@ -42,8 +42,8 @@ run_inductive() {
     echo ">>> [2/3] Running DISFusion (Strict Inductive: cut PPI/Hypergraph test edges, zero test features)..."
     $PYTHON_EXEC src/run_disfusion_leakage.py --split both --n_runs 10 --epochs 200 --inductive 2>&1 | tee result/server_disfusion_inductive.log
 
-    echo ">>> [3/3] Running MNGCL (Strict Inductive: cut PPI/GO test edges, zero test features)..."
-    $PYTHON_EXEC src/run_mngcl_leakage.py --split both --n_runs 10 --epochs 1000 --no_pathway --inductive 2>&1 | tee result/server_mngcl_inductive.log
+    echo ">>> [3/3] Running MNGCL (Strict Inductive: cut PPI/GO test edges, zero test features, 500 epochs fixed eval)..."
+    $PYTHON_EXEC src/run_mngcl_leakage.py --split both --n_runs 10 --epochs 500 --eval_mode fixed --no_pathway --inductive 2>&1 | tee result/server_mngcl_inductive.log
 }
 
 case "$MODE" in
