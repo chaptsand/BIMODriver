@@ -8,13 +8,17 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$BASE_DIR"
 
-if [ -f "result/mngcl_clean_to_hit_results.tar.gz" ]; then
+if [ -f "result/mngcl_leakage_results.tar.gz" ]; then
+    echo ">>> Extracting result/mngcl_leakage_results.tar.gz..."
+    tar -xzf result/mngcl_leakage_results.tar.gz -C result/
+elif [ -f "result/mngcl_clean_to_hit_results.tar.gz" ]; then
     echo ">>> Extracting result/mngcl_clean_to_hit_results.tar.gz..."
     tar -xzf result/mngcl_clean_to_hit_results.tar.gz -C result/
 fi
 
-echo ">>> Copying updated MNGCL clean_to_hit files to result/clean_hit_results/..."
-cp -v result/mngcl*clean_to_hit* result/clean_hit_results/
+echo ">>> Copying updated MNGCL result files to result/clean_hit_results/..."
+cp -v result/mngcl*clean_to_hit* result/clean_hit_results/ 2>/dev/null || true
+cp -v result/mngcl*hit_to_clean* result/clean_hit_results/ 2>/dev/null || true
 
 echo ""
 echo ">>> Verifying Clean <-> Hit benchmark consistency across all 10 runs..."

@@ -1,25 +1,30 @@
 #!/bin/bash
 # ==============================================================================
-# Run MNGCL Clean -> Hit (10 Runs, 500 Epochs, Fixed Eval Protocol) on Server
-# Generates 10-run results for both Transductive and Strict Inductive modes
+# Run MNGCL Unified Benchmark on Server (10 Runs, 500 Epochs, Fixed Eval Protocol)
+# Supports: clean_to_hit, hit_to_clean, or both (default: both)
+# Generates 100% unified results for both Transductive and Strict Inductive modes
 # ==============================================================================
 
 set -e
 
 PYTHON_EXEC="${PYTHON_EXEC:-python}"
 GPU_ID="${1:-0}"
+SPLIT="${2:-both}"  # options: both, clean_to_hit, hit_to_clean
 
 echo "========================================================================"
-echo "Running MNGCL on Clean -> Hit Benchmark (10 Runs, 500 Epochs, Fixed Eval)"
-echo "Using Python: $PYTHON_EXEC on GPU: $GPU_ID"
+echo "Running MNGCL Unified Benchmark (Protocol: Fixed 500 Epochs, Native Paper)"
+echo "Split          : $SPLIT"
+echo "Runs per split : 10"
+echo "Device         : GPU $GPU_ID"
+echo "Python         : $PYTHON_EXEC"
 echo "========================================================================"
 
 mkdir -p result
 
 echo ""
-echo ">>> [1/2] Running Transductive MNGCL on Clean -> Hit (10 runs, fixed 500 ep)..."
+echo ">>> [1/2] Running Transductive MNGCL on [$SPLIT] (10 runs, 500 ep, fixed eval)..."
 $PYTHON_EXEC src/run_mngcl_leakage.py \
-    --split clean_to_hit \
+    --split "$SPLIT" \
     --n_runs 10 \
     --epochs 500 \
     --eval_mode fixed \
@@ -27,9 +32,9 @@ $PYTHON_EXEC src/run_mngcl_leakage.py \
     --gpu "$GPU_ID"
 
 echo ""
-echo ">>> [2/2] Running Strict Inductive MNGCL on Clean -> Hit (10 runs, fixed 500 ep)..."
+echo ">>> [2/2] Running Strict Inductive MNGCL on [$SPLIT] (10 runs, 500 ep, fixed eval)..."
 $PYTHON_EXEC src/run_mngcl_leakage.py \
-    --split clean_to_hit \
+    --split "$SPLIT" \
     --n_runs 10 \
     --epochs 500 \
     --eval_mode fixed \
@@ -39,20 +44,17 @@ $PYTHON_EXEC src/run_mngcl_leakage.py \
 
 echo ""
 echo "========================================================================"
-echo "Packaging generated Clean -> Hit result files into archive..."
+echo "Packaging generated MNGCL benchmark result files..."
 echo "========================================================================"
 cd result
-tar -czf mngcl_clean_to_hit_results.tar.gz \
-    mngcl_leakage_clean_to_hit_auroc.txt \
-    mngcl_leakage_clean_to_hit_auprc.txt \
-    mngcl_leakage_clean_to_hit_summary.txt \
-    mngcl_leakage_clean_to_hit_test_preds.csv \
-    mngcl_inductive_leakage_clean_to_hit_auroc.txt \
-    mngcl_inductive_leakage_clean_to_hit_auprc.txt \
-    mngcl_inductive_leakage_clean_to_hit_summary.txt \
-    mngcl_inductive_leakage_clean_to_hit_test_preds.csv
+tar -czf mngcl_leakage_results.tar.gz \
+    mngcl*clean_to_hit*.txt \
+    mngcl*clean_to_hit*.csv \
+    mngcl*hit_to_clean*.txt \
+    mngcl*hit_to_clean*.csv 2>/dev/null || tar -czf mngcl_leakage_results.tar.gz mngcl*clean_to_hit*
 cd ..
 
-echo "SUCCESS! Created result/mngcl_clean_to_hit_results.tar.gz"
-echo "You can transfer this archive back to local, or scp the 8 result/mngcl*clean_to_hit* files."
+echo "SUCCESS! Created result/mngcl_leakage_results.tar.gz"
+echo "Summary of generated files:"
+ls -lh result/mngcl*leakage*
 echo "========================================================================"
