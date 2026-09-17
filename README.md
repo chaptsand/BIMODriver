@@ -185,18 +185,9 @@ See [`paper_figures_tables/README.md`](paper_figures_tables/README.md) and [`pap
 
 ---
 
-## Citation
+## Contact
 
-If you find our work useful in your research, please cite:
-
-```bibtex
-@article{bimodriver2026,
-  title={Integrating Large Model-Generated Biological Knowledge and Multi-Omics Features for Cancer Driver Gene Identification},
-  author={Wei, Peng and Zhang, Qian and Tao, Yuan and et al.},
-  journal={Bioinformatics / IEEE Transactions on Computational Biology and Bioinformatics},
-  year={2026}
-}
-```
+If you have any questions regarding our code or data, please do not hesitate to open an issue or directly contact me (`weipeng1980@gmail.com`).
 
 ---
 
