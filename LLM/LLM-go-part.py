@@ -1,4 +1,6 @@
-# coding: gbk
+# -*- coding: utf-8 -*-
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import ollama
 import numpy as np
 import pandas as pd
@@ -16,11 +18,11 @@ from sklearn import metrics
 import os
 import re
 from datetime import datetime
-MAX_FEATURES = 3  # Ã¿¸öÀà±ğÌáÈ¡3¸öÌØÕ÷
-CATEGORIES = ['BP', 'MF', 'CC']  # Èı¸ö¹¦ÄÜÀà±ğ
+MAX_FEATURES = 3  # æ¯ä¸ªç±»åˆ«æå–3ä¸ªç‰¹å¾
+CATEGORIES = ['BP', 'MF', 'CC']  # ä¸‰ä¸ªåŠŸèƒ½ç±»åˆ«
 
 # def is_valid_output(feature):
-#     """ÑéÖ¤ÌØÕ÷ÓĞĞ§ĞÔ"""
+#     """éªŒè¯ç‰¹å¾æœ‰æ•ˆæ€§"""
 #     return (
 #         # len(feature) >= 3 and
 #         # not feature.startswith('http') and
@@ -28,12 +30,12 @@ CATEGORIES = ['BP', 'MF', 'CC']  # Èı¸ö¹¦ÄÜÀà±ğ
 #     )
 
 def process_model_output(content, gene_name):
-    """´¦Àí´óÄ£ĞÍÊä³ö²¢ÌáÈ¡ÈıÀàÌØÕ÷"""
-    # ÌØÕ÷Àà±ğ
+    """å¤„ç†å¤§æ¨¡å‹è¾“å‡ºå¹¶æå–ä¸‰ç±»ç‰¹å¾"""
+    # ç‰¹å¾ç±»åˆ«
     CATEGORIES = ['BP', 'MF', 'CC']
     MAX_FEATURES = 3
     
-    # ³õÊ¼»¯½á¹û×Öµä
+    # åˆå§‹åŒ–ç»“æœå­—å…¸
     features = {
         'BP': ['none'] * MAX_FEATURES,
         'MF': ['none'] * MAX_FEATURES,
@@ -41,32 +43,32 @@ def process_model_output(content, gene_name):
     }
     
     try:
-        # Ê¹ÓÃÕıÔò±í´ïÊ½Æ¥ÅäÈı¸öÀà±ğµÄÄÚÈİ
+        # ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼åŒ¹é…ä¸‰ä¸ªç±»åˆ«çš„å†…å®¹
         for category in CATEGORIES:
             pattern = r'</{}>(.*?)</{}>'.format(category, category)
             match = re.search(pattern, content, re.DOTALL)
             
             if match:
-                # ÇåÀíÄÚÈİ¿é
+                # æ¸…ç†å†…å®¹å—
                 cleaned_block = re.sub(r'[\n\t]+', ' ', match.group(1).strip())
                 
-                # ·Ö¸îÌØÕ÷Ïî
+                # åˆ†å‰²ç‰¹å¾é¡¹
                 raw_features = re.split(r'[,;]', cleaned_block)
                 
-                # ´¦ÀíÃ¿¸öÌØÕ÷
+                # å¤„ç†æ¯ä¸ªç‰¹å¾
                 valid_features = []
                 for feat in raw_features:
                     feat = re.sub(r'^\d+[\.\)]?\s*', '', feat.strip())
                     if feat and is_valid_output(feat):
                         valid_features.append(feat.lower())
                 
-                # Ìî³äÌØÕ÷ÁĞ±í
+                # å¡«å……ç‰¹å¾åˆ—è¡¨
                 features[category] = valid_features[:MAX_FEATURES]
                 if len(features[category]) < MAX_FEATURES:
                     features[category] += ['none'] * (MAX_FEATURES - len(features[category]))
 
     except Exception as e:
-        print(f"´¦Àí{gene_name}Êä³öÊ±³ö´í: {str(e)}")
+        print(f"å¤„ç†{gene_name}è¾“å‡ºæ—¶å‡ºé”™: {str(e)}")
         return None
         
     return features
@@ -77,11 +79,11 @@ def is_valid_output(feat):
 EPOCH = 100
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-prompt = open(".\LLM\go_prompt.txt", "r",encoding='gbk').read()
+prompt = open(".\LLM\go_prompt.txt", "r",encoding='utf-8', errors='ignore').read()
 
-cancer_name_txt = pd.read_csv("/home/yuantao/code/LLM/txt/data/cancer.txt", header=None).values
+cancer_name_txt = pd.read_csv(os.path.join(BASE_DIR, "LLM", "cancer.txt"), header=None).values
 
-sentance = pd.read_csv(r'/home/yuantao/code/LLM/GO´Ê»ã»ñÈ¡/string_test.csv')
+sentance = pd.read_csv(os.path.join(BASE_DIR, "LLM", "string_node_names.txt"))
 sentance.columns = ['Ensembl_ID','Gene_Symbol','All_Description','Has_Description']
 
 
@@ -100,10 +102,10 @@ for cancer_name in cancer_names:
             , "_")
             break
     new_prompt = prompt.replace('Cancer_name', cancer_name_prompt)
-    gene_name_list = open(r'/home/yuantao/code/LLM/txt/data/string_node_names.txt','r',encoding='utf-8').read().split('\n')
+    gene_name_list = open(os.path.join(BASE_DIR, "LLM", "string_node_names.txt"),'r',encoding='utf-8').read().split('\n')
 
 
-    output_dir = '/home/yuantao/code/LLM/csv/·ÖÀàĞÍÊä³ö/' + modelname + '/'
+    output_dir = os.path.join(BASE_DIR, "LLM", "output", modelname)
     output_file = os.path.join(output_dir, f"{cancer_name}_string_go_features.csv")
     os.makedirs(output_dir, exist_ok=True)
 
@@ -145,27 +147,27 @@ for cancer_name in cancer_names:
             
             while retry_count < 3 and not success:
                 try:
-                    # Éú³Éprompt
+                    # ç”Ÿæˆprompt
                     new_prompt1 = new_prompt.replace('Gene_name', gene_symbol).replace(
                         'go_description', str(sentance['All_Description'][idx])
                     )
                     # print(new_prompt1)
                     
-                    # »ñÈ¡Ä£ĞÍÏìÓ¦
+                    # è·å–æ¨¡å‹å“åº”
                     response = ollama.generate(model=modelname, prompt=new_prompt1)
                     content = response['response']
-                    # print(f"Ä£ĞÍÏìÓ¦: {content}")
+                    # print(f"æ¨¡å‹å“åº”: {content}")
                     
-                    # ´¦ÀíÊä³ö
+                    # å¤„ç†è¾“å‡º
                     feature_dict = process_model_output(content, gene_symbol)
                     
                     if feature_dict:
-                        # ¹¹½¨CSVĞĞ
+                        # æ„å»ºCSVè¡Œ
                         row_data = [gene_id, gene_symbol]
                         for cat in CATEGORIES:
                             row_data += feature_dict[cat][:MAX_FEATURES]
                         
-                        # Ğ´ÈëÎÄ¼ş
+                        # å†™å…¥æ–‡ä»¶
                         # with open(output_file, 'a') as f:
                         #     f.write(','.join(map(str, row_data)) + '\n')
                         f1.write(','.join(map(str, row_data)) + '\n')
@@ -173,22 +175,22 @@ for cancer_name in cancer_names:
                         print(f"{gene_symbol},{feature_dict}")
                         success = True
                     else:
-                        print(f"µÚ{retry_count+1}´ÎÖØÊÔ: {gene_symbol}")
+                        print(f"ç¬¬{retry_count+1}æ¬¡é‡è¯•: {gene_symbol}")
                         retry_count += 1
                         
                 except Exception as e:
-                    print(f"´¦ÀíÒì³£: {str(e)}")
+                    print(f"å¤„ç†å¼‚å¸¸: {str(e)}")
                     retry_count += 1
                     
             if not success:
-                print(f"ÎŞ·¨»ñÈ¡ÓĞĞ§ÌØÕ÷: {gene_symbol}")
-                # ¼ÇÂ¼Ê§°Ü°¸Àı
+                print(f"æ— æ³•è·å–æœ‰æ•ˆç‰¹å¾: {gene_symbol}")
+                # è®°å½•å¤±è´¥æ¡ˆä¾‹
                 with open('error_log.txt', 'a') as f:
                     f.write(f"{gene_id},{gene_symbol}\t{content}\n")
 
-            # ¶¨ÆÚË¢ĞÂ»º³åÇø
+            # å®šæœŸåˆ·æ–°ç¼“å†²åŒº
             if idx % 20 == 0:
                 f1.flush()
-                print(f"ÒÑ´¦Àí {idx} ¸ö»ùÒò£¬µ±Ç°»ùÒò: {gene_symbol}")
+                print(f"å·²å¤„ç† {idx} ä¸ªåŸºå› ï¼Œå½“å‰åŸºå› : {gene_symbol}")
 
     f1.close()

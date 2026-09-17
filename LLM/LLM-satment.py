@@ -1,4 +1,6 @@
-# coding: gbk
+# -*- coding: utf-8 -*-
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 import ollama
 import numpy as np
 import pandas as pd
@@ -27,10 +29,10 @@ def get_neighbor_descriptions(node_idx, data, sentance, max_neighbors=6):
     neighbors.extend(sources[targets == node_idx].tolist())
     neighbors.extend(targets[sources == node_idx].tolist())
     
-    # È¥ÖØ²¢ÅÅĞòÒÔ±£Ö¤Ë³ĞòÒ»ÖÂĞÔ
+    # å»é‡å¹¶æ’åºä»¥ä¿è¯é¡ºåºä¸€è‡´æ€§
     unique_neighbors = sorted(list(set(neighbors)))
     
-    # ·ÖÁ½¸ö½×¶ÎÊÕ¼¯£ºÓĞÃèÊöµÄ + ÎŞÃèÊöµÄ
+    # åˆ†ä¸¤ä¸ªé˜¶æ®µæ”¶é›†ï¼šæœ‰æè¿°çš„ + æ— æè¿°çš„
     desc_candidates = []
     no_desc_candidates = []
     
@@ -45,26 +47,26 @@ def get_neighbor_descriptions(node_idx, data, sentance, max_neighbors=6):
             else:
                 no_desc_candidates.append((gene_symbol, all_desc))
     
-    # ¹¹½¨ÃèÊöÁĞ±í
+    # æ„å»ºæè¿°åˆ—è¡¨
     descriptions = []
     
-    # µÚÒ»½×¶Î£ºÌí¼ÓÓĞÃèÊöµÄÁÚ¾Ó
+    # ç¬¬ä¸€é˜¶æ®µï¼šæ·»åŠ æœ‰æè¿°çš„é‚»å±…
     for gene_symbol, desc in desc_candidates[:max_neighbors]:
         # print(f"with description: {gene_symbol}, description: {desc}")
         descriptions.append(f"{gene_symbol}: {desc}")
     
-    # µÚ¶ş½×¶Î£ºÈç¹û²»×ãÔò²¹³äÎŞÃèÊöµÄÁÚ¾Ó
+    # ç¬¬äºŒé˜¶æ®µï¼šå¦‚æœä¸è¶³åˆ™è¡¥å……æ— æè¿°çš„é‚»å±…
     remaining = max_neighbors - len(descriptions)
     if remaining > 0:
         for gene_symbol in no_desc_candidates[:remaining]:
             # print(f"with no description: {gene_symbol}")
             descriptions.append(f"{gene_symbol}")
     
-    # ´¦ÀíÎŞÁÚ¾ÓµÄÇé¿ö
+    # å¤„ç†æ— é‚»å±…çš„æƒ…å†µ
     return "\n".join(descriptions) if descriptions else "No neighboring gene information available"
 
 def process_model_output(content, gene_name):
-    """´¦Àí´óÄ£ĞÍÊä³ö²¢ÌáÈ¡ÈıÀàÃèÊöĞÔÓï¾ä£¨¼ò»¯°æ£©"""
+    """å¤„ç†å¤§æ¨¡å‹è¾“å‡ºå¹¶æå–ä¸‰ç±»æè¿°æ€§è¯­å¥ï¼ˆç®€åŒ–ç‰ˆï¼‰"""
     CATEGORY_TAGS = {
         'self_statement': r'</self_statement>(.*?)</self_statement>',
         'neighbor_statement': r'</neighbor_statement>(.*?)</neighbor_statement>',
@@ -74,54 +76,53 @@ def process_model_output(content, gene_name):
     statements = {cat: 'none' for cat in CATEGORY_TAGS.keys()}
 
     try:
-        # Í³Ò»´¦Àí»»ĞĞ·ûºÍ¿Õ°××Ö·û
+        # ç»Ÿä¸€å¤„ç†æ¢è¡Œç¬¦å’Œç©ºç™½å­—ç¬¦
         normalized_content = content.replace('\r\n', '\n').replace('\r', '\n').strip()
         
-        # Ö±½ÓÆ¥Åä¸÷·ÖÀà±êÇ©
+        # ç›´æ¥åŒ¹é…å„åˆ†ç±»æ ‡ç­¾
         for category, pattern in CATEGORY_TAGS.items():
             match = re.search(pattern, normalized_content, re.DOTALL)
             
             if match:
                 raw_text = match.group(1)
-                # ÔöÇ¿ÇåÏ´Á÷³Ì
-                cleaned_text = re.sub(r'[\t\xa0]+', ' ', raw_text)    # Ìæ»»ÌØÊâ¿Õ°×
-                cleaned_text = re.sub(r'\n{2,}', '\n', cleaned_text)   # ºÏ²¢¶àÓà»»ĞĞ
-                cleaned_text = re.sub(r'[^\w\s,.;:()\-/]', '', cleaned_text)  # ¹ıÂËÌØÊâ·ûºÅ
+                # å¢å¼ºæ¸…æ´—æµç¨‹
+                cleaned_text = re.sub(r'[\t\xa0]+', ' ', raw_text)    # æ›¿æ¢ç‰¹æ®Šç©ºç™½
+                cleaned_text = re.sub(r'\n{2,}', '\n', cleaned_text)   # åˆå¹¶å¤šä½™æ¢è¡Œ
+                cleaned_text = re.sub(r'[^\w\s,.;:()\-/]', '', cleaned_text)  # è¿‡æ»¤ç‰¹æ®Šç¬¦å·
                 cleaned_text = cleaned_text.strip().lower()
                 
-                # ÓĞĞ§ĞÔÑéÖ¤£¨±£Áô¿ÕĞĞ¼ì²â£©
+                # æœ‰æ•ˆæ€§éªŒè¯ï¼ˆä¿ç•™ç©ºè¡Œæ£€æµ‹ï¼‰
                 if 20 <= len(cleaned_text) <= 1000:
                     statements[category] = cleaned_text
                 else:
-                    print(f"ÄÚÈİ³¤¶ÈÒì³£: {len(cleaned_text)}×Ö·û")
+                    print(f"å†…å®¹é•¿åº¦å¼‚å¸¸: {len(cleaned_text)}å­—ç¬¦")
             else:
-                print(f"Î´¼ì²âµ½{category}±êÇ©")
+                print(f"æœªæ£€æµ‹åˆ°{category}æ ‡ç­¾")
 
     except Exception as e:
-        print(f"´¦Àí{gene_name}Ê±·¢ÉúÒì³£: {str(e)}")
+        print(f"å¤„ç†{gene_name}æ—¶å‘ç”Ÿå¼‚å¸¸: {str(e)}")
         return None
         
     return statements
 
 EPOCH = 100
 
-data = Data.from_dict(torch.load(r'/home/yuantao/code/DGCL/data/CPDB/CPDB_new_data.pt'))
+data = Data.from_dict(torch.load(os.path.join(BASE_DIR, "data", "CPDB", "CPDB_new_data.pt")))
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # data = data.to(device)
 # Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
 # y_all = np.logical_or(data.y, data.y_te)
 # mask_all = np.logical_or(data.mask, data.mask_te)
-prompt = open("/home/yuantao/code/LLM/txt/prompt/2025¼ÓÉÏÁÚ¾Ó½Úµã.txt", "r",encoding='gbk').read()
-# prompt = open("/home/yuantao/code/LLM/txt/prompt/prompt_new_go.txt", "r",encoding='gbk').read()
-cancer_name_txt = pd.read_csv("/home/yuantao/code/LLM/txt/data/cancer.txt", header=None).values
+prompt = open(os.path.join(BASE_DIR, "LLM", "contxt_prompt.txt"), "r",encoding='utf-8', errors='ignore').read()
+cancer_name_txt = pd.read_csv(os.path.join(BASE_DIR, "LLM", "cancer.txt"), header=None).values
 
-sentance = pd.read_csv(r'/home/yuantao/code/LLM/GO´Ê»ã»ñÈ¡/test.csv')
+sentance = pd.read_csv(os.path.join(BASE_DIR, "LLM", "PAN-CANCER_go_features.csv"))
 sentance.columns = ['Ensembl_ID','Gene_Symbol','All_Description','Has_Description']
 
 cancer_names = [ 'pan-cancer']
 modelname = 'gemma2'
 
-# ÒÆ³ıÁËÈ«¾Ö±äÁ¿ÖĞµÄMAX_FEATURES¶¨Òå
+# ç§»é™¤äº†å…¨å±€å˜é‡ä¸­çš„MAX_FEATURESå®šä¹‰
 CATEGORIES = ['self_statement', 'neighbor_statement', 'together_statement']
 
 for cancer_name in cancer_names:
@@ -129,21 +130,21 @@ for cancer_name in cancer_names:
     print(f"Processing {cancer_name}...")
     cancer_name_prompt = cancer_name
     
-    # °©Ö¢Ãû³Æ´¦Àí±£³ÖÔ­Ñù
+    # ç™Œç—‡åç§°å¤„ç†ä¿æŒåŸæ ·
     for row in cancer_name_txt:
         if row[0].startswith(cancer_name_prompt):
             cancer_name_prompt = row[0].replace("\t", "_")
             break
     
     new_prompt = prompt.replace('Cancer_name', cancer_name_prompt)
-    gene_name_list = open(r'/home/yuantao/code/LLM/txt/data/node_names.txt','r',encoding='utf-8').read().split('\n')
+    gene_name_list = open(os.path.join(BASE_DIR, "LLM", "cpdb_node_names.txt"),'r',encoding='utf-8').read().split('\n')
 
-    # Êä³öÎÄ¼şÂ·¾¶±£³ÖÔ­Ñù
-    output_dir = '/home/yuantao/code/LLM/csv/·ÖÀàĞÍÊä³ö/' + modelname + '/'
+    # è¾“å‡ºæ–‡ä»¶è·¯å¾„ä¿æŒåŸæ ·
+    output_dir = os.path.join(BASE_DIR, "LLM", "output", modelname)
     output_file = os.path.join(output_dir, f"{cancer_name}_go_features2.csv")
     os.makedirs(output_dir, exist_ok=True)
 
-    # ĞŞ¸ÄCSVÍ·Éú³ÉÂß¼­
+    # ä¿®æ”¹CSVå¤´ç”Ÿæˆé€»è¾‘
     if not os.path.exists(output_file):
         with open(output_file, 'w') as f:
             header = ['Gene_ID', 'Gene_Symbol'] + CATEGORIES
@@ -151,7 +152,7 @@ for cancer_name in cancer_names:
     
     f1 = open(output_file, "a")
     
-    # ÎÄ¼şĞøĞ´Âß¼­±£³ÖÔ­Ñù
+    # æ–‡ä»¶ç»­å†™é€»è¾‘ä¿æŒåŸæ ·
     # if os.path.exists(output_file):
     #     with open(output_file, 'r') as f:
     #         lines = f.readlines()
@@ -167,7 +168,7 @@ for cancer_name in cancer_names:
     lenth = 13392
     print('begin from:', gene_name_list[lenth] if lenth < len(gene_name_list) else "END")
 
-    # »ùÒò´¦ÀíÑ­»·
+    # åŸºå› å¤„ç†å¾ªç¯
     for idx, gene_entry in enumerate(gene_name_list[lenth:], start=lenth):
         if not gene_entry:
             continue
@@ -175,46 +176,46 @@ for cancer_name in cancer_names:
         try:
             gene_id, gene_symbol = gene_entry.split(',', 1)
         except ValueError:
-            print(f"Ìø¹ıÎŞĞ§ÌõÄ¿: {gene_entry}")
+            print(f"è·³è¿‡æ— æ•ˆæ¡ç›®: {gene_entry}")
             continue
         
         retry_count = 0
         success = False
         
-        # ½ÚµãË÷Òı»ñÈ¡±£³ÖÔ­Ñù
+        # èŠ‚ç‚¹ç´¢å¼•è·å–ä¿æŒåŸæ ·
         try:
             node_idx = data.node_names[:, 1].tolist().index(gene_symbol.strip())
             neighbor_desc = get_neighbor_descriptions(node_idx, data, sentance)
         except ValueError:
-            print(f"Î´ÕÒµ½»ùÒò·ûºÅ: {gene_symbol}")
+            print(f"æœªæ‰¾åˆ°åŸºå› ç¬¦å·: {gene_symbol}")
             neighbor_desc = "No neighboring info"
         
         while retry_count < 3 and not success:
             try:
-                # Éú³Éprompt±£³ÖÔ­Ñù
+                # ç”Ÿæˆpromptä¿æŒåŸæ ·
                 new_prompt1 = new_prompt.replace('Gene_name', gene_symbol)\
                            .replace('go_description', str(sentance['All_Description'][idx]))\
                            .replace('neighbor__info', neighbor_desc)
 
-                # »ñÈ¡Ä£ĞÍÏìÓ¦±£³ÖÔ­Ñù
+                # è·å–æ¨¡å‹å“åº”ä¿æŒåŸæ ·
                 response = ollama.generate(model=modelname, prompt=new_prompt1)
                 content = response['response']
                 
-                # ´¦ÀíÊä³ö
+                # å¤„ç†è¾“å‡º
                 feature_dict = process_model_output(content, gene_symbol)
                 valid = False
                 if feature_dict:
-                    # Í³¼ÆÓĞĞ§×Ö¶ÎÊı
+                    # ç»Ÿè®¡æœ‰æ•ˆå­—æ®µæ•°
                     valid_count = sum(1 for v in feature_dict.values() if v != 'none')
-                    # ÓĞĞ§ĞÔ¹æÔò£ºÖÁÉÙÁ½¸ö×Ö¶ÎÓĞĞ§
+                    # æœ‰æ•ˆæ€§è§„åˆ™ï¼šè‡³å°‘ä¸¤ä¸ªå­—æ®µæœ‰æ•ˆ
                     valid = valid_count >= 2
                 
                 if valid:
-                    # ¹¹½¨ĞÂµÄCSVĞĞ£¨Ö±½ÓÊ¹ÓÃÀà±ğÖµ£©
+                    # æ„å»ºæ–°çš„CSVè¡Œï¼ˆç›´æ¥ä½¿ç”¨ç±»åˆ«å€¼ï¼‰
                     row_data = [
                         gene_id,
                         gene_symbol,
-                        f'"{feature_dict["self_statement"]}"',        # Ìí¼ÓÒıºÅ·ÀÖ¹¶ººÅ¸ÉÈÅ
+                        f'"{feature_dict["self_statement"]}"',        # æ·»åŠ å¼•å·é˜²æ­¢é€—å·å¹²æ‰°
                         f'"{feature_dict["neighbor_statement"]}"',
                         f'"{feature_dict["together_statement"]}"'
                     ]
@@ -222,22 +223,22 @@ for cancer_name in cancer_names:
                     f1.write(','.join(row_data) + '\n')
 
                     
-                    print(f"³É¹¦Ğ´Èë: {gene_symbol}")
+                    print(f"æˆåŠŸå†™å…¥: {gene_symbol}")
                     success = True
                 else:
-                    print(f"µÚ{retry_count+1}´ÎÖØÊÔ: {gene_symbol}")
+                    print(f"ç¬¬{retry_count+1}æ¬¡é‡è¯•: {gene_symbol}")
                     retry_count += 1
                 break
             except Exception as e:
-                print(f"´¦ÀíÒì³£: {str(e)}")
+                print(f"å¤„ç†å¼‚å¸¸: {str(e)}")
                 retry_count += 1
-                time.sleep(1)  # Ìí¼ÓÖØÊÔ¼ä¸ô
+                time.sleep(1)  # æ·»åŠ é‡è¯•é—´éš”
 
 
-            # ¶¨ÆÚË¢ĞÂ»º³åÇø
+            # å®šæœŸåˆ·æ–°ç¼“å†²åŒº
             if idx % 20 == 0:
                 f1.flush()
-                print(f"ÒÑ´¦Àí {idx} ¸ö»ùÒò£¬µ±Ç°»ùÒò: {gene_symbol}")
+                print(f"å·²å¤„ç† {idx} ä¸ªåŸºå› ï¼Œå½“å‰åŸºå› : {gene_symbol}")
             
         
     # with open(r'time.txt', 'a') as f:

@@ -1,62 +1,82 @@
-# encoding: gbk
-import numpy as np
-import pandas as pd
+# -*- coding: utf-8 -*-
+import os
+import sys
+import copy
 import time
 import pickle
 import random
+import argparse
 import warnings
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import metrics
+from sklearn.model_selection import train_test_split, KFold
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Linear
-import gcnPreprocessing
-import torch_geometric.transforms as T
-from torch_geometric.nn import ChebConv, GATConv, GCNConv, SAGEConv
 from torch_geometric.data import Data, DataLoader
-from torch_geometric.utils import dropout_adj, negative_sampling, remove_self_loops, add_self_loops
-import copy
-from sklearn import metrics
-from sklearn.model_selection import train_test_split, KFold
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-warnings.filterwarnings("ignore")
-from sklearn.model_selection import train_test_split as sk_train_test_split
-import numpy as np
-import matplotlib.pyplot as plt
-import time
-from sklearn import linear_model
-from sklearn.ensemble import StackingClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
-from model import *
+from torch_geometric.nn import ChebConv, GATConv, GCNConv, SAGEConv
+import torch_geometric.transforms as T
+from torch_geometric.utils import add_self_loops, dropout_adj, negative_sampling, remove_self_loops
 
-def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr = 0.001, dropout=0.2,lambdinter=0.005):
+import gcnPreprocessing
+from model import combine_net_gate_without_ac
+
+device = torch.device('cuda' if torch.cuda.is_available() and os.environ.get('DEVICE') != 'cpu' else 'cpu')
+warnings.filterwarnings("ignore")
+
+# 路径配置
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+RESULT_DIR = os.path.join(BASE_DIR, "result")
+os.makedirs(RESULT_DIR, exist_ok=True)
+os.makedirs(os.path.join(RESULT_DIR, "single"), exist_ok=True)
+
+sys.path.append(os.path.join(BASE_DIR, 'implement'))
+from alignment_check import assert_data_alignment
+
+
+def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001, dropout=0.2, lambdinter=0.005):
+    """保存实验结果至汇总文本（已纠正 AUROC 与 AUPRC 变量和输出标签对应关系）"""
+    res_dir = os.path.join(BASE_DIR, 'result')
+    os.makedirs(res_dir, exist_ok=True)
     if cancerType == 'pan-cancer':
         if dataset == 'cpdb':
-            path = '/home/yuantao/code/my/result/pan-cancer.txt'
+            path = os.path.join(res_dir, 'pan-cancer.txt')
         elif dataset == 'string':
-            path = '/home/yuantao/code/my/result/pan-cancer_string.txt'
+            path = os.path.join(res_dir, 'pan-cancer_string.txt')
         else:
             raise ValueError("Unsupported dataset for pan-cancer results.")
     else:
-        path = '/home/yuantao/code/my/result/single/single.txt'
-    with open(path, 'a') as f:
+        single_dir = os.path.join(res_dir, 'single')
+        os.makedirs(single_dir, exist_ok=True)
+        path = os.path.join(single_dir, 'single.txt')
+
+    with open(path, 'a', encoding='utf-8') as f:
         f.write('--' * 20 + '\n')
         f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
         f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {auroc.mean():.4f} �� {auroc.std():.4f}\n")
+        f.write(f"AUROC: {auroc.mean():.4f} ± {auroc.std():.4f}\n")
         f.write(str(auroc))
         f.write("\n")
-        f.write(f"AUC: {auprc.mean():.4f} �� {auprc.std():.4f}\n")
+        f.write(f"AUPRC: {auprc.mean():.4f} ± {auprc.std():.4f}\n")
         f.write(str(auprc))
         f.write("\n")
 
+
 def load_label_single(cancerType):
-    path = "/home/yuantao/code/MNGCL-ori/data/CPDB/Specific cancer/"
+    path = os.path.join(DATA_DIR, "CPDB", "Specific cancer") + "/"
     label = np.loadtxt(path + "label_file-P-" + cancerType + ".txt")
     Y = torch.tensor(label).type(torch.FloatTensor).to(device).unsqueeze(1)
     label_pos = np.loadtxt(path + "pos-" + cancerType + ".txt", dtype=int)
     label_neg = np.loadtxt(path + "neg.txt", dtype=int)
     return Y, label_pos, label_neg
+
+
 def sample_division_single(pos_label, neg_label, l, l1, l2, i):
     pos_val = pos_label[i * l1:(i + 1) * l1]
     pos_train = list(set(pos_label) - set(pos_val))
@@ -75,26 +95,35 @@ def sample_division_single(pos_label, neg_label, l, l1, l2, i):
     tr_mask = torch.from_numpy(np.array(indexs1))
     val_mask = torch.from_numpy(np.array(indexs2))
     return tr_mask, val_mask
+
+
 def get_class_weights(labels):
     pos_counts = labels.sum(dim=0)
     neg_counts = labels.shape[0] - pos_counts
     weights = (neg_counts / (pos_counts + 1e-6))
     return weights
+
+
 def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
-               tr_mask,te_mask, epochs, Y):
-    """����ÿ��epoch��ָ��"""
+               tr_mask, te_mask, epochs, Y):
+    """
+    基础训练与评估函数（用于 5 折交叉验证模式）。
+    分类损失和对比损失均严格仅在实际训练节点 tr_mask 上计算，防止测试与未知节点信息泄露。
+    """
     model = data_model['model']
     epoch_aurocs = []
     epoch_auprcs = []
 
     for epoch in range(epochs):
-        # ===== ѵ���׶� =====
+        # ===== 训练阶段 =====
         model.train()
         optimizer.zero_grad()
         
-        # ģ��ǰ�򴫲�
+        # 模型前向传播（原始 10次5折 CV 训练协议：不传 tr_mask，对比损失在全部图节点上计算）
         edge_index_train = dropout_adj(edge_index, p=0.3)[0]
-        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index_train, L_emb, L_emb_edge)
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_train, L_emb, L_emb_edge
+        )
 
         class_weights = get_class_weights(Y[tr_mask])
         loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
@@ -106,34 +135,149 @@ def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
         loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[tr_mask], Y[tr_mask], pos_weight=class_weights)
 
         loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
-
         total_loss = loss_cls + data_model['lambdinter'] * loss_inter
 
         total_loss.backward()
         optimizer.step()
 
-
         model.eval()
         with torch.no_grad():
-            _, label_G, label_self, label_neighbor, label_together, label_concat, label_satment,final_output = model(data.x, edge_index, L_emb, L_emb_edge)
+            _, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+                data.x, edge_index, L_emb, L_emb_edge
+            )
 
             pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
-            precision, recall, _thresholds = metrics.precision_recall_curve(Y[te_mask].cpu().numpy(), pred)
-            auc = metrics.roc_auc_score(Y[te_mask].cpu().numpy(), pred)
+            y_eval = Y[te_mask].cpu().numpy().ravel()
+            precision, recall, _thresholds = metrics.precision_recall_curve(y_eval, pred)
+            auroc = metrics.roc_auc_score(y_eval, pred)
             auprc = metrics.auc(recall, precision)
-            epoch_aurocs.append(auc)
+            epoch_aurocs.append(auroc)
             epoch_auprcs.append(auprc)
-            print(f"Epoch {epoch+1}, Test AUC: {auc:.4f}, Test AUPRC: {auprc:.4f}")
+            print(f"Epoch {epoch+1}, Test AUROC: {auroc:.4f}, Test AUPRC: {auprc:.4f}")
 
-    return epoch_aurocs, epoch_auprcs, auc, auprc
+    return epoch_aurocs, epoch_auprcs, auroc, auprc
 
-def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
-                    lr=0.001, epochs=200, lambdinter=0.005,
-                    dropout=0.2,cancerType='pan-cancer', dataset='cpdb'):
-    """�ռ�����epoch��ָ��"""
-    # ��ʼ���洢�ṹ [epoch][experiment][fold]
-    all_aurocs = np.zeros((epochs, 10, 5))
-    all_auprcs = np.zeros((epochs, 10, 5))
+
+def train_test_inductive(data_model, optimizer, data, L_emb,
+                         edge_index_train, L_emb_edge_train,
+                         edge_index_full, L_emb_edge_full,
+                         cls_tr_mask, contrastive_indices, te_mask,
+                         epochs, Y):
+    """
+    归纳式训练与评估函数（Inductive 5-Fold CV）：
+    1. 训练阶段严格仅使用已剔除所有测试基因相连边的归纳网络 (edge_index_train 与 L_emb_edge_train)。
+    2. 严格断言检查：
+       - 确认归纳训练网络中绝无以测试基因为端点的边；
+       - 确认分类损失训练节点 cls_tr_mask 不包含任何测试基因；
+       - 确认对比损失节点集合 contrastive_indices 不包含任何测试基因，且节点数等于 13627 - test_mask.sum()。
+    3. 分类损失严格仅在有标签训练节点 cls_tr_mask 上计算。
+    4. 对比损失在所有非测试节点 contrastive_indices 上计算（包含 Unknown 节点，只排除当前折测试节点）。
+    5. 模型 160 轮训练完成后，恢复完整 CPDB 网络和完整语义 KNN 网络，在 torch.no_grad() 下无更新预测当前折测试基因。
+    """
+    model = data_model['model']
+
+    # 严格检验 1 & 2: 确认训练网络中没有任何以测试基因为端点的边（源节点与目标节点双重确认）
+    assert not (te_mask[edge_index_train[0]].any() or te_mask[edge_index_train[1]].any()), \
+        "归纳式训练 CPDB 网络中发现以测试基因为端点的边！"
+    assert not (te_mask[L_emb_edge_train[0]].any() or te_mask[L_emb_edge_train[1]].any()), \
+        "归纳式训练语义 KNN 网络中发现以测试基因为端点的边！"
+    # 严格检验 3: 确认分类损失训练节点中无任何测试基因
+    assert not te_mask[cls_tr_mask].any(), \
+        "归纳式训练分类损失节点集合 cls_tr_mask 中包含测试基因！"
+    # 严格检验 4: 确认对比损失节点中无任何测试基因，且节点数严格等于 13627 - test_mask.sum()
+    assert not te_mask[contrastive_indices].any(), \
+        "归纳式训练对比损失节点集合 contrastive_indices 中包含测试基因！"
+    assert len(contrastive_indices) == 13627 - te_mask.sum().item(), \
+        f"对比学习节点数 ({len(contrastive_indices)}) 不等于 13627 - test_mask.sum() ({13627 - te_mask.sum().item()})！"
+
+    # 严格遵循附录 Table A17 归纳式文字要求：
+    # "the feature vector of every test gene is set to zero... The model therefore receives no structural, feature, or label information from any test gene during training."
+    x_train = data.x.detach().clone()
+    x_train[te_mask] = 0.0
+
+    L_emb_train = {
+        'self_emb': L_emb['self_emb'].detach().clone(),
+        'neighbor_emb': L_emb['neighbor_emb'].detach().clone(),
+        'together_emb': L_emb['together_emb'].detach().clone()
+    }
+    L_emb_train['self_emb'][te_mask] = 0.0
+    L_emb_train['neighbor_emb'][te_mask] = 0.0
+    L_emb_train['together_emb'][te_mask] = 0.0
+
+    # 严格检验 5: 确认测试基因的特征向量在训练期全部置零
+    assert torch.all(x_train[te_mask] == 0.0), "归纳式训练中测试基因组学特征未完全置零！"
+    assert torch.all(L_emb_train['self_emb'][te_mask] == 0.0), "归纳式训练中测试基因 self_emb 未完全置零！"
+    assert torch.all(L_emb_train['neighbor_emb'][te_mask] == 0.0), "归纳式训练中测试基因 neighbor_emb 未完全置零！"
+    assert torch.all(L_emb_train['together_emb'][te_mask] == 0.0), "归纳式训练中测试基因 together_emb 未完全置零！"
+
+    for epoch in range(epochs):
+        # ===== 训练阶段（归纳子图与特征全零） =====
+        model.train()
+        optimizer.zero_grad()
+
+        # 归纳子图上的边 dropout
+        edge_index_train_drop = dropout_adj(edge_index_train, p=0.3)[0]
+
+        # 再次确保 dropout 未引入测试基因边
+        assert not (te_mask[edge_index_train_drop[0]].any() or te_mask[edge_index_train_drop[1]].any()), \
+            "dropout_adj 后检测到以测试基因为端点的边！"
+
+        # 前向传播：传入置零特征 x_train 与 L_emb_train，tr_mask 传入 contrastive_indices（在所有非测试节点上计算对比损失）
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            x_train, edge_index_train_drop, L_emb_train, L_emb_edge_train, tr_mask=contrastive_indices
+        )
+
+        # 分类损失：严格仅在有标签训练节点 cls_tr_mask 上计算
+        class_weights = get_class_weights(Y[cls_tr_mask])
+        loss_G = F.binary_cross_entropy_with_logits(label_G[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_self = F.binary_cross_entropy_with_logits(label_self[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_together = F.binary_cross_entropy_with_logits(label_together[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_concat = F.binary_cross_entropy_with_logits(label_concat[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_satment = F.binary_cross_entropy_with_logits(label_satment[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+        loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[cls_tr_mask], Y[cls_tr_mask], pos_weight=class_weights)
+
+        loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
+        total_loss = loss_cls + data_model['lambdinter'] * loss_inter
+
+        total_loss.backward()
+        optimizer.step()
+
+        if (epoch + 1) % 40 == 0 or (epoch + 1) == epochs:
+            print(f"  Epoch {epoch+1:3d}/{epochs} | Total Loss: {total_loss.item():.4f} (Cls: {loss_cls.item():.4f}, Inter: {loss_inter.item():.4f})")
+
+    # ===== 训练完成：恢复完整 CPDB 网络和完整语义 KNN 网络，在不更新参数的情况下预测当前折测试基因 =====
+    model.eval()
+    with torch.no_grad():
+        _, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_full, L_emb, L_emb_edge_full
+        )
+
+        pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
+        y_eval = Y[te_mask].cpu().numpy().ravel()
+        precision, recall, _thresholds = metrics.precision_recall_curve(y_eval, pred)
+        auroc = metrics.roc_auc_score(y_eval, pred)
+        auprc = metrics.auc(recall, precision)
+        print(f"  --> [Inductive Fold Finished] Test AUROC: {auroc:.4f}, Test AUPRC: {auprc:.4f}")
+
+    epoch_aurocs = [auroc] * epochs
+    epoch_auprcs = [auprc] * epochs
+    return epoch_aurocs, epoch_auprcs, auroc, auprc
+
+
+def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
+                     lr=0.001, epochs=200, lambdinter=0.005,
+                     dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
+                     masked=False, inductive=False, base_seed=42,
+                     n_exp=None, n_fold=None, smoke_test=False):
+    """收集每个 epoch 的指标（5 折交叉验证，支持传导式与归纳式消融）"""
+    if n_exp is None:
+        n_exp = 1 if smoke_test else int(os.environ.get('N_EXP', 10))
+    if n_fold is None:
+        n_fold = 1 if smoke_test else int(os.environ.get('N_FOLD', 5))
+
+    all_aurocs = np.zeros((epochs, n_exp, n_fold))
+    all_auprcs = np.zeros((epochs, n_exp, n_fold))
     if cancerType == 'pan-cancer':
         Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
         y_all = np.logical_or(data.y, data.y_te)
@@ -152,14 +296,29 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
         l1 = int(len(y_train_pos) / 5)
         l2 = int(len(y_train_neg) / 5)
         Y = label
-    list_aurocs = np.zeros((10, 5))
-    list_auprcs = np.zeros((10, 5))
-    # ����10�ζ���ʵ��
-    for exp_id in range(10):
 
-        for fold_id in range(5):
-        # for fold_id, (tr_idx, val_idx) in enumerate(kf.split(valid_indices)):
-            print(f"\nExp {exp_id+1}/10 | Fold {fold_id+1}/5")
+    list_aurocs = np.zeros((n_exp, n_fold))
+    list_auprcs = np.zeros((n_exp, n_fold))
+
+    tag_suffix = "_smoke_test" if smoke_test else ""
+    if cancerType == 'pan-cancer':
+        feat_tag = f"pan-cancer{'_masked' if masked else ''}{'_inductive' if inductive else ''}{tag_suffix}"
+    else:
+        feat_tag = f"{dataset}_{cancerType}{'_masked' if masked else ''}{'_inductive' if inductive else ''}{tag_suffix}"
+
+    start_total_time = time.time()
+
+    for exp_id in range(n_exp):
+        for fold_id in range(n_fold):
+            # 固定随机种子保证基线、Masked 与归纳式实验完全公平对照
+            seed = base_seed + exp_id * 100 + fold_id
+            torch.manual_seed(seed)
+            random.seed(seed)
+            np.random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+
+            print(f"\nExp {exp_id+1}/{n_exp} | Fold {fold_id+1}/{n_fold} (Seed: {seed})")
             
             if cancerType == 'pan-cancer':
                 _, _, tr_mask, te_mask = k_sets[exp_id][fold_id]
@@ -167,7 +326,6 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
                 print(te_mask.sum())
                 train_mask = torch.tensor(tr_mask).bool().to(device)
                 test_mask = torch.tensor(te_mask).bool().to(device)
-
             else:
                 tr_mask, te_mask = sample_division_single(y_train_pos, y_train_neg, l, l1, l2, fold_id)
                 train_mask = torch.tensor(tr_mask).bool().to(device)
@@ -175,152 +333,626 @@ def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
                 print(tr_mask.sum())
                 print(te_mask.sum())
             
-            # ��ʼ��ģ��
-            model = combine_net_gate_without_ac(input_dim = input_dim,lambdinter=lambdinter,dropout=dropout).to(device)
+            model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-            aurocs, auprcs, auc, auprc = train_test(
-                data_model = {
-                    'model': model,
-                    'lambdinter': lambdinter
-                },
-                optimizer = optimizer,
-                data = data,
-                L_emb = L_emb,
-                edge_index = edge_index.to(device),
-                L_emb_edge = L_emb_edge,
-                tr_mask = train_mask.nonzero().squeeze(),
-                te_mask = test_mask,
-                epochs=epochs,
-                Y = Y
-            )
+            if inductive:
+                pb_full = edge_index.to(device)
+                L_emb_edge_full = L_emb_edge.to(device)
+
+                # 归纳式：从 CPDB 网络和语义 KNN 网络中删除所有与当前折测试基因相连的边
+                pb_train_edges = pb_full[:, ~(test_mask[pb_full[0]] | test_mask[pb_full[1]])]
+                L_emb_train_edges = L_emb_edge_full[:, ~(test_mask[L_emb_edge_full[0]] | test_mask[L_emb_edge_full[1]])]
+
+                tr_indices = train_mask.nonzero().squeeze()
+                te_indices = test_mask.nonzero().squeeze()
+                contrastive_indices = (~test_mask).nonzero().squeeze()
+
+                # 严格断言检查（Requirement 5 & 7）
+                assert not test_mask[pb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络源节点中检测到测试基因！"
+                assert not test_mask[pb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: CPDB 归纳网络目标节点中检测到测试基因！"
+                assert not test_mask[L_emb_train_edges[0]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络源节点中检测到测试基因！"
+                assert not test_mask[L_emb_train_edges[1]].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 语义 KNN 归纳网络目标节点中检测到测试基因！"
+                assert not test_mask[tr_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 分类训练节点集合中检测到测试基因！"
+                assert not test_mask[contrastive_indices].any(), f"Exp {exp_id+1} Fold {fold_id+1}: 对比学习节点集合中检测到测试基因！"
+                assert (train_mask & test_mask).sum().item() == 0, f"Exp {exp_id+1} Fold {fold_id+1}: 训练集与测试集存在交集！"
+                assert len(contrastive_indices) == 13627 - test_mask.sum().item(), \
+                    f"Exp {exp_id+1} Fold {fold_id+1}: 对比学习节点数 ({len(contrastive_indices)}) 不等于 13627 - test_mask.sum() ({13627 - test_mask.sum().item()})！"
+
+                if exp_id == 0 and fold_id == 0:
+                    print(f"  [Inductive Graph & Loss Checks Passed]")
+                    print(f"   * CPDB 网络: 原始边数 {pb_full.shape[1]} -> 归纳训练边数 {pb_train_edges.shape[1]} (已剔除 {pb_full.shape[1] - pb_train_edges.shape[1]} 条测试基因相连边)")
+                    print(f"   * 语义 KNN 网络: 原始边数 {L_emb_edge_full.shape[1]} -> 归纳训练边数 {L_emb_train_edges.shape[1]} (已剔除 {L_emb_edge_full.shape[1] - L_emb_train_edges.shape[1]} 条测试基因相连边)")
+                    print(f"   * 分类训练节点数: {len(tr_indices)} (有标签训练基因, 测试基因 0 参与)")
+                    print(f"   * 对比学习节点数: {len(contrastive_indices)} (严格等于 13627 - {test_mask.sum().item()}, 包含 Unknown 节点, 排除测试基因)")
+                    print(f"   * 测试基因节点数: {len(te_indices)} (测试期将在无梯度下恢复全图进行预测)")
+
+                aurocs, auprcs, auroc, auprc = train_test_inductive(
+                    data_model={'model': model, 'lambdinter': lambdinter},
+                    optimizer=optimizer,
+                    data=data,
+                    L_emb=L_emb,
+                    edge_index_train=pb_train_edges,
+                    L_emb_edge_train=L_emb_train_edges,
+                    edge_index_full=pb_full,
+                    L_emb_edge_full=L_emb_edge_full,
+                    cls_tr_mask=tr_indices,
+                    contrastive_indices=contrastive_indices,
+                    te_mask=test_mask,
+                    epochs=epochs,
+                    Y=Y
+                )
+            else:
+                aurocs, auprcs, auroc, auprc = train_test(
+                    data_model={
+                        'model': model,
+                        'lambdinter': lambdinter
+                    },
+                    optimizer=optimizer,
+                    data=data,
+                    L_emb=L_emb,
+                    edge_index=edge_index.to(device),
+                    L_emb_edge=L_emb_edge,
+                    tr_mask=train_mask.nonzero().squeeze(),
+                    te_mask=test_mask,
+                    epochs=epochs,
+                    Y=Y
+                )
             
-            # # �洢���
+            # 正确存储 AUROC 和 AUPRC（避免原代码的变量倒置）
             all_aurocs[:, exp_id, fold_id] = aurocs
             all_auprcs[:, exp_id, fold_id] = auprcs
-            list_aurocs[exp_id, fold_id] = auprc
-            list_auprcs[exp_id, fold_id] = auc
+            list_aurocs[exp_id, fold_id] = auroc  # 严格对应 AUROC
+            list_auprcs[exp_id, fold_id] = auprc  # 严格对应 AUPRC
+
+            # 实时保存独立文件
             if cancerType == 'pan-cancer':
-                np.savetxt('/home/yuantao/code/my/result/pan-cancer_auroc.txt', list_aurocs, fmt='%.6f')
-                np.savetxt('/home/yuantao/code/my/result/pan-cancer_auprc.txt', list_auprcs, fmt='%.6f')
+                np.savetxt(os.path.join(RESULT_DIR, f'{feat_tag}_auroc.txt'), list_aurocs, fmt='%.6f')
+                np.savetxt(os.path.join(RESULT_DIR, f'{feat_tag}_auprc.txt'), list_auprcs, fmt='%.6f')
             else:
-                np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auroc.txt', list_aurocs, fmt='%.6f')
-                np.savetxt('/home/yuantao/code/my/result/single/' + dataset + '_' + cancerType + '_auprc.txt', list_auprcs, fmt='%.6f')
-    save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
-    results = 0
+                single_dir = os.path.join(RESULT_DIR, 'single')
+                os.makedirs(single_dir, exist_ok=True)
+                np.savetxt(os.path.join(single_dir, f'{feat_tag}_auroc.txt'), list_aurocs, fmt='%.6f')
+                np.savetxt(os.path.join(single_dir, f'{feat_tag}_auprc.txt'), list_auprcs, fmt='%.6f')
+
+    total_elapsed = time.time() - start_total_time
+    minutes = int(total_elapsed // 60)
+    seconds = total_elapsed % 60
+    avg_fold = total_elapsed / max(1, n_exp * n_fold)
+    time_desc = f"{minutes}分 {seconds:.1f}秒 (总计 {total_elapsed:.2f}s, 平均每折 {avg_fold:.2f}s)"
+
+    mean_auc, std_auc = list_aurocs[:n_exp, :n_fold].mean(), list_aurocs[:n_exp, :n_fold].std()
+    mean_auprc, std_auprc = list_auprcs[:n_exp, :n_fold].mean(), list_auprcs[:n_exp, :n_fold].std()
     
+    if inductive:
+        desc = "Masked Features (关键词遮蔽) - 归纳式 (Inductive)" if masked else "Original Features (原始基线) - 归纳式 (Inductive)"
+    else:
+        desc = "Masked Features (关键词遮蔽)" if masked else "Original Features (原始基线)"
+
+    print(f"\n{'='*75}")
+    print(f"Summary Results for 5-Fold CV [{desc}] ({cancerType}):")
+    print(f"  Overall AUROC: {mean_auc:.4f} ± {std_auc:.4f}")
+    print(f"  Overall AUPRC: {mean_auprc:.4f} ± {std_auprc:.4f}")
+    print(f"  Elapsed Time : {time_desc}")
+    print(f"{n_exp}x{n_fold} AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}")
+    print(f"{n_exp}x{n_fold} AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
+    print(f"{'='*75}\n")
+
+    summary_file = os.path.join(RESULT_DIR, f'{feat_tag}_summary.txt')
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write(f"Experiment: {n_exp}x{n_fold} Cross-Validation [{desc}]\n")
+        f.write(f"Protocol: Strict Inductive Training (Appendix Table A17: Removed all test node edges from CPDB & Semantic KNN graphs; Set feature vectors of all test genes to zero during training; Excluded test genes from contrastive loss [13627 - test_count]; Classification loss strictly on labeled train nodes; Complete network topology & frozen features restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
+        f.write(f"Hyperparameters: lr={lr}, dropout={dropout}, lambdinter={lambdinter}, epochs={epochs}\n")
+        f.write(f"Base Seed: {base_seed}\n")
+        f.write(f"Total Elapsed Time: {time_desc}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Overall Metrics (over {n_exp}x{n_fold} = {n_exp * n_fold} folds):\n")
+        f.write(f"  AUROC : {mean_auc:.4f} ± {std_auc:.4f}\n")
+        f.write(f"  AUPRC : {mean_auprc:.4f} ± {std_auprc:.4f}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"{n_exp}x{n_fold} AUROC Matrix:\n{np.array2string(list_aurocs[:n_exp, :n_fold], precision=4)}\n")
+        f.write(f"{n_exp}x{n_fold} AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}\n")
+
+    if not masked and not inductive and not smoke_test:
+        save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter)
+    results = 0
     return results
 
-cancers = ['pan-cancer']
-dataset = 'cpdb'  # 'cpdb' or 'string'
-for cancerType in cancers:
-    if dataset == 'cpdb':
-        data = torch.load(r"./data/CPDB/CPDB_new_data.pt")
+
+def load_leakage_splits(audit_file_path=None):
+    """
+    从审计文件 implement/Gemma_Vocabulary_Leakage_Audit.xlsx 加载 Clean 和 Hit 划分。
+    
+    规则：
+    1. 使用 'Gene-level Flags' Sheet 中的 'LLM combined | Any exact label-like term' 列作为分组标记。
+    2. 只保留有标签的 Driver 和 Non-driver 基因，排除 Unknown 基因。
+    3. 按 Code_Index 与 CPDB 图节点严格对齐（0..13626）。
+    """
+    if audit_file_path is None:
+        audit_file_path = os.path.join(BASE_DIR, 'implement', 'Gemma_Vocabulary_Leakage_Audit.xlsx')
+
+    if not os.path.exists(audit_file_path):
+        raise FileNotFoundError(f"未找到审计文件: {audit_file_path}")
+
+    print(f"正在读取审计文件: {audit_file_path} ...")
+    df = pd.read_excel(audit_file_path, sheet_name='Gene-level Flags')
+
+    assert len(df) == 13627, f"基因节点数不匹配: 期望 13627, 实际 {len(df)}"
+    assert (df['Code_Index'].values == np.arange(len(df))).all(), "Code_Index 必须与节点索引 0..13626 严格对齐"
+
+    flag_col = 'LLM combined | Any exact label-like term'
+    if flag_col not in df.columns:
+        raise KeyError(f"Sheet 'Gene-level Flags' 中未找到列 '{flag_col}'")
+
+    labeled_mask = (df['Label_Status'] == 'Labeled').values
+    hit_flag = (df[flag_col] == 1).values
+
+    clean_mask = labeled_mask & (~hit_flag)
+    hit_mask = labeled_mask & hit_flag
+
+    return clean_mask, hit_mask, df
+
+
+def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data, L_emb, edge_index, L_emb_edge,
+                          lr=0.0005, epochs=160, lambdinter=0.001, dropout=0.3,
+                          split_name='clean_to_hit', n_exp=10, Y=None, base_seed=42, val_ratio=0.2,
+                          smoke_test=False, masked=False, statement_path=None, inductive=False):
+    """
+    严格的标签泄露词审计划分实验流程（支持传导式与严格归纳式）：
+    1. 分类损失和对比损失都严格仅在实际训练节点上计算（防止测试节点和 Unknown 节点泄露）。
+    2. 归纳式模式下：切断所有与测试集基因相连的边，训练期测试基因组学与文本特征全部置零。
+    3. 从训练候选组内部划分训练集/验证集（如 8:2 分层划分）。
+    4. 每个 epoch 仅评估验证集，根据验证集指标（AUPRC）保存最佳 Checkpoint。
+    5. 训练完成后加载最佳 Checkpoint，仅对固定的最终测试集执行一次最终评估（恢复全图与冻结特征）。
+    """
+    # 0. 先行数据对齐严格断言检查
+    assert_data_alignment(BASE_DIR)
+
+    cand_indices = np.where(train_candidate_mask)[0]
+    cand_labels = Y[cand_indices].cpu().numpy().ravel().astype(int)
+
+    fixed_test_tensor = torch.tensor(fixed_test_mask).bool().to(device)
+    y_test_np = Y[fixed_test_tensor].cpu().numpy().ravel()
+    test_drivers = int((y_test_np == 1).sum())
+    test_nondrivers = int((y_test_np == 0).sum())
+
+    # 归纳式设置：切断测试连边，置零测试特征
+    if inductive:
+        pb_train = edge_index[:, ~(fixed_test_tensor[edge_index[0]] | fixed_test_tensor[edge_index[1]])]
+        L_emb_edge_train = L_emb_edge[:, ~(fixed_test_tensor[L_emb_edge[0]] | fixed_test_tensor[L_emb_edge[1]])]
+
+        x_train = data.x.detach().clone()
+        x_train[fixed_test_tensor] = 0.0
+
+        L_emb_train = {
+            'self_emb': L_emb['self_emb'].detach().clone(),
+            'neighbor_emb': L_emb['neighbor_emb'].detach().clone(),
+            'together_emb': L_emb['together_emb'].detach().clone()
+        }
+        L_emb_train['self_emb'][fixed_test_tensor] = 0.0
+        L_emb_train['neighbor_emb'][fixed_test_tensor] = 0.0
+        L_emb_train['together_emb'][fixed_test_tensor] = 0.0
+
+        assert not (fixed_test_tensor[pb_train[0]].any() or fixed_test_tensor[pb_train[1]].any()), "CPDB 训练图中检测到测试基因连边！"
+        assert not (fixed_test_tensor[L_emb_edge_train[0]].any() or fixed_test_tensor[L_emb_edge_train[1]].any()), "KNN 训练图中检测到测试基因连边！"
+        assert torch.all(x_train[fixed_test_tensor] == 0.0), "训练期测试基因组学特征未完全置零！"
+        assert torch.all(L_emb_train['self_emb'][fixed_test_tensor] == 0.0), "训练期测试基因 self_emb 未完全置零！"
+    else:
+        pb_train = edge_index
+        L_emb_edge_train = L_emb_edge
+        x_train = data.x
+        L_emb_train = L_emb
+
+    feat_desc = "Masked Features (关键词遮蔽消融)" if masked else "Original Features (原始基线特征)"
+    mode_desc = "Strict Inductive (严格归纳式: 切断测试边+特征置零)" if inductive else "Transductive (传导式全图)"
+    print(f"\n{'='*75}")
+    print(f"Running Leakage Split Experiment: [{split_name}] [{mode_desc}]")
+    print(f"  Method & Feature Mode   : BIMODriver [{feat_desc}]")
+    print(f"  Loaded Statement File   : {statement_path}")
+    print(f"  Training Candidate Pool : {len(cand_indices)} genes (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})")
+    print(f"  Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Validation (Stratified by Driver label)")
+    print(f"  Fixed Testing Set       : {len(y_test_np)} genes (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})")
+    print(f"  Evaluation Protocol     : Model checkpoint selected ONLY by validation set, test set evaluated ONCE at end")
+    print(f"  Experiments             : {n_exp} independent runs, {epochs} epochs each")
+    print(f"  Hyperparameters         : lr={lr}, dropout={dropout}, lambdinter={lambdinter}")
+    print(f"{'='*75}\n")
+
+    all_test_aurocs = np.zeros(n_exp)
+    all_test_auprcs = np.zeros(n_exp)
+    all_best_val_aurocs = np.zeros(n_exp)
+    all_best_val_auprcs = np.zeros(n_exp)
+    all_best_epochs = np.zeros(n_exp, dtype=int)
+    pred_runs_matrix = np.zeros((len(y_test_np), n_exp))
+
+    # 加载公共公共划分文件以确保完全严格对齐
+    splits_path = os.path.join(DATA_DIR, "CPDB", "leakage_splits_10runs.pkl")
+    shared_splits = None
+    if os.path.exists(splits_path):
+        with open(splits_path, 'rb') as handle:
+            shared_splits = pickle.load(handle)
+        print(f"  [Info] Loaded shared split file from: {splits_path}")
+
+    for exp_id in range(n_exp):
+        seed = base_seed + exp_id
+        torch.manual_seed(seed)
+        random.seed(seed)
+        np.random.seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+
+        # 1. 优先使用公共划分文件，确保与 MNGCL、DISFusion 完全同构划分
+        if shared_splits is not None and split_name in shared_splits:
+            run_info = shared_splits[split_name][exp_id]
+            inner_tr_idx = run_info['train_idx']
+            inner_val_idx = run_info['val_idx']
+            fixed_test_indices = run_info['test_idx']
+            assert np.array_equal(np.where(fixed_test_mask)[0], fixed_test_indices), "Test mask does not match shared split test indices!"
+            assert len(set(inner_tr_idx) & set(inner_val_idx)) == 0, "Train and Val overlap!"
+            assert len(set(inner_tr_idx) & set(fixed_test_indices)) == 0, "Train and Test overlap!"
+        else:
+            inner_tr_idx, inner_val_idx = train_test_split(
+                cand_indices,
+                test_size=val_ratio,
+                stratify=cand_labels,
+                random_state=seed
+            )
+
+        inner_tr_bool = np.zeros(data.x.shape[0], dtype=bool)
+        inner_tr_bool[inner_tr_idx] = True
+        inner_val_bool = np.zeros(data.x.shape[0], dtype=bool)
+        inner_val_bool[inner_val_idx] = True
+
+        inner_tr_tensor = torch.tensor(inner_tr_bool).bool().to(device)
+        inner_tr_indices = inner_tr_tensor.nonzero().squeeze()
+        inner_val_tensor = torch.tensor(inner_val_bool).bool().to(device)
+        y_val_np = Y[inner_val_tensor].cpu().numpy().ravel()
+
+        print(f"\n--- [Split: {split_name}] Experiment {exp_id + 1}/{n_exp} (Seed: {seed}) ---")
+        print(f"  Inner Train: {len(inner_tr_idx)} genes | Inner Val: {len(inner_val_idx)} genes")
+
+        model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+
+        best_val_auprc = -1.0
+        best_val_auroc = -1.0
+        best_epoch = -1
+        best_model_state = None
+
+        # 2. 训练循环：每轮仅在验证集上评估，挑选最佳 Checkpoint
+        for epoch in range(epochs):
+            model.train()
+            optimizer.zero_grad()
+
+            # 前向传播：传入置零特征与切断测试边后的图，tr_mask 严格限定在实际训练节点上（对比损失绝不包含验证、测试或 Unknown 节点）
+            edge_index_train = dropout_adj(pb_train, p=0.3)[0]
+            loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+                x_train, edge_index_train, L_emb_train, L_emb_edge_train, tr_mask=inner_tr_indices
+            )
+
+            # 分类损失：严格仅在实际训练节点上计算
+            class_weights = get_class_weights(Y[inner_tr_indices])
+            loss_G = F.binary_cross_entropy_with_logits(label_G[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_self = F.binary_cross_entropy_with_logits(label_self[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_together = F.binary_cross_entropy_with_logits(label_together[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_concat = F.binary_cross_entropy_with_logits(label_concat[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_satment = F.binary_cross_entropy_with_logits(label_satment[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+            loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[inner_tr_indices], Y[inner_tr_indices], pos_weight=class_weights)
+
+            loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
+            total_loss = loss_cls + lambdinter * loss_inter
+
+            total_loss.backward()
+            optimizer.step()
+
+            # 验证集评估（绝不触碰固定测试集）
+            model.eval()
+            with torch.no_grad():
+                _, _, _, _, _, _, _, final_output_val = model(data.x, edge_index, L_emb, L_emb_edge)
+                pred_val = torch.sigmoid(final_output_val[inner_val_tensor]).cpu().numpy().ravel()
+                val_auroc = metrics.roc_auc_score(y_val_np, pred_val)
+                p_val, r_val, _ = metrics.precision_recall_curve(y_val_np, pred_val)
+                val_auprc = metrics.auc(r_val, p_val)
+
+            # 根据验证集 AUPRC 挑选最佳 Checkpoint
+            if val_auprc > best_val_auprc:
+                best_val_auprc = val_auprc
+                best_val_auroc = val_auroc
+                best_epoch = epoch + 1
+                best_model_state = copy.deepcopy(model.state_dict())
+
+            if (epoch + 1) % 20 == 0 or (epoch + 1) == epochs:
+                print(f"  Epoch {epoch+1:3d}/{epochs} | Val AUROC: {val_auroc:.4f}, Val AUPRC: {val_auprc:.4f} (Best Epoch: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
+
+        # 3. 训练完成后，加载验证集最优 Checkpoint，对固定测试集仅评估一次
+        model.load_state_dict(best_model_state)
+        model.eval()
+        with torch.no_grad():
+            _, _, _, _, _, _, _, final_output_test = model(data.x, edge_index, L_emb, L_emb_edge)
+            pred_test = torch.sigmoid(final_output_test[fixed_test_tensor]).cpu().numpy().ravel()
+            test_auroc = metrics.roc_auc_score(y_test_np, pred_test)
+            p_te, r_te, _ = metrics.precision_recall_curve(y_test_np, pred_test)
+            test_auprc = metrics.auc(r_te, p_te)
+
+        print(f"  >> [Exp {exp_id+1}/{n_exp} Result] Best Val Epoch: {best_epoch} (Val AUPRC: {best_val_auprc:.4f}, Val AUROC: {best_val_auroc:.4f}) | Final Test AUROC: {test_auroc:.4f}, Test AUPRC: {test_auprc:.4f}")
+
+        all_test_aurocs[exp_id] = test_auroc
+        all_test_auprcs[exp_id] = test_auprc
+        all_best_val_aurocs[exp_id] = best_val_auroc
+        all_best_val_auprcs[exp_id] = best_val_auprc
+        all_best_epochs[exp_id] = best_epoch
+        pred_runs_matrix[:, exp_id] = pred_test
+
+    # 4. 汇总多轮实验统计指标
+    mean_test_auroc, std_test_auroc = all_test_aurocs.mean(), all_test_aurocs.std()
+    mean_test_auprc, std_test_auprc = all_test_auprcs.mean(), all_test_auprcs.std()
+    mean_val_auroc, std_val_auroc = all_best_val_aurocs.mean(), all_best_val_aurocs.std()
+    mean_val_auprc, std_val_auprc = all_best_val_auprcs.mean(), all_best_val_auprcs.std()
+
+    print(f"\n{'='*75}")
+    print(f"Summary Results for Leakage Split: [{split_name}] (over {n_exp} independent runs)")
+    print(f"Validation Metrics (Best Checkpoint Average):")
+    print(f"  AUROC : {mean_val_auroc:.4f} ± {std_val_auroc:.4f}")
+    print(f"  AUPRC : {mean_val_auprc:.4f} ± {std_val_auprc:.4f}")
+    print(f"Final Fixed Test Metrics (Evaluated ONCE with Best Checkpoint):")
+    print(f"  AUROC : {mean_test_auroc:.4f} ± {std_test_auroc:.4f}")
+    print(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}")
+    print(f"{'='*75}\n")
+
+    # 5. 保存结果文件（严格区分 original 与 masked, transductive 与 inductive，避免相互覆盖）
+    res_dir = os.path.join(BASE_DIR, 'result')
+    os.makedirs(res_dir, exist_ok=True)
+    feat_tag = "masked" if masked else "original"
+    ind_tag = "_inductive" if inductive else ""
+    prefix = f"smoke_bimodriver_{feat_tag}{ind_tag}" if smoke_test else f"bimodriver_{feat_tag}{ind_tag}"
+
+    # 保存测试基因预测概率表
+    test_idx = np.where(fixed_test_mask)[0]
+    audit_path = os.path.join(BASE_DIR, 'implement', 'Gemma_Vocabulary_Leakage_Audit.xlsx')
+    gene_df = pd.read_excel(audit_path, sheet_name='Gene-level Flags').sort_values('Code_Index').reset_index(drop=True)
+    test_gene_names = gene_df.iloc[test_idx]['Gene_Name'].values
+
+    preds_table = {
+        'Code_Index': test_idx,
+        'Gene_Name': test_gene_names,
+        'True_Label': y_test_np.astype(int)
+    }
+    for run_i in range(n_exp):
+        preds_table[f'Pred_Prob_Run{run_i}'] = pred_runs_matrix[:, run_i]
+    preds_table['Pred_Prob_Mean'] = pred_runs_matrix.mean(axis=1)
+    preds_table['Pred_Prob_Std'] = pred_runs_matrix.std(axis=1)
+    pred_df = pd.DataFrame(preds_table)
+    preds_csv_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_test_preds.csv")
+    pred_df.to_csv(preds_csv_path, index=False)
+    print(f"  Saved test predictions to: {preds_csv_path} (shape: {pred_df.shape})")
+
+    # 保存指标文件
+    np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auroc.txt"), all_test_aurocs, fmt='%.6f')
+    np.savetxt(os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auprc.txt"), all_test_auprcs, fmt='%.6f')
+
+    summary_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_summary.txt")
+    with open(summary_path, 'w', encoding='utf-8') as f:
+        f.write(f"Method: BIMODriver ({feat_tag.capitalize()}{' Inductive' if inductive else ''})\n")
+        f.write(f"Leakage Split Experiment: {split_name}\n")
+        f.write(f"Feature Mode: {'Masked Features (消融实验)' if masked else 'Original Features (原始基线特征)'}\n")
+        f.write(f"Loaded Statement Feature File: {statement_path}\n")
+        f.write(f"Training Candidate Pool : {len(cand_indices)} (Drivers: {int(cand_labels.sum())}, Non-drivers: {len(cand_labels) - int(cand_labels.sum())})\n")
+        f.write(f"Inner Train/Val Split   : {(1 - val_ratio)*100:.0f}% Train / {val_ratio*100:.0f}% Val\n")
+        f.write(f"Fixed Testing Set       : {len(y_test_np)} (Drivers: {test_drivers}, Non-drivers: {test_nondrivers})\n")
+        proto_str = "Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval)" if inductive else "Transductive (Full graph message passing during training)"
+        f.write(f"Protocol                : {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
+        f.write(f"Experiments             : {n_exp} independent runs, {epochs} epochs each\n")
+        f.write(f"Hyperparameters         : lr={lr}, dropout={dropout}, lambdinter={lambdinter}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Final Fixed Test Metrics (Evaluated ONCE with Best Checkpoint):\n")
+        f.write(f"  AUROC : {mean_test_auroc:.4f} ± {std_test_auroc:.4f}\n")
+        f.write(f"  AUPRC : {mean_test_auprc:.4f} ± {std_test_auprc:.4f}\n")
+        f.write(f"  All Test AUROC per exp: {np.array2string(all_test_aurocs, precision=4)}\n")
+        f.write(f"  All Test AUPRC per exp: {np.array2string(all_test_auprcs, precision=4)}\n")
+        f.write('-' * 60 + '\n')
+        f.write(f"Validation Metrics (Best Checkpoint Average):\n")
+        f.write(f"  Val AUROC : {mean_val_auroc:.4f} ± {std_val_auroc:.4f}\n")
+        f.write(f"  Val AUPRC : {mean_val_auprc:.4f} ± {std_val_auprc:.4f}\n")
+        f.write(f"  Best Epochs per exp: {all_best_epochs.tolist()}\n")
+
+    return all_test_aurocs, all_test_auprcs, pred_df
+
+
+
+
+def main():
+    parser = argparse.ArgumentParser(description="BIMODriver Training and Evaluation")
+    parser.add_argument('--split', type=str, default=os.environ.get('SPLIT', 'cv'),
+                        help="划分模式: 'cv' (默认5折交叉验证), 'inductive' (归纳式5折交叉验证), 'clean_to_hit' (Clean训练->Hit测试), 'hit_to_clean' (Hit训练->Clean测试)")
+    parser.add_argument('--inductive', action='store_true',
+                        help="启用严格归纳式训练 (每折训练时删除所有与测试基因相连的边，测试基因不参与对比损失，训练后恢复全图预测)")
+    parser.add_argument('--dataset', type=str, default='cpdb', choices=['cpdb', 'string'],
+                        help="数据集类型 ('cpdb' 或 'string')")
+    parser.add_argument('--cancerType', type=str, default='pan-cancer',
+                        help="癌种名称 ('pan-cancer' 或特定单癌种)")
+    parser.add_argument('--epochs', type=int, default=int(os.environ.get('EPOCHS', 160)),
+                        help="训练轮数 (默认 160)")
+    parser.add_argument('--n_exp', type=int, default=int(os.environ.get('N_EXP', 10)),
+                        help="独立实验次数 (默认 10)")
+    parser.add_argument('--val_ratio', type=float, default=0.2,
+                        help="候选训练集中切分为验证集的比例 (默认 0.2，即 8:2)")
+    parser.add_argument('--lr', type=float, default=0.0005,
+                        help="学习率 (默认 0.0005)")
+    parser.add_argument('--dropout', type=float, default=0.3,
+                        help="Dropout 率 (默认 0.3)")
+    parser.add_argument('--lambdinter', type=float, default=0.001,
+                        help="特征对齐损失权重 (默认 0.001)")
+    parser.add_argument('--audit_file', type=str, default=None,
+                        help="审计文件路径 (默认 implement/Gemma_Vocabulary_Leakage_Audit.xlsx)")
+    parser.add_argument('--base_seed', type=int, default=42,
+                        help="随机种子基准值 (默认 42)")
+    parser.add_argument('--masked', action='store_true',
+                        help="使用关键词遮蔽后的语义特征 (PAN-CANCER_statement_features_masked.pt)")
+    parser.add_argument('--statement_file', type=str, default=None,
+                        help="自定义语义特征文件路径 (覆盖默认特征文件)")
+    parser.add_argument('--smoke_test', action='store_true',
+                        help="运行1次实验且少轮数进行快速冒烟测试")
+
+    args = parser.parse_args()
+
+
+    split_mode = args.split.lower().replace('->', '_to_').replace('-', '_')
+
+    # 加载 CPDB 数据
+    if args.dataset == 'cpdb':
+        data = torch.load(os.path.join(DATA_DIR, "CPDB", "CPDB_new_data.pt"))
         data = data.to(device)
         data.x = data.x[:, :48]
-        if cancerType == 'pan-cancer':
-            data.x = data.x[:, :48]
-        else:
+        if args.cancerType != 'pan-cancer':
             cancerType_dict = {
-                'kirc': [0, 16, 32],
-                'brca': [1, 17, 33],
-                'prad': [3, 19, 35],
-                'stad': [4, 20, 36],
-                'hnsc': [5, 21, 37],
-                'luad': [6, 22, 38],
-                'thca': [7, 23, 39],
-                'blca': [8, 24, 40],
-                'esca': [9, 25, 41],
-                'lihc': [10, 26, 42],
-                'ucec': [11, 27, 43],
-                'coad': [12, 28, 44],
-                'lusc': [13, 29, 45],
-                'cesc': [14, 30, 46],
-                'kirp': [15, 31, 47]
+                'kirc': [0, 16, 32], 'brca': [1, 17, 33], 'prad': [3, 19, 35],
+                'stad': [4, 20, 36], 'hnsc': [5, 21, 37], 'luad': [6, 22, 38],
+                'thca': [7, 23, 39], 'blca': [8, 24, 40], 'esca': [9, 25, 41],
+                'lihc': [10, 26, 42], 'ucec': [11, 27, 43], 'coad': [12, 28, 44],
+                'lusc': [13, 29, 45], 'cesc': [14, 30, 46], 'kirp': [15, 31, 47]
             }
-            data.x = data.x[:, cancerType_dict[cancerType]]
+            data.x = data.x[:, cancerType_dict[args.cancerType]]
 
-        datas = torch.load(r"./data/CPDB/Str_feature.pkl")
+        datas = torch.load(os.path.join(DATA_DIR, "CPDB", "Str_feature.pkl")).to(device)
         data.x = torch.cat((data.x, datas), 1)
         data = data.to(device)
 
-        with open("./data/CPDB/k_sets.pkl", 'rb') as handle:
-            k_sets = pickle.load(handle)
+        if args.statement_file:
+            statement_path = args.statement_file
+        elif args.masked:
+            statement_path = os.path.join(DATA_DIR, "CPDB", "PAN-CANCER_statement_features_masked.pt")
+        else:
+            statement_path = os.path.join(DATA_DIR, "CPDB", "PAN-CANCER_statement_features.pt")
 
-        
-        statement = torch.load('./data/CPDB/PAN-CANCER_statement_features.pt').to(device)
-        L_emb = {}
-        L_emb['self_emb'] = statement[:, 0:768]
-        L_emb['neighbor_emb'] = statement[:, 768:1536]
-        L_emb['together_emb'] = statement[:, 1536:2304]
+        if not os.path.exists(statement_path):
+            raise FileNotFoundError(f"未找到语义特征文件: {statement_path}")
 
-        L_emb_edge = torch.load('./data/cpdb_network_LLM/merged_k5_edge_index.pt').to(device)
+        print(f"Loading statement features from: {statement_path}")
+        statement = torch.load(statement_path).to(device)
+        L_emb = {
+            'self_emb': statement[:, 0:768],
+            'neighbor_emb': statement[:, 768:1536],
+            'together_emb': statement[:, 1536:2304]
+        }
+        L_emb_edge = torch.load(os.path.join(DATA_DIR, "cpdb_network_LLM", "merged_k5_edge_index.pt")).to(device)
 
         if isinstance(L_emb, dict):
             for key in L_emb:
                 if torch.is_tensor(L_emb[key]):
                     L_emb[key] = L_emb[key].to(device)
-    elif dataset == 'string':
-        data = torch.load("./data/STRING/STRING_data.pkl")
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
+
+    elif args.dataset == 'string':
+        if split_mode in ['clean_to_hit', 'hit_to_clean']:
+            raise ValueError("标签泄露审计划分目前仅支持 CPDB 数据集")
+        data = torch.load(os.path.join(DATA_DIR, "STRING", "STRING_data.pkl"))
         data = data.to(device)
         Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
-        y_all = np.logical_or(data.y, data.y_te)
-        mask_all = np.logical_or(data.mask, data.mask_te)
         data.x = data.x[:, :48]
 
-        datas = torch.load("./data/STRING/Str_feature.pkl").to(device)
+        datas = torch.load(os.path.join(DATA_DIR, "STRING", "Str_feature.pkl")).to(device)
         data.x = torch.cat((data.x, datas), 1)
-
         data = data.to(device)
-        k_sets = torch.load("./data/STRING/k_sets.pkl")
 
-        statement = torch.load('./data/STRING/PAN-CANCER_string_new_neiber2.pt').to(device)
-        L_emb = {}
-        L_emb['self_emb'] = statement[:, 0:768]
-        L_emb['neighbor_emb'] = statement[:, 768:1536]
-        L_emb['together_emb'] = statement[:, 1536:2304]
-        L_emb_edge = torch.load('./data/string_network_LLM/merged_k5_edge_index.pt').to(device)
+        with open(os.path.join(DATA_DIR, "STRING", "k_sets.pkl"), 'rb') as handle:
+            k_sets = torch.load(os.path.join(DATA_DIR, "STRING", "k_sets.pkl"))
+
+        statement = torch.load(os.path.join(DATA_DIR, "STRING", "PAN-CANCER_string_new_neiber2.pt")).to(device)
+        L_emb = {
+            'self_emb': statement[:, 0:768],
+            'neighbor_emb': statement[:, 768:1536],
+            'together_emb': statement[:, 1536:2304]
+        }
+        L_emb_edge = torch.load(os.path.join(DATA_DIR, "string_network_LLM", "merged_k5_edge_index.pt")).to(device)
 
         if isinstance(L_emb, dict):
             for key in L_emb:
                 if torch.is_tensor(L_emb[key]):
                     L_emb[key] = L_emb[key].to(device)
-                    
-        
     else:
         raise ValueError("Unsupported dataset. Please choose 'cpdb' or 'string'.")
+
     input_dim = data.x.shape[1]
     pb, _ = remove_self_loops(data.edge_index)
-
     pb, _ = add_self_loops(pb)
-    E = data.edge_index
-    EPOCH = 160
 
-    dropout_rates = [0.3]
-    
-    lrs = [0.0005]
-    # lambdinter = 0.01
-    lambdinters = [0.001]
+    # 分支 1：标签泄露词划分实验
+    if split_mode in ['clean_to_hit', 'hit_to_clean']:
+        clean_mask, hit_mask, audit_df = load_leakage_splits(args.audit_file)
 
-    for dropoutrate in dropout_rates:
-        for lr in lrs:
-            for lambdinter in lambdinters:
-                # ѵ��ģ��
-                print(f"\nTraining for cancer type: {cancerType}, dropout rate: {dropoutrate}, learning rate: {lr}, lambda inter: {lambdinter}")
+        if split_mode == 'clean_to_hit':
+            train_candidate_mask = clean_mask
+            fixed_test_mask = hit_mask
+        else:
+            train_candidate_mask = hit_mask
+            fixed_test_mask = clean_mask
 
-                results = trainPred_k_sets(
-                    input_dim = input_dim,      # ��������ά��
-                    k_sets = k_sets,          # ���صĽ�����֤��������
-                    data = data,              # ͼ���ݶ���
-                    L_emb = L_emb,            # �ı�����
-                    edge_index = pb,          # ������ı����������Ի���
-                    L_emb_edge = L_emb_edge,
-                    lr = lr,               # ѧϰ��
-                    epochs = EPOCH,             # ��ѵ���ִ�
-                    lambdinter = lambdinter,       # ��������ϵ��
-                    dropout = dropoutrate,           # ������
-                    cancerType=cancerType,
-                    dataset=dataset
-            )
-                
+        n_exp = 1 if args.smoke_test else args.n_exp
+        epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
+        trainPred_fixed_split(
+            input_dim=input_dim,
+            train_candidate_mask=train_candidate_mask,
+            fixed_test_mask=fixed_test_mask,
+            data=data,
+            L_emb=L_emb,
+            edge_index=pb,
+            L_emb_edge=L_emb_edge,
+            lr=args.lr,
+            epochs=epochs,
+            lambdinter=args.lambdinter,
+            dropout=args.dropout,
+            split_name=split_mode,
+            n_exp=n_exp,
+            Y=Y,
+            base_seed=args.base_seed,
+            val_ratio=args.val_ratio,
+            smoke_test=args.smoke_test,
+            masked=args.masked,
+            statement_path=statement_path,
+            inductive=args.inductive
+        )
+
+
+
+    # 分支 2：5 折交叉验证实验（支持传导式与归纳式）
+    elif split_mode in ['cv', 'inductive', 'cv_inductive']:
+        with open(os.path.join(DATA_DIR, "CPDB", "k_sets.pkl"), 'rb') as handle:
+            k_sets = pickle.load(handle)
+
+        is_inductive = args.inductive or split_mode in ['inductive', 'cv_inductive']
+        mode_str = "Inductive 5-fold CV (归纳式)" if is_inductive else "Transductive 5-fold CV (传导式)"
+        feat_str = "Masked Features (关键词遮蔽)" if args.masked else "Original Features (原始基线)"
+        print(f"\nRunning {mode_str} [{feat_str}] for {args.cancerType} on {args.dataset}...")
+        n_exp = 1 if args.smoke_test else None
+        n_fold = 1 if args.smoke_test else None
+        epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
+
+        trainPred_k_sets(
+            input_dim=input_dim,
+            k_sets=k_sets,
+            data=data,
+            L_emb=L_emb,
+            edge_index=pb,
+            L_emb_edge=L_emb_edge,
+            lr=args.lr,
+            epochs=epochs,
+            lambdinter=args.lambdinter,
+            dropout=args.dropout,
+            cancerType=args.cancerType,
+            dataset=args.dataset,
+            masked=args.masked,
+            inductive=is_inductive,
+            base_seed=args.base_seed,
+            n_exp=n_exp,
+            n_fold=n_fold,
+            smoke_test=args.smoke_test
+        )
+    else:
+        raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'inductive', 'clean_to_hit', 'hit_to_clean'")
+
+
+if __name__ == '__main__':
+    main()
