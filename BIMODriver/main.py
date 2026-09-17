@@ -276,7 +276,8 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
                      dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
                      masked=False, inductive=False, base_seed=42,
-                     n_exp=None, n_fold=None, smoke_test=False, top_k=None):
+                     n_exp=None, n_fold=None, smoke_test=False, top_k=None,
+                     split_file=None):
     """收集每个 epoch 的指标（5 折交叉验证，支持传导式与归纳式消融）"""
     if n_exp is None:
         n_exp = 1 if smoke_test else int(os.environ.get('N_EXP', 10))
@@ -295,24 +296,41 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         print(f"Pan-cancer total labeled genes: {mask_all.sum().item()}")
     else:
         Y, label_pos, label_neg = load_label_single(cancerType)
-        # 固定使用完整 5 折交叉验证划分全部阳性与负样本（消除历史遗留的 75% 截断）
-        split_seed = 1234 if base_seed == 42 else base_seed
-        split_rng = random.Random(split_seed)
-        shuffled_pos = list(label_pos)
-        shuffled_neg = list(label_neg)
-        split_rng.shuffle(shuffled_pos)
-        split_rng.shuffle(shuffled_neg)
-        print(f"Cancer {cancerType} | Positive: {len(shuffled_pos)}, Negative: {len(shuffled_neg)}, Labeled: {len(shuffled_pos) + len(shuffled_neg)}")
-        l = len(Y)
-        l1 = len(shuffled_pos) // 5
-        l2 = len(shuffled_neg) // 5
+        # 支持优先加载固定的预计算 5 折划分文件（data_splits/*.pkl）
+        target_split_path = split_file
+        if target_split_path is None:
+            candidate_path = os.path.join(DATA_DIR, "data_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            if os.path.exists(candidate_path) and (base_seed == 42 or base_seed == 1234):
+                target_split_path = candidate_path
 
         fixed_folds = []
-        for fold_id in range(5):
-            tr_m, te_m = sample_division_single(
-                shuffled_pos, shuffled_neg, l, l1, l2, fold_id
-            )
-            fixed_folds.append((tr_m, te_m))
+        if target_split_path and os.path.exists(target_split_path):
+            with open(target_split_path, 'rb') as f:
+                saved_split = pickle.load(f)
+            for fold_id in range(5):
+                f_info = saved_split['folds'][fold_id]
+                tr_m = torch.from_numpy(f_info['train_mask']).bool()
+                te_m = torch.from_numpy(f_info['validation_mask']).bool()
+                fixed_folds.append((tr_m, te_m))
+            print(f"Cancer {cancerType} | [Info] Loaded precomputed 5-fold split from: {target_split_path}")
+        else:
+            # 固定使用完整 5 折交叉验证划分全部阳性与负样本（消除历史遗留的 75% 截断）
+            split_seed = 1234 if base_seed == 42 else base_seed
+            split_rng = random.Random(split_seed)
+            shuffled_pos = list(label_pos)
+            shuffled_neg = list(label_neg)
+            split_rng.shuffle(shuffled_pos)
+            split_rng.shuffle(shuffled_neg)
+            print(f"Cancer {cancerType} | Positive: {len(shuffled_pos)}, Negative: {len(shuffled_neg)}, Labeled: {len(shuffled_pos) + len(shuffled_neg)}")
+            l = len(Y)
+            l1 = len(shuffled_pos) // 5
+            l2 = len(shuffled_neg) // 5
+
+            for fold_id in range(5):
+                tr_m, te_m = sample_division_single(
+                    shuffled_pos, shuffled_neg, l, l1, l2, fold_id
+                )
+                fixed_folds.append((tr_m, te_m))
 
     list_aurocs = np.zeros((n_exp, n_fold))
     list_auprcs = np.zeros((n_exp, n_fold))
@@ -832,6 +850,8 @@ def main():
                         help="使用关键词遮蔽后的语义特征 (PAN-CANCER_statement_features_masked.pt)")
     parser.add_argument('--statement_file', type=str, default=None,
                         help="自定义语义特征文件路径 (覆盖默认特征文件)")
+    parser.add_argument('--split_file', type=str, default=None,
+                        help="自定义单癌种 5 折划分文件路径 (.pkl)")
     parser.add_argument('--smoke_test', action='store_true',
                         help="运行1次实验且少轮数进行快速冒烟测试")
 
@@ -1003,7 +1023,8 @@ def main():
                 n_exp=n_exp,
                 n_fold=n_fold,
                 smoke_test=args.smoke_test,
-                top_k=top_k
+                top_k=top_k,
+                split_file=args.split_file
             )
     else:
         raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'inductive', 'clean_to_hit', 'hit_to_clean'")
