@@ -1,0 +1,456 @@
+import os
+import sys
+import copy
+import time
+import pickle
+import random
+import argparse
+import numpy as np
+import pandas as pd
+import scipy.sparse as sp
+import torch
+import torch.nn.functional as F
+import torch.optim as optim
+from sklearn import metrics
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, 'implement'))
+sys.path.append(os.path.join(BASE_DIR, 'implement', 'baselines', 'disfusion'))
+
+from alignment_check import assert_data_alignment
+from models import hypergrph_HGNN, graph_ChebNet, DISFusion
+
+
+def fix_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+def fast_G_from_H_weight(H, W):
+    """
+    Mathematically identical to DISFusion's _generate_G_from_H_weight,
+    optimized to avoid allocating multiple 13627x13627 diagonal matrices.
+    Safely handles isolated nodes with DV == 0.
+    """
+    DV = np.sum(H * W, axis=1)
+    DE = np.sum(H, axis=0)
+    invDE_W = np.zeros_like(DE, dtype=float)
+    nonzero_de = DE > 0
+    invDE_W[nonzero_de] = W[nonzero_de] / DE[nonzero_de]
+    H_scaled = H * invDE_W
+    A = H_scaled @ H.T
+    dv_inv_sqrt = np.zeros_like(DV, dtype=float)
+    nonzero_dv = DV > 0
+    dv_inv_sqrt[nonzero_dv] = np.power(DV[nonzero_dv], -0.5)
+    dv_inv_sqrt = dv_inv_sqrt[:, None]
+    G = dv_inv_sqrt * A * dv_inv_sqrt.T
+    return G
+
+def get_incidence_matrix(data_dir, gene_list, use_pathway=True, hypergraph_mode='kegg_go'):
+    """
+    构建超图关联矩阵，遵循官方基准实现过滤逻辑：
+    - 'kegg_go' / use_pathway=True: c2 (KEGG pathways without cancer: 177) + c5 (GO terms: GOMF, GOBP, GOCC: 10,185) = 10,362 hyperedges (Paper main table)
+    - 'kegg_only': 仅包含 177 个非癌症 KEGG 通路 (DISFusion_1 / Disfusion-Pathway)
+    - 'go_only' / use_pathway=False: 仅包含 10,185 个 GO 功能注释 (Disfusion-GO)
+    """
+    if hypergraph_mode in ['kegg_only', 'pathway_only']:
+        ids = ['c2']
+    elif hypergraph_mode == 'go_only' or not use_pathway:
+        ids = ['c5']
+    else:
+        ids = ['c2', 'c5']
+
+    incidenceMatrix = pd.DataFrame(index=gene_list)
+    for id_name in ids:
+        geneSetNameList = pd.read_csv(os.path.join(data_dir, f'{id_name}Name.txt'), sep='\t', header=None)[0].values
+        idList = []
+        for z, name in enumerate(geneSetNameList):
+            if id_name == 'c2':
+                q = name.split('_')
+                if 'CANCER' in q or 'TUMOR' in q or 'NEOPLASM' in q:
+                    pass
+                elif 'KEGG' in q:
+                    idList.append(z)
+            elif name[:2] == 'HP':
+                pass
+            else:
+                q = name.split('_')
+                if 'GOMF' in q or 'GOBP' in q or 'GOCC' in q:
+                    idList.append(z)
+
+        matrix = sp.load_npz(os.path.join(data_dir, f'{id_name}_GenesetsMatrix.npz'))
+        matrix = pd.DataFrame(matrix.toarray(), index=gene_list)
+        matrix = matrix.iloc[:, idList]
+        incidenceMatrix = pd.concat([incidenceMatrix, matrix], axis=1)
+
+    incidenceMatrix.columns = range(incidenceMatrix.shape[1])
+    return incidenceMatrix
+
+def run_disfusion_for_split(split_name, splits_data, gene_df, device, args):
+    runs_info = splits_data[split_name]
+    n_runs = 1 if args.smoke_test else min(args.n_runs, len(runs_info))
+    epochs = args.epochs if not args.smoke_test else min(args.epochs, 5)
+
+    mode_desc = "Strict Inductive (切断测试边+特征置零)" if args.inductive else "Transductive (传导式全图)"
+    print(f"\n{'='*75}")
+    print(f"Running DISFusion on Split: [{split_name}] [{mode_desc}]")
+    print(f"  Total Runs     : {n_runs} (Smoke test: {args.smoke_test})")
+    print(f"  Epochs per Run : {epochs}")
+    print(f"  Device         : {device}")
+    print(f"{'='*75}")
+
+    data_dir = os.path.join(BASE_DIR, 'data', 'DISFusion_data')
+    gene_list = list(gene_df['Gene_Name'].values)
+    assert len(gene_list) == 13627
+
+    # 1. 严格检查与加载特征 (64-dim = 48 multi-omics + 16 structural embeddings，遵循官方基准实现规范)
+    cpdb_data_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'CPDB_new_data.pt')
+    str_feat_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'Str_feature.pkl')
+    if os.path.exists(cpdb_data_path) and os.path.exists(str_feat_path):
+        cpdb_data = torch.load(cpdb_data_path)
+        omics = cpdb_data.x[:, :48].to(device)
+        str_feat = torch.load(str_feat_path).to(device)
+        feature_tensor = torch.cat((omics, str_feat), 1).float()
+    else:
+        feat_path = os.path.join(data_dir, 'biological features.csv')
+        feature_tensor = torch.Tensor(pd.read_csv(feat_path, sep=",").values).float().to(device)
+    print(f"Feature matrix loaded: {feature_tensor.shape}")
+
+    # 2. 加载 PPI 邻接
+    edge_np = np.array(np.loadtxt(os.path.join(data_dir, 'PPI_edge_index.txt')).transpose())
+    PPI_graph = torch.from_numpy(edge_np).long().to(device)
+
+    # 3. 预计算超图关联网
+    t_inc = time.time()
+    print("Loading and filtering incidence matrix...")
+    hypergraph_mode = getattr(args, 'hypergraph_mode', 'kegg_go')
+    use_pathway = getattr(args, 'use_pathway', True)
+    if not use_pathway:
+        hypergraph_mode = 'go_only'
+    incidence_matrix = get_incidence_matrix(data_dir, gene_list, use_pathway=use_pathway, hypergraph_mode=hypergraph_mode)
+    print(f"Incidence matrix ready in {time.time()-t_inc:.2f}s, shape: {incidence_matrix.shape}")
+
+    # 4. 标签与恒等基底（fh 保存在 CPU 上，按需载入 GPU，节省显存）
+    N = 13627
+    fh_cpu = torch.eye(N).float()
+    all_labels = (gene_df['Gene_Label'] == 'Driver').values.astype(int)
+    labels_tensor = torch.from_numpy(all_labels).to(device)
+
+    label_frame = pd.DataFrame(data=all_labels, index=gene_list)
+
+    # 超参数（官方推荐）
+    lr = args.lr
+    weight_decay = 5e-5
+    n_hid = 256
+    lambdinter = 1e-4
+    w_self = 0.005
+    dropout = 0.5
+
+    test_aurocs = []
+    test_auprcs = []
+    val_aurocs = []
+    val_auprcs = []
+    best_epochs = []
+
+    fixed_test_idx = runs_info[0]['test_idx']
+    test_gene_names = gene_df.iloc[fixed_test_idx]['Gene_Name'].values
+    test_true_labels = all_labels[fixed_test_idx].astype(int)
+
+    preds_table = {
+        'Code_Index': fixed_test_idx,
+        'Gene_Name': test_gene_names,
+        'True_Label': test_true_labels
+    }
+    pred_runs_matrix = np.zeros((len(fixed_test_idx), n_runs))
+
+    test_mask_tensor = torch.zeros(N, dtype=torch.bool, device=device)
+    test_mask_tensor[fixed_test_idx] = True
+
+    for run_i in range(n_runs):
+        run_info = runs_info[run_i]
+        exp_id = run_info['exp_id']
+        seed = run_info['seed']
+        train_idx = run_info['train_idx']
+        val_idx = run_info['val_idx']
+        test_idx = run_info['test_idx']
+
+        # 严格断言
+        assert np.array_equal(test_idx, fixed_test_idx), "Fixed test indices must be identical across runs!"
+        assert len(set(train_idx) & set(val_idx)) == 0, "Train & Val overlap!"
+        assert len(set(train_idx) & set(test_idx)) == 0, "Train & Test overlap!"
+        assert len(set(val_idx) & set(test_idx)) == 0, "Val & Test overlap!"
+
+        fix_seed(seed)
+        train_idx_tensor = torch.tensor(train_idx)
+        train_idx_cuda = train_idx_tensor.to(device)
+
+        # 疾病特异超边加权：仅使用当前内部训练集中的阳性基因
+        t_graph = time.time()
+        train_frame = label_frame.iloc[train_idx]
+        train_pos_genes = list(train_frame.where(train_frame == 1).dropna().index)
+        pos_matrix_sum = incidence_matrix.loc[train_pos_genes].sum()
+
+        sel_hyperedge_idx = np.where(pos_matrix_sum >= 3)[0]
+        sel_hyperedge = incidence_matrix.iloc[:, sel_hyperedge_idx]
+        hyperedge_weight = pos_matrix_sum[sel_hyperedge_idx].values
+        sel_weight_sum = sel_hyperedge.values.sum(0)
+        hyperedge_weight = hyperedge_weight / sel_weight_sum
+
+        H = np.array(sel_hyperedge).astype('float')
+        DV = np.sum(H * hyperedge_weight, axis=1)
+        for i in range(DV.shape[0]):
+            if DV[i] == 0:
+                t_rand = random.randint(0, H.shape[1] - 1)
+                H[i][t_rand] = 0.0001
+
+        G = fast_G_from_H_weight(H, hyperedge_weight)
+        # 全图超图保留在 CPU 上，避免训练期显存占用翻倍
+        adj_hyperGraph_cpu = torch.Tensor(G).float()
+
+        # 训练图与特征构建（归纳式切断测试边与特征置零；传导式保留全图）
+        if args.inductive:
+            edge_mask = ~(test_mask_tensor[PPI_graph[0]] | test_mask_tensor[PPI_graph[1]])
+            PPI_graph_train = PPI_graph[:, edge_mask]
+
+            H_train = H.copy()
+            H_train[fixed_test_idx, :] = 0.0
+            G_train = fast_G_from_H_weight(H_train, hyperedge_weight)
+            adj_hyperGraph_train = torch.Tensor(G_train).float().to(device)
+
+            feature_tensor_train = feature_tensor.detach().clone()
+            feature_tensor_train[fixed_test_idx] = 0.0
+
+            fh_train = fh_cpu.clone()
+            fh_train[fixed_test_idx] = 0.0
+            fh_train = fh_train.to(device)
+
+            assert not (test_mask_tensor[PPI_graph_train[0]].any() or test_mask_tensor[PPI_graph_train[1]].any()), "PPI 训练图中检测到测试基因连边！"
+            assert torch.all(feature_tensor_train[fixed_test_idx] == 0.0), "训练期测试基因生物特征未完全置零！"
+            assert torch.all(fh_train[fixed_test_idx] == 0.0), "训练期测试基因 fh 未完全置零！"
+            assert torch.all(adj_hyperGraph_train[fixed_test_idx, :] == 0.0), "训练期超图检测到测试基因出度连边！"
+            assert torch.all(adj_hyperGraph_train[:, fixed_test_idx] == 0.0), "训练期超图检测到测试基因入度连边！"
+        else:
+            PPI_graph_train = PPI_graph
+            adj_hyperGraph_train = adj_hyperGraph_cpu.to(device)
+            feature_tensor_train = feature_tensor
+            fh_train = fh_cpu.to(device)
+
+        # 初始化模型
+        feat_dim = feature_tensor.shape[1]
+        model_hypergrph = hypergrph_HGNN(in_ch=N, n_hid=n_hid, dropout=0.2).to(device)
+        model_graph = graph_ChebNet(in_ch=feat_dim, hdim=n_hid, dropout=0.5).to(device)
+        model_fusion = DISFusion(n_hid, 2, lambdinter, attention=0, nb_classes=2, dropout=dropout).to(device)
+
+        optimizer_hypergrph = optim.Adam(model_hypergrph.parameters(), lr=0.005, weight_decay=0.000005)
+        optimizer_graph = optim.Adam(model_graph.parameters(), lr=0.001, weight_decay=0)
+        schedular_hypergrph = optim.lr_scheduler.MultiStepLR(optimizer_hypergrph, milestones=[100, 200, 300, 400], gamma=0.5)
+        optimizer_fusion = optim.Adam(model_fusion.parameters(), lr=lr, weight_decay=weight_decay)
+
+        best_val_auprc = -1.0
+        best_val_auroc = -1.0
+        best_epoch = -1
+        best_states = None
+
+        t_start = time.time()
+        for epoch in range(epochs):
+            model_hypergrph.train()
+            model_graph.train()
+            model_fusion.train()
+            optimizer_hypergrph.zero_grad()
+            optimizer_graph.zero_grad()
+            optimizer_fusion.zero_grad()
+
+            h1 = model_hypergrph(fh_train, adj_hyperGraph_train)
+            h2 = model_graph(feature_tensor_train, PPI_graph_train)
+            # 内部训练节点对比/自监督损失，分类损失也仅在训练节点上计算
+            loss_self, output_fusion = model_fusion(h1, h2, train_idx=train_idx_cuda)
+            loss_cls = F.nll_loss(output_fusion[train_idx_cuda], labels_tensor[train_idx_cuda].long())
+            loss = loss_cls + w_self * loss_self
+
+            loss.backward()
+            optimizer_fusion.step()
+            optimizer_hypergrph.step()
+            optimizer_graph.step()
+            schedular_hypergrph.step()
+
+            # 验证集评估（绝不访问测试集）
+            model_hypergrph.eval()
+            model_graph.eval()
+            model_fusion.eval()
+            with torch.no_grad():
+                h1_val = model_hypergrph(fh_train, adj_hyperGraph_train)
+                h2_val = model_graph(feature_tensor_train, PPI_graph_train)
+                _, output_eval = model_fusion(h1_val, h2_val)
+                pred_val = output_eval[val_idx, 1].exp().cpu().numpy()
+                val_y = all_labels[val_idx]
+
+                val_auc = metrics.roc_auc_score(val_y, pred_val)
+                p_v, r_v, _ = metrics.precision_recall_curve(val_y, pred_val)
+                val_prc = metrics.auc(r_v, p_v)
+
+            if val_prc > best_val_auprc:
+                best_val_auprc = val_prc
+                best_val_auroc = val_auc
+                best_epoch = epoch + 1
+                best_states = {
+                    'hypergrph': copy.deepcopy(model_hypergrph.state_dict()),
+                    'graph': copy.deepcopy(model_graph.state_dict()),
+                    'fusion': copy.deepcopy(model_fusion.state_dict())
+                }
+
+            if (epoch + 1) % 50 == 0 or (epoch + 1) == epochs:
+                print(f"  [Run {run_i+1}/{n_runs}] Epoch {epoch+1:3d}/{epochs} | Val AUROC: {val_auc:.4f}, Val AUPRC: {val_prc:.4f} (Best Ep: {best_epoch}, Best Val AUPRC: {best_val_auprc:.4f})")
+
+        # 训练结束后加载最佳 checkpoint，评估固定测试集一次（恢复全图与原始冻结特征）
+        model_hypergrph.load_state_dict(best_states['hypergrph'])
+        model_graph.load_state_dict(best_states['graph'])
+        model_fusion.load_state_dict(best_states['fusion'])
+
+        if args.inductive:
+            del adj_hyperGraph_train, fh_train
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            adj_hyperGraph_te = adj_hyperGraph_cpu.to(device)
+            fh_te = fh_cpu.to(device)
+        else:
+            adj_hyperGraph_te = adj_hyperGraph_train
+            fh_te = fh_train
+
+        model_hypergrph.eval()
+        model_graph.eval()
+        model_fusion.eval()
+        with torch.no_grad():
+            h1_te = model_hypergrph(fh_te, adj_hyperGraph_te)
+            h2_te = model_graph(feature_tensor, PPI_graph)
+            _, output_eval = model_fusion(h1_te, h2_te)
+            pred_test = output_eval[test_idx, 1].exp().cpu().numpy()
+            te_y = all_labels[test_idx]
+
+            test_auc = metrics.roc_auc_score(te_y, pred_test)
+            p_t, r_t, _ = metrics.precision_recall_curve(te_y, pred_test)
+            test_prc = metrics.auc(r_t, p_t)
+
+        if args.inductive:
+            del adj_hyperGraph_te, fh_te
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+        elapsed = time.time() - t_start
+        print(f"  >> Run {run_i+1} Done in {elapsed:.1f}s | Best Ep: {best_epoch} | Test AUROC: {test_auc:.4f}, Test AUPRC: {test_prc:.4f}")
+
+        test_aurocs.append(test_auc)
+        test_auprcs.append(test_prc)
+        val_aurocs.append(best_val_auroc)
+        val_auprcs.append(best_val_auprc)
+        best_epochs.append(best_epoch)
+        pred_runs_matrix[:, run_i] = pred_test
+        preds_table[f'Pred_Prob_Run{run_i}'] = pred_test
+
+    test_aurocs = np.array(test_aurocs)
+    test_auprcs = np.array(test_auprcs)
+    val_aurocs = np.array(val_aurocs)
+    val_auprcs = np.array(val_auprcs)
+
+    preds_table['Pred_Prob_Mean'] = pred_runs_matrix.mean(axis=1)
+    preds_table['Pred_Prob_Std'] = pred_runs_matrix.std(axis=1)
+    pred_df = pd.DataFrame(preds_table)
+
+    ind_tag = "_inductive" if args.inductive else ""
+    prefix = f"smoke_disfusion{ind_tag}" if args.smoke_test else f"disfusion{ind_tag}"
+    res_dir = os.path.join(BASE_DIR, 'result')
+    os.makedirs(res_dir, exist_ok=True)
+
+    auroc_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auroc.txt")
+    auprc_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_auprc.txt")
+    summary_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_summary.txt")
+    preds_path = os.path.join(res_dir, f"{prefix}_leakage_{split_name}_test_preds.csv")
+
+    np.savetxt(auroc_path, test_aurocs, fmt='%.6f')
+    np.savetxt(auprc_path, test_auprcs, fmt='%.6f')
+    pred_df.to_csv(preds_path, index=False)
+
+    proto_str = "Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval)" if args.inductive else "Transductive (Full graph message passing during training)"
+    with open(summary_path, 'w', encoding='utf-8') as f:
+        f.write(f"Method: DISFusion{' (Inductive)' if args.inductive else ''}\n")
+        f.write(f"Task: {split_name}\n")
+        f.write(f"Protocol: {proto_str}, Checkpoint selected on validation set, test set evaluated ONCE\n")
+        f.write(f"Runs: {n_runs} (Smoke test: {args.smoke_test})\n")
+        f.write(f"Epochs: {epochs}\n")
+        f.write(f"Feature Dim: {feature_tensor.shape[1]} (48 omics + 16 topology embeddings)\n")
+        f.write(f"Hypergraph Mode: {getattr(args, 'hypergraph_mode', 'kegg_go')} (Incidence matrix: {incidence_matrix.shape})\n")
+        f.write(f"LR: {lr}, w_self: {w_self}, lambdinter: {lambdinter}\n")
+        f.write(f"{'-'*60}\n")
+        f.write(f"Validation Metrics (Best Checkpoint Average):\n")
+        f.write(f"  Val AUROC : {val_aurocs.mean():.4f} ± {val_aurocs.std():.4f}\n")
+        f.write(f"  Val AUPRC : {val_auprcs.mean():.4f} ± {val_auprcs.std():.4f}\n")
+        f.write(f"  Best Epochs: {best_epochs}\n")
+        f.write(f"{'-'*60}\n")
+        f.write(f"Final Fixed Test Metrics:\n")
+        f.write(f"  Test AUROC : {test_aurocs.mean():.4f} ± {test_aurocs.std():.4f}\n")
+        f.write(f"  Test AUPRC : {test_auprcs.mean():.4f} ± {test_auprcs.std():.4f}\n")
+        f.write(f"  Per-run AUROC: {np.array2string(test_aurocs, precision=4)}\n")
+        f.write(f"  Per-run AUPRC: {np.array2string(test_auprcs, precision=4)}\n")
+
+    print(f"\n--- DISFusion Summary for [{split_name}] ---")
+    print(f"  Test AUROC: {test_aurocs.mean():.4f} ± {test_aurocs.std():.4f}")
+    print(f"  Test AUPRC: {test_auprcs.mean():.4f} ± {test_auprcs.std():.4f}")
+    print(f"  Saved AUROC to: {auroc_path}")
+    print(f"  Saved AUPRC to: {auprc_path}")
+    print(f"  Saved Preds to: {preds_path} (shape: {pred_df.shape})")
+    print(f"  Saved Summary: {summary_path}")
+
+    return test_aurocs, test_auprcs, pred_df
+
+def main():
+    parser = argparse.ArgumentParser(description="Run DISFusion Baseline on Leakage Splits or 10x5 CV")
+    parser.add_argument('--split', type=str, default='both', choices=['clean_to_hit', 'hit_to_clean', 'both', 'cv'])
+    parser.add_argument('--smoke_test', action='store_true', help='Run quick test with 5 epochs')
+    parser.add_argument('--n_runs', type=int, default=10)
+    parser.add_argument('--epochs', type=int, default=200)
+    parser.add_argument('--lr', type=float, default=1e-5)
+    parser.add_argument('--use_pathway', type=str2bool, default=True, help='Whether to use KEGG pathways in hypergraph (default True, matching paper)')
+    parser.add_argument('--hypergraph_mode', type=str, default='kegg_go', choices=['kegg_go', 'kegg_only', 'go_only'])
+    parser.add_argument('--inductive', action='store_true', help='Run in strict inductive mode (cut test edges and zero out test features during training, restore at eval)')
+    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--gpu', type=int, default=0)
+    args = parser.parse_args()
+
+    if args.split == 'cv':
+        from run_disfusion_cv import run_disfusion_cv
+        run_disfusion_cv(args)
+        return
+
+    device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
+
+    # 0. 先行数据对齐严格断言检查
+    assert_data_alignment(BASE_DIR)
+
+    splits_path = os.path.join(BASE_DIR, 'data', 'CPDB', 'leakage_splits_10runs.pkl')
+    assert os.path.exists(splits_path), f"Shared split file not found at: {splits_path}"
+    with open(splits_path, 'rb') as f:
+        splits_data = pickle.load(f)
+
+    audit_path = os.path.join(BASE_DIR, 'implement', 'Gemma_Vocabulary_Leakage_Audit.xlsx')
+    gene_df = pd.read_excel(audit_path, sheet_name='Gene-level Flags').sort_values('Code_Index').reset_index(drop=True)
+
+    splits_to_run = ['clean_to_hit', 'hit_to_clean'] if args.split == 'both' else [args.split]
+    for s in splits_to_run:
+        run_disfusion_for_split(s, splits_data, gene_df, device, args)
+
+if __name__ == '__main__':
+    main()

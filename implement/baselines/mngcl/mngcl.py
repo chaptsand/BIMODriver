@@ -1,0 +1,168 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+from torch_geometric.nn import ChebConv
+
+class MLP(nn.Module):
+    def __init__(self, inp_size,  hidden_size, outp_size):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(inp_size, hidden_size),
+            nn.BatchNorm1d(hidden_size),
+            nn.ELU(),
+            nn.Linear(hidden_size, outp_size)
+        )
+        for model in self.net:
+            if isinstance(model, nn.Linear):
+                nn.init.xavier_normal_(model.weight, gain=1.414)
+
+    def forward(self, x):
+        return self.net(x)
+
+class GraphEncoder(nn.Module):
+    def __init__(self, gnn,):
+        super().__init__()
+        self.gnn = gnn
+
+    def forward(self, adj, in_feats):
+        representations = self.gnn(in_feats, adj)
+        representations = representations.view(-1, representations.size(-1))
+        return representations
+
+def sim(z1: torch.Tensor, z2: torch.Tensor):
+        z1 = F.normalize(z1)
+        z2 = F.normalize(z2)
+        return torch.mm(z1, z2.t())
+
+def contrastive_loss(h1, h2, pos, tau, chunk_size=3400):
+    if not pos.is_sparse:
+        sim_matrix = sim(h1, h2)
+        matrix_t = torch.exp(sim_matrix / tau)
+        numerator = matrix_t.mul(pos).sum(dim=-1)
+        denominator = torch.sum(matrix_t, dim=-1)
+        return -torch.log(numerator / denominator).mean()
+
+    # Sparse chunked computation to prevent CUDA OOM on full graph
+    N = h1.size(0)
+    h1_norm = F.normalize(h1)
+    h2_norm = F.normalize(h2)
+
+    pos = pos.coalesce()
+    idx = pos.indices()
+    vals = pos.values().to(dtype=h1.dtype)
+
+    splits = list(range(0, N, chunk_size)) + [N]
+    splits_tensor = torch.tensor(splits, device=h1.device)
+    row_offsets = torch.searchsorted(idx[0], splits_tensor)
+
+    losses = []
+    for i in range(len(splits) - 1):
+        start, end = splits[i], splits[i + 1]
+        sim_chunk = torch.mm(h1_norm[start:end], h2_norm.t())
+        matrix_t = torch.exp(sim_chunk / tau)
+        den = torch.sum(matrix_t, dim=-1)
+
+        p_start, p_end = row_offsets[i].item(), row_offsets[i + 1].item()
+        if p_end > p_start:
+            sub_rows = idx[0, p_start:p_end] - start
+            sub_cols = idx[1, p_start:p_end]
+            sub_vals = vals[p_start:p_end]
+            prod = matrix_t[sub_rows, sub_cols] * sub_vals
+            num = torch.zeros(end - start, device=h1.device, dtype=matrix_t.dtype).scatter_add_(0, sub_rows, prod)
+        else:
+            num = torch.zeros(end - start, device=h1.device, dtype=matrix_t.dtype)
+
+        losses.append(-torch.log(num / den))
+
+    return torch.cat(losses).mean()
+
+class MNGCL(nn.Module):
+    def __init__(self, 
+                 gnn,
+                 posList,
+                 tau,
+                 gnn_outsize,
+                 projection_size,
+                 projection_hidden_size,
+                 use_pathway=True,
+                ):
+        super().__init__()
+        self.use_pathway = use_pathway
+        self.encoder = GraphEncoder(gnn)
+        self.projector = MLP(gnn_outsize, projection_hidden_size, projection_size)
+        self.posList = posList
+        self.tau = tau
+        self.conv1 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
+        self.conv2 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
+        if self.use_pathway:
+            self.conv3 = ChebConv(gnn_outsize, 1, K=2, normalization="sym")
+        else:
+            self.conv3 = None
+        
+    def forward(self, *args, **kwargs):
+        if self.use_pathway:
+            if len(args) == 6:
+                aug_adj_1, aug_adj_2, aug_adj_3, aug_feat_1, aug_feat_2, aug_feat_3 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_adj_3 = kwargs.get('aug_adj_3', args[2] if len(args) > 2 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[3] if len(args) > 3 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[4] if len(args) > 4 else None)
+                aug_feat_3 = kwargs.get('aug_feat_3', args[5] if len(args) > 5 else None)
+
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            encoder_three = self.encoder(aug_adj_3, aug_feat_3)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
+            proj_three = self.projector(encoder_three)
+
+            lab = contrastive_loss(proj_one, proj_two, self.posList[0], self.tau)
+            lac = contrastive_loss(proj_one, proj_three, self.posList[0], self.tau)
+            lba = contrastive_loss(proj_two, proj_one, self.posList[1], self.tau)
+            lca = contrastive_loss(proj_three, proj_one, self.posList[2], self.tau)
+
+            # Total contrastive loss
+            Conloss = lab + lac + lba + lca
+
+            # Learning network-specific gene feature
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+            emb3 = self.conv3(encoder_three, aug_adj_3)
+
+            # Logistic Regression Module input feature
+            emb = torch.cat((emb1, emb2, emb3), 1)
+            return emb1, emb2, emb3, emb, Conloss
+        else:
+            if len(args) == 4:
+                aug_adj_1, aug_adj_2, aug_feat_1, aug_feat_2 = args
+            elif len(args) == 6:
+                aug_adj_1, _, aug_adj_2, aug_feat_1, _, aug_feat_2 = args
+            else:
+                aug_adj_1 = kwargs.get('aug_adj_1', args[0] if len(args) > 0 else None)
+                aug_adj_2 = kwargs.get('aug_adj_2', args[1] if len(args) > 1 else None)
+                aug_feat_1 = kwargs.get('aug_feat_1', args[2] if len(args) > 2 else None)
+                aug_feat_2 = kwargs.get('aug_feat_2', args[3] if len(args) > 3 else None)
+
+            encoder_one = self.encoder(aug_adj_1, aug_feat_1)
+            encoder_two = self.encoder(aug_adj_2, aug_feat_2)
+            
+            proj_one = self.projector(encoder_one)
+            proj_two = self.projector(encoder_two)
+
+            lab = contrastive_loss(proj_one, proj_two, self.posList[0], self.tau)
+            lba = contrastive_loss(proj_two, proj_one, self.posList[1], self.tau)
+
+            # Total contrastive loss
+            Conloss = lab + lba
+
+            # Learning network-specific gene feature
+            emb1 = self.conv1(encoder_one, aug_adj_1)
+            emb2 = self.conv2(encoder_two, aug_adj_2)
+
+            # Logistic Regression Module input feature
+            emb = torch.cat((emb1, emb2), 1)
+            return emb1, emb2, None, emb, Conloss
