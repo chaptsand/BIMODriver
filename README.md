@@ -66,7 +66,6 @@ BIMODriver/
 ├── results/                         # Raw paper benchmark evaluation metric files
 │   ├── pan-cancer/                  # Table 1: CPDB & STRING 10x5 CV raw metric arrays for 10 methods
 │   ├── cancer_specific/             # Table 2: 15 cancer types 50-value metrics for 10 methods
-│   ├── clean_hit/                   # Clean <-> Hit benchmark 10-run metric arrays & predictions
 │   └── README.md                    # Detailed documentation for raw results
 │
 ├── data/                            # Multi-omics features and biological network archives
@@ -206,7 +205,7 @@ Results will be automatically summarized and displayed as side-by-side compariso
 | MNGCL (500 ep) | 0.9243 ± 0.0031 | 0.8953 ± 0.0049 | 0.8831 ± 0.0051 | 0.7606 ± 0.0076 |
 | DISFusion (200 ep) | 0.9255 ± 0.0023 | 0.8948 ± 0.0048 | 0.8904 ± 0.0072 | 0.7711 ± 0.0137 |
 
-Across all scenarios, **BIMODriver achieves superior performance** on both AUROC and AUPRC metrics with statistically significant improvements ($p < 0.01$ over MNGCL, $p < 0.05$ over DISFusion). Complete raw metric files, summaries, and gene-level prediction probability tables are provided in [`results/`](results/).
+Across all scenarios, **BIMODriver achieves superior performance** on both AUROC and AUPRC metrics with statistically significant improvements ($p < 0.01$ over MNGCL, $p < 0.05$ over DISFusion). Complete raw paper benchmark metric files for Tables 1 and 2 are archived in [`results/`](results/), while Clean $\leftrightarrow$ Hit evaluations, statistical significance tests, and paper figures are maintained in [`paper_figures_tables/`](paper_figures_tables/).
 
 ---
 
