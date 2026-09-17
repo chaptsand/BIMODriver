@@ -34,6 +34,7 @@ BIMODriver/
 │
 ├── implement/                       # Benchmark reproduction suite and baselines
 │   ├── baselines/                   # Native implementations of DISFusion and MNGCL
+│   ├── supplementary/               # Rebuttal & ablation experiment suite (Figure 1, A16, A17, etc.)
 │   ├── alignment_check.py           # Feature and data alignment verification script
 │   ├── create_shared_splits.py      # Deterministic 10-run split generator
 │   ├── run_disfusion_cv.py          # DISFusion 10x5 cross-validation runner
@@ -59,6 +60,7 @@ BIMODriver/
 │   └── README.md                    # Detailed results directory documentation
 │
 ├── data/                            # Multi-omics features and biological network archives
+│   ├── single_splits/               # Precomputed and validated 5-fold splits for 15 cancer types
 │   ├── data.part01.rar ~ part27.rar # Multi-volume compressed dataset archives
 │   └── ...
 │
@@ -152,6 +154,26 @@ bash run_benchmark.sh all 0
 ```
 
 Raw evaluation metrics for the paper's main benchmarks (Tables 1 and 2) are archived in [`results/`](results/).
+
+### 5. Supplementary & Ablation Experiments
+For reviewer-requested analyses and ablation suites (Top-4 gating routing analysis for Figure 1, held-out gene expert deletion faithfulness, sparse vs. dense fusion, Table A17 cross-network edge-masking benchmark, and Table A16 BERT-base baseline):
+```bash
+# Top-4 gating routing analysis (Figure 1)
+python implement/supplementary/main_top4_routing.py --protocol transductive
+
+# Held-out gene expert deletion faithfulness
+python implement/supplementary/main_expert_deletion.py --protocol transductive
+
+# Sparse vs. dense expert fusion comparison
+python implement/supplementary/main_sparse_dense.py --setting transductive
+
+# Table A17 cross-network strict inductive / edge-masking benchmark
+python implement/supplementary/run_A17_all.py
+
+# Table A16 BERT-base semantic baseline
+python implement/supplementary/main_A16_bert_base.py
+```
+See [`implement/supplementary/README.md`](implement/supplementary/README.md) for full configuration options and reproduction commands.
 
 ---
 
