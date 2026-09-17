@@ -1,0 +1,19 @@
+Method: MNGCL (Inductive)
+Task: clean_to_hit
+Protocol: Strict Inductive (Test nodes edges cut, test features zeroed during training; Full graph restored at eval), Fixed Epoch Protocol (Paper Native Evaluation), test set evaluated ONCE
+Runs: 10 (Smoke test: False)
+Epochs: 500
+Eval Mode: fixed
+Views: 2 views (PPI + GO similarity, Paper Table Setting)
+LR: 0.001, Tau: 0.3, Lambda: 0.1
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9033 ± 0.0148
+  Val AUPRC : 0.7936 ± 0.0287
+  Best Epochs: [500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
+------------------------------------------------------------
+Final Fixed Test Metrics:
+  Test AUROC : 0.9243 ± 0.0031
+  Test AUPRC : 0.8953 ± 0.0049
+  Per-run AUROC: [0.9253 0.9276 0.9249 0.9245 0.9183 0.9198 0.9248 0.9231 0.9262 0.9287]
+  Per-run AUPRC: [0.8954 0.8989 0.8983 0.8953 0.8871 0.8857 0.8965 0.8948 0.8999 0.901 ]

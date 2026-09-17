@@ -1,0 +1,19 @@
+Method: MNGCL
+Task: hit_to_clean
+Protocol: Transductive (Full graph message passing during training), Fixed Epoch Protocol (Paper Native Evaluation), test set evaluated ONCE
+Runs: 10 (Smoke test: False)
+Epochs: 500
+Eval Mode: fixed
+Views: 2 views (PPI + GO similarity, Paper Table Setting)
+LR: 0.001, Tau: 0.3, Lambda: 0.1
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9169 ± 0.0238
+  Val AUPRC : 0.8950 ± 0.0225
+  Best Epochs: [500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
+------------------------------------------------------------
+Final Fixed Test Metrics:
+  Test AUROC : 0.8835 ± 0.0050
+  Test AUPRC : 0.7604 ± 0.0089
+  Per-run AUROC: [0.882  0.8921 0.8851 0.8837 0.8786 0.881  0.892  0.885  0.8762 0.8796]
+  Per-run AUPRC: [0.7569 0.7708 0.7653 0.7623 0.7489 0.7529 0.7744 0.7674 0.7457 0.7593]
