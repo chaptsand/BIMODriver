@@ -84,6 +84,8 @@ def save_best_epoch_results(
         path = os.path.join(single_dir, 'single_result_new.txt')
 
     selected_epochs = [i for i in range(epochs) if (i + 1) % 10 == 0]
+    if not selected_epochs:
+        selected_epochs = [epochs - 1]
     selected_aurocs = all_aurocs[selected_epochs]  # shape: [E, n_exp, n_fold]
     selected_auprcs = all_auprcs[selected_epochs]
 
@@ -104,12 +106,12 @@ def save_best_epoch_results(
             f.write(f"{txt}\n")
         f.write(f"Dropout Rate: {dropout}, Learning Rate: {lr}, Lambda Inter: {lambdinter}\n")
         f.write(f"Results for {cancerType}:\n")
-        f.write(f"AUPR: {list_aurocs.mean():.4f} ± {list_aurocs.std():.4f}\n")
+        f.write(f"AUROC: {list_aurocs.mean():.4f} ± {list_aurocs.std():.4f}\n")
         f.write(str(list_aurocs) + '\n')
-        f.write(f"AUC: {list_auprcs.mean():.4f} ± {list_auprcs.std():.4f}\n")
+        f.write(f"AUPRC: {list_auprcs.mean():.4f} ± {list_auprcs.std():.4f}\n")
         f.write(str(list_auprcs) + '\n')
 
-        f.write(f"# Best Epoch: {best_epoch + 1} | Mean AUROC: {best_auroc_matrix.mean():.4f} +- {best_auroc_matrix.std():.4f} | Mean AUPRC: {best_auprc_matrix.mean():.4f} +- {best_auprc_matrix.std():.4f}\n")
+        f.write(f"# Best Epoch: {best_epoch + 1} | Mean AUROC: {best_auroc_matrix.mean():.4f} ± {best_auroc_matrix.std():.4f} | Mean AUPRC: {best_auprc_matrix.mean():.4f} ± {best_auprc_matrix.std():.4f}\n")
         f.write("Best AUROC matrix:\n")
         np.savetxt(f, best_auroc_matrix, fmt='%.6f')
         f.write("Best AUPRC matrix:\n")
@@ -117,13 +119,13 @@ def save_best_epoch_results(
 
 
 class combine_net_gate_without_ac(torch.nn.Module):
-    def __init__(self, input_dim=64, lambdinter=0.005, dropout=0.1):
+    def __init__(self, input_dim=64, lambdinter=0.005, dropout=0.1, top_k=5):
         super(combine_net_gate_without_ac, self).__init__()
         self.lambdinter = lambdinter    # 特征对齐损失系数
         self.dropout = dropout
         self.g_net = G_Net(in_channels=input_dim, hidden_channels=256, out_channels=1, dropout=dropout)
         self.l_net = L_net(in_channels=768, hidden_channels=256, out_channels=1, dropout=dropout)
-        self.top_k = 5
+        self.top_k = top_k
 
         self.gating_layer = torch.nn.Sequential(
             torch.nn.Linear(6, 64),

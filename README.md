@@ -27,7 +27,10 @@ BIMODriver/
 ├── BIMODriver/                      # Core BIMODriver framework (model, training, cross-validation)
 │   ├── main.py                      # Main training and evaluation runner
 │   ├── model.py                     # Neural network architectures (ChebConv, contrastive loss, gating)
-│   └── gcnPreprocessing.py          # Graph processing and cross-validation utilities
+│   ├── gcnPreprocessing.py          # Graph processing and cross-validation utilities
+│   └── single/                      # 15 single-cancer training and evaluation pipeline
+│       ├── main_15_single_cancers.py
+│       └── MOE-config-15cancer.yaml
 │
 ├── implement/                       # Benchmark reproduction suite and baselines
 │   ├── baselines/                   # Native implementations of DISFusion and MNGCL
@@ -117,8 +120,12 @@ python implement/alignment_check.py
 # Pan-cancer on CPDB
 python BIMODriver/main.py --split cv --dataset cpdb --cancerType pan-cancer
 
-# Cancer-specific (e.g., BRCA, LUAD, GBM)
-python BIMODriver/main.py --split cv --dataset cpdb --cancerType BRCA
+# Cancer-specific (e.g., blca, brca, or all 15 cancers sequentially)
+python BIMODriver/main.py --split cv --dataset cpdb --cancerType blca
+python BIMODriver/main.py --split cv --dataset cpdb --cancerType all_15
+
+# Dedicated 15 single-cancer pipeline
+python BIMODriver/single/main_15_single_cancers.py
 ```
 
 ### 2. Strict Inductive Evaluation

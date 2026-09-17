@@ -72,8 +72,15 @@ def load_label_single(cancerType):
     path = os.path.join(DATA_DIR, "CPDB", "Specific cancer") + "/"
     label = np.loadtxt(path + "label_file-P-" + cancerType + ".txt")
     Y = torch.tensor(label).type(torch.FloatTensor).to(device).unsqueeze(1)
-    label_pos = np.loadtxt(path + "pos-" + cancerType + ".txt", dtype=int)
-    label_neg = np.loadtxt(path + "neg.txt", dtype=int)
+    label_pos = np.atleast_1d(
+        np.loadtxt(path + "pos-" + cancerType + ".txt", dtype=int)
+    )
+    label_neg = np.atleast_1d(
+        np.loadtxt(path + "neg.txt", dtype=int)
+    )
+    max_index = len(label) - 1
+    label_pos = [int(i) for i in label_pos if 0 <= int(i) <= max_index]
+    label_neg = [int(i) for i in label_neg if 0 <= int(i) <= max_index]
     return Y, label_pos, label_neg
 
 
@@ -269,12 +276,15 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                      lr=0.001, epochs=200, lambdinter=0.005,
                      dropout=0.2, cancerType='pan-cancer', dataset='cpdb',
                      masked=False, inductive=False, base_seed=42,
-                     n_exp=None, n_fold=None, smoke_test=False):
+                     n_exp=None, n_fold=None, smoke_test=False, top_k=None):
     """收集每个 epoch 的指标（5 折交叉验证，支持传导式与归纳式消融）"""
     if n_exp is None:
         n_exp = 1 if smoke_test else int(os.environ.get('N_EXP', 10))
     if n_fold is None:
         n_fold = 1 if smoke_test else int(os.environ.get('N_FOLD', 5))
+
+    if top_k is None:
+        top_k = 5 if cancerType == 'pan-cancer' else 4
 
     all_aurocs = np.zeros((epochs, n_exp, n_fold))
     all_auprcs = np.zeros((epochs, n_exp, n_fold))
@@ -282,20 +292,27 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
         y_all = np.logical_or(data.y, data.y_te)
         mask_all = np.logical_or(data.mask, data.mask_te)
-        print(mask_all.sum())
+        print(f"Pan-cancer total labeled genes: {mask_all.sum().item()}")
     else:
-        label, label_pos, label_neg = load_label_single(cancerType)
-        random.shuffle(label_pos)
-        random.shuffle(label_neg)
-        print(label.sum())
-        y_train_pos = label_pos[:int(0.75 * len(label_pos))]
-        y_test_pos = label_pos[int(0.75 * len(label_pos)):]
-        y_train_neg = label_neg[:int(0.75 * len(label_neg))]
-        y_test_neg = label_neg[int(0.75 * len(label_neg)):]
-        l = len(label)
-        l1 = int(len(y_train_pos) / 5)
-        l2 = int(len(y_train_neg) / 5)
-        Y = label
+        Y, label_pos, label_neg = load_label_single(cancerType)
+        # 固定使用完整 5 折交叉验证划分全部阳性与负样本（消除历史遗留的 75% 截断）
+        split_seed = 1234 if base_seed == 42 else base_seed
+        split_rng = random.Random(split_seed)
+        shuffled_pos = list(label_pos)
+        shuffled_neg = list(label_neg)
+        split_rng.shuffle(shuffled_pos)
+        split_rng.shuffle(shuffled_neg)
+        print(f"Cancer {cancerType} | Positive: {len(shuffled_pos)}, Negative: {len(shuffled_neg)}, Labeled: {len(shuffled_pos) + len(shuffled_neg)}")
+        l = len(Y)
+        l1 = len(shuffled_pos) // 5
+        l2 = len(shuffled_neg) // 5
+
+        fixed_folds = []
+        for fold_id in range(5):
+            tr_m, te_m = sample_division_single(
+                shuffled_pos, shuffled_neg, l, l1, l2, fold_id
+            )
+            fixed_folds.append((tr_m, te_m))
 
     list_aurocs = np.zeros((n_exp, n_fold))
     list_auprcs = np.zeros((n_exp, n_fold))
@@ -322,18 +339,21 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             
             if cancerType == 'pan-cancer':
                 _, _, tr_mask, te_mask = k_sets[exp_id][fold_id]
-                print(tr_mask.sum())
-                print(te_mask.sum())
                 train_mask = torch.tensor(tr_mask).bool().to(device)
                 test_mask = torch.tensor(te_mask).bool().to(device)
+                print(f"  Train nodes: {train_mask.sum().item()}, Test nodes: {test_mask.sum().item()}")
             else:
-                tr_mask, te_mask = sample_division_single(y_train_pos, y_train_neg, l, l1, l2, fold_id)
+                tr_mask, te_mask = fixed_folds[fold_id]
                 train_mask = torch.tensor(tr_mask).bool().to(device)
                 test_mask = torch.tensor(te_mask).bool().to(device)
-                print(tr_mask.sum())
-                print(te_mask.sum())
+                print(f"  Train nodes: {train_mask.sum().item()}, Test nodes: {test_mask.sum().item()}")
             
-            model = combine_net_gate_without_ac(input_dim=input_dim, lambdinter=lambdinter, dropout=dropout).to(device)
+            model = combine_net_gate_without_ac(
+                input_dim=input_dim,
+                lambdinter=lambdinter,
+                dropout=dropout,
+                top_k=top_k
+            ).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
             if inductive:
@@ -438,7 +458,12 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
     print(f"{n_exp}x{n_fold} AUPRC Matrix:\n{np.array2string(list_auprcs[:n_exp, :n_fold], precision=4)}")
     print(f"{'='*75}\n")
 
-    summary_file = os.path.join(RESULT_DIR, f'{feat_tag}_summary.txt')
+    if cancerType == 'pan-cancer':
+        summary_file = os.path.join(RESULT_DIR, f'{feat_tag}_summary.txt')
+    else:
+        single_dir = os.path.join(RESULT_DIR, 'single')
+        os.makedirs(single_dir, exist_ok=True)
+        summary_file = os.path.join(single_dir, f'{feat_tag}_summary.txt')
     with open(summary_file, 'w', encoding='utf-8') as f:
         f.write(f"Experiment: {n_exp}x{n_fold} Cross-Validation [{desc}]\n")
         f.write(f"Protocol: Strict Inductive Training (Appendix Table A17: Removed all test node edges from CPDB & Semantic KNN graphs; Set feature vectors of all test genes to zero during training; Excluded test genes from contrastive loss [13627 - test_count]; Classification loss strictly on labeled train nodes; Complete network topology & frozen features restored at eval)\n" if inductive else "Protocol: Transductive Training\n")
@@ -761,6 +786,20 @@ def trainPred_fixed_split(input_dim, train_candidate_mask, fixed_test_mask, data
 
 
 
+ALL_15_CANCERS = [
+    'kirc', 'brca', 'prad', 'stad', 'hnsc', 'luad', 'thca', 'blca',
+    'esca', 'lihc', 'ucec', 'coad', 'lusc', 'cesc', 'kirp'
+]
+
+CANCER_INDICES = {
+    'kirc': [0, 16, 32], 'brca': [1, 17, 33], 'prad': [3, 19, 35],
+    'stad': [4, 20, 36], 'hnsc': [5, 21, 37], 'luad': [6, 22, 38],
+    'thca': [7, 23, 39], 'blca': [8, 24, 40], 'esca': [9, 25, 41],
+    'lihc': [10, 26, 42], 'ucec': [11, 27, 43], 'coad': [12, 28, 44],
+    'lusc': [13, 29, 45], 'cesc': [14, 30, 46], 'kirp': [15, 31, 47]
+}
+
+
 def main():
     parser = argparse.ArgumentParser(description="BIMODriver Training and Evaluation")
     parser.add_argument('--split', type=str, default=os.environ.get('SPLIT', 'cv'),
@@ -770,7 +809,9 @@ def main():
     parser.add_argument('--dataset', type=str, default='cpdb', choices=['cpdb', 'string'],
                         help="数据集类型 ('cpdb' 或 'string')")
     parser.add_argument('--cancerType', type=str, default='pan-cancer',
-                        help="癌种名称 ('pan-cancer' 或特定单癌种)")
+                        help="癌种名称 ('pan-cancer', 'all_15', 或特定单癌种名称)")
+    parser.add_argument('--top_k', type=int, default=None,
+                        help="Top-k 专家数 (默认: pan-cancer 为 5, 单癌种为 4)")
     parser.add_argument('--epochs', type=int, default=int(os.environ.get('EPOCHS', 160)),
                         help="训练轮数 (默认 160)")
     parser.add_argument('--n_exp', type=int, default=int(os.environ.get('N_EXP', 10)),
@@ -796,27 +837,18 @@ def main():
 
     args = parser.parse_args()
 
-
     split_mode = args.split.lower().replace('->', '_to_').replace('-', '_')
+
+    if args.cancerType == 'all_15':
+        cancers_to_run = ALL_15_CANCERS
+    else:
+        cancers_to_run = [args.cancerType]
 
     # 加载 CPDB 数据
     if args.dataset == 'cpdb':
-        data = torch.load(os.path.join(DATA_DIR, "CPDB", "CPDB_new_data.pt"))
-        data = data.to(device)
-        data.x = data.x[:, :48]
-        if args.cancerType != 'pan-cancer':
-            cancerType_dict = {
-                'kirc': [0, 16, 32], 'brca': [1, 17, 33], 'prad': [3, 19, 35],
-                'stad': [4, 20, 36], 'hnsc': [5, 21, 37], 'luad': [6, 22, 38],
-                'thca': [7, 23, 39], 'blca': [8, 24, 40], 'esca': [9, 25, 41],
-                'lihc': [10, 26, 42], 'ucec': [11, 27, 43], 'coad': [12, 28, 44],
-                'lusc': [13, 29, 45], 'cesc': [14, 30, 46], 'kirp': [15, 31, 47]
-            }
-            data.x = data.x[:, cancerType_dict[args.cancerType]]
-
-        datas = torch.load(os.path.join(DATA_DIR, "CPDB", "Str_feature.pkl")).to(device)
-        data.x = torch.cat((data.x, datas), 1)
-        data = data.to(device)
+        raw_data = torch.load(os.path.join(DATA_DIR, "CPDB", "CPDB_new_data.pt"))
+        raw_data = raw_data.to(device)
+        str_feat = torch.load(os.path.join(DATA_DIR, "CPDB", "Str_feature.pkl")).to(device)
 
         if args.statement_file:
             statement_path = args.statement_file
@@ -842,19 +874,27 @@ def main():
                 if torch.is_tensor(L_emb[key]):
                     L_emb[key] = L_emb[key].to(device)
 
-        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
+        pb, _ = remove_self_loops(raw_data.edge_index)
+        pb, _ = add_self_loops(pb)
+
+        def build_data_for_cancer(c_name):
+            d = copy.deepcopy(raw_data)
+            if c_name == 'pan-cancer':
+                d.x = torch.cat((raw_data.x[:, :48], str_feat), dim=1)
+            else:
+                if c_name not in CANCER_INDICES:
+                    raise ValueError(f"未知的单癌种类型: {c_name}。支持列表: {list(CANCER_INDICES.keys())}")
+                d.x = torch.cat((raw_data.x[:, CANCER_INDICES[c_name]], str_feat), dim=1)
+            return d
 
     elif args.dataset == 'string':
         if split_mode in ['clean_to_hit', 'hit_to_clean']:
             raise ValueError("标签泄露审计划分目前仅支持 CPDB 数据集")
-        data = torch.load(os.path.join(DATA_DIR, "STRING", "STRING_data.pkl"))
-        data = data.to(device)
-        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
-        data.x = data.x[:, :48]
+        if any(c != 'pan-cancer' for c in cancers_to_run):
+            raise ValueError("STRING 数据集目前仅支持泛癌种 (pan-cancer)")
 
-        datas = torch.load(os.path.join(DATA_DIR, "STRING", "Str_feature.pkl")).to(device)
-        data.x = torch.cat((data.x, datas), 1)
-        data = data.to(device)
+        raw_data = torch.load(os.path.join(DATA_DIR, "STRING", "STRING_data.pkl")).to(device)
+        str_feat = torch.load(os.path.join(DATA_DIR, "STRING", "Str_feature.pkl")).to(device)
 
         with open(os.path.join(DATA_DIR, "STRING", "k_sets.pkl"), 'rb') as handle:
             k_sets = torch.load(os.path.join(DATA_DIR, "STRING", "k_sets.pkl"))
@@ -871,15 +911,25 @@ def main():
             for key in L_emb:
                 if torch.is_tensor(L_emb[key]):
                     L_emb[key] = L_emb[key].to(device)
+
+        pb, _ = remove_self_loops(raw_data.edge_index)
+        pb, _ = add_self_loops(pb)
+
+        def build_data_for_cancer(c_name):
+            d = copy.deepcopy(raw_data)
+            d.x = torch.cat((raw_data.x[:, :48], str_feat), dim=1)
+            return d
     else:
         raise ValueError("Unsupported dataset. Please choose 'cpdb' or 'string'.")
 
-    input_dim = data.x.shape[1]
-    pb, _ = remove_self_loops(data.edge_index)
-    pb, _ = add_self_loops(pb)
-
     # 分支 1：标签泄露词划分实验
     if split_mode in ['clean_to_hit', 'hit_to_clean']:
+        if len(cancers_to_run) > 1 or cancers_to_run[0] != 'pan-cancer':
+            raise ValueError("标签泄露审计划分实验仅针对泛癌种 (pan-cancer) 设计。")
+
+        data = build_data_for_cancer('pan-cancer')
+        input_dim = data.x.shape[1]
+        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
         clean_mask, hit_mask, audit_df = load_leakage_splits(args.audit_file)
 
         if split_mode == 'clean_to_hit':
@@ -915,8 +965,6 @@ def main():
             inductive=args.inductive
         )
 
-
-
     # 分支 2：5 折交叉验证实验（支持传导式与归纳式）
     elif split_mode in ['cv', 'inductive', 'cv_inductive']:
         with open(os.path.join(DATA_DIR, "CPDB", "k_sets.pkl"), 'rb') as handle:
@@ -925,31 +973,38 @@ def main():
         is_inductive = args.inductive or split_mode in ['inductive', 'cv_inductive']
         mode_str = "Inductive 5-fold CV (归纳式)" if is_inductive else "Transductive 5-fold CV (传导式)"
         feat_str = "Masked Features (关键词遮蔽)" if args.masked else "Original Features (原始基线)"
-        print(f"\nRunning {mode_str} [{feat_str}] for {args.cancerType} on {args.dataset}...")
         n_exp = 1 if args.smoke_test else None
         n_fold = 1 if args.smoke_test else None
         epochs = min(args.epochs, 5) if args.smoke_test else args.epochs
 
-        trainPred_k_sets(
-            input_dim=input_dim,
-            k_sets=k_sets,
-            data=data,
-            L_emb=L_emb,
-            edge_index=pb,
-            L_emb_edge=L_emb_edge,
-            lr=args.lr,
-            epochs=epochs,
-            lambdinter=args.lambdinter,
-            dropout=args.dropout,
-            cancerType=args.cancerType,
-            dataset=args.dataset,
-            masked=args.masked,
-            inductive=is_inductive,
-            base_seed=args.base_seed,
-            n_exp=n_exp,
-            n_fold=n_fold,
-            smoke_test=args.smoke_test
-        )
+        for c_type in cancers_to_run:
+            data = build_data_for_cancer(c_type)
+            input_dim = data.x.shape[1]
+            top_k = args.top_k if args.top_k is not None else (5 if c_type == 'pan-cancer' else 4)
+
+            print(f"\nRunning {mode_str} [{feat_str}] for {c_type} on {args.dataset} (input_dim={input_dim}, top_k={top_k})...")
+
+            trainPred_k_sets(
+                input_dim=input_dim,
+                k_sets=k_sets,
+                data=data,
+                L_emb=L_emb,
+                edge_index=pb,
+                L_emb_edge=L_emb_edge,
+                lr=args.lr,
+                epochs=epochs,
+                lambdinter=args.lambdinter,
+                dropout=args.dropout,
+                cancerType=c_type,
+                dataset=args.dataset,
+                masked=args.masked,
+                inductive=is_inductive,
+                base_seed=args.base_seed,
+                n_exp=n_exp,
+                n_fold=n_fold,
+                smoke_test=args.smoke_test,
+                top_k=top_k
+            )
     else:
         raise ValueError(f"未知的划分模式: {args.split}。可选模式: 'cv', 'inductive', 'clean_to_hit', 'hit_to_clean'")
 

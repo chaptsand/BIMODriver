@@ -1,0 +1,41 @@
+COMMON:
+  seed: 1234
+  device: "cuda"
+  save_dir: "./result/single"
+  data_path: "data/CPDB/"
+
+# 癌症组学特征索引映射 (对应 48 维组学特征中各癌种的突变、拷贝数变异、表达量特征列)
+CANCER_INDICES:
+  kirc: [0, 16, 32]
+  brca: [1, 17, 33]
+  prad: [3, 19, 35]
+  stad: [4, 20, 36]
+  hnsc: [5, 21, 37]
+  luad: [6, 22, 38]
+  thca: [7, 23, 39]
+  blca: [8, 24, 40]
+  esca: [9, 25, 41]
+  lihc: [10, 26, 42]
+  ucec: [11, 27, 43]
+  coad: [12, 28, 44]
+  lusc: [13, 29, 45]
+  cesc: [14, 30, 46]
+  kirp: [15, 31, 47]
+
+# 启用的单癌种列表 (共 15 种)
+ENABLED_CANCERS:
+  - kirc
+  - brca
+  - prad
+  - stad
+  - hnsc
+  - luad
+  - thca
+  - blca
+  - esca
+  - lihc
+  - ucec
+  - coad
+  - lusc
+  - cesc
+  - kirp
