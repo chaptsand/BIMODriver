@@ -296,12 +296,15 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         print(f"Pan-cancer total labeled genes: {mask_all.sum().item()}")
     else:
         Y, label_pos, label_neg = load_label_single(cancerType)
-        # 支持优先加载固定的预计算 5 折划分文件（data_splits/*.pkl）
+        # 支持优先加载固定的预计算 5 折划分文件（single_splits/*.pkl）
         target_split_path = split_file
         if target_split_path is None:
-            candidate_path = os.path.join(DATA_DIR, "data_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            candidate_path = os.path.join(DATA_DIR, "single_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            legacy_path = os.path.join(DATA_DIR, "data_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
             if os.path.exists(candidate_path) and (base_seed == 42 or base_seed == 1234):
                 target_split_path = candidate_path
+            elif os.path.exists(legacy_path) and (base_seed == 42 or base_seed == 1234):
+                target_split_path = legacy_path
 
         fixed_folds = []
         if target_split_path and os.path.exists(target_split_path):
@@ -314,7 +317,7 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
                 fixed_folds.append((tr_m, te_m))
             print(f"Cancer {cancerType} | [Info] Loaded precomputed 5-fold split from: {target_split_path}")
         else:
-            # 固定使用完整 5 折交叉验证划分全部阳性与负样本（消除历史遗留的 75% 截断）
+            # 若未找到预计算划分文件，自动根据固定种子生成确定性五折划分，并固化保存到 data/single_splits/
             split_seed = 1234 if base_seed == 42 else base_seed
             split_rng = random.Random(split_seed)
             shuffled_pos = list(label_pos)
@@ -326,11 +329,47 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             l1 = len(shuffled_pos) // 5
             l2 = len(shuffled_neg) // 5
 
+            saved_split = {
+                'cancer_type': cancerType,
+                'dataset': dataset,
+                'split_seed': split_seed,
+                'n_splits': 5,
+                'num_nodes': l,
+                'all_positive_indices': np.asarray(shuffled_pos),
+                'all_negative_indices': np.asarray(shuffled_neg),
+                'positive_remainder_indices': np.asarray(shuffled_pos[5 * l1:]),
+                'negative_remainder_indices': np.asarray(shuffled_neg[5 * l2:]),
+                'folds': []
+            }
+
             for fold_id in range(5):
                 tr_m, te_m = sample_division_single(
                     shuffled_pos, shuffled_neg, l, l1, l2, fold_id
                 )
-                fixed_folds.append((tr_m, te_m))
+                validation_pos = shuffled_pos[fold_id * l1:(fold_id + 1) * l1]
+                validation_neg = shuffled_neg[fold_id * l2:(fold_id + 1) * l2]
+                training_pos = list(set(shuffled_pos) - set(validation_pos))
+                training_neg = list(set(shuffled_neg) - set(validation_neg))
+                fixed_folds.append((tr_m.bool(), te_m.bool()))
+                saved_split['folds'].append({
+                    'fold_id': fold_id + 1,
+                    'train_positive_indices': np.asarray(training_pos),
+                    'train_negative_indices': np.asarray(training_neg),
+                    'validation_positive_indices': np.asarray(validation_pos),
+                    'validation_negative_indices': np.asarray(validation_neg),
+                    'train_indices': tr_m.nonzero(as_tuple=True)[0].cpu().numpy(),
+                    'validation_indices': te_m.nonzero(as_tuple=True)[0].cpu().numpy(),
+                    'train_mask': tr_m.cpu().numpy().astype(bool),
+                    'validation_mask': te_m.cpu().numpy().astype(bool)
+                })
+
+            if base_seed == 42 or base_seed == 1234:
+                save_dir = os.path.join(DATA_DIR, "single_splits")
+                os.makedirs(save_dir, exist_ok=True)
+                save_path = os.path.join(save_dir, f"{dataset}_{cancerType}_5fold_data_split.pkl")
+                with open(save_path, 'wb') as f:
+                    pickle.dump(saved_split, f)
+                print(f"Cancer {cancerType} | [Info] Generated and saved 5-fold split to: {save_path}")
 
     list_aurocs = np.zeros((n_exp, n_fold))
     list_auprcs = np.zeros((n_exp, n_fold))

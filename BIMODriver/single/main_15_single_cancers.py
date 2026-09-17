@@ -295,9 +295,12 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
         Y, label_pos, label_neg = load_label_single(cancerType)
         target_split_path = split_file
         if target_split_path is None:
-            candidate_path = os.path.join(DATA_DIR, "data_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            candidate_path = os.path.join(DATA_DIR, "single_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            legacy_path = os.path.join(DATA_DIR, "data_splits", f"{dataset}_{cancerType}_5fold_data_split.pkl")
             if os.path.exists(candidate_path):
                 target_split_path = candidate_path
+            elif os.path.exists(legacy_path):
+                target_split_path = legacy_path
 
         fixed_folds = []
         if target_split_path and os.path.exists(target_split_path):
@@ -354,6 +357,15 @@ def trainPred_k_sets(input_dim, k_sets, data, L_emb, edge_index, L_emb_edge,
             with open(split_path, 'wb') as f:
                 pickle.dump(saved_splits, f)
             print(f'{cancerType} 的固定五折划分已保存到: {split_path}')
+
+            # 同时将生成的标准划分固化到 data/single_splits/ 供后续运行快速复用
+            dataset_split_dir = os.path.join(DATA_DIR, "single_splits")
+            os.makedirs(dataset_split_dir, exist_ok=True)
+            dataset_split_path = os.path.join(dataset_split_dir, f"{dataset}_{cancerType}_5fold_data_split.pkl")
+            if not os.path.exists(dataset_split_path):
+                with open(dataset_split_path, 'wb') as f:
+                    pickle.dump(saved_splits, f)
+                print(f"Cancer {cancerType} | [Info] Generated and saved 5-fold split to: {dataset_split_path}")
 
     list_aurocs = np.zeros((n_exp, n_fold))
     list_auprcs = np.zeros((n_exp, n_fold))
