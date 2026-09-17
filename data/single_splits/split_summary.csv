@@ -1,0 +1,16 @@
+cancer,seed,num_nodes,positive_count,negative_count,positive_remainder_count,negative_remainder_count,split_file
+kirc,1234,13627,43,2187,3,2,data/single_splits/cpdb_kirc_5fold_data_split.pkl
+brca,1234,13627,201,2187,1,2,data/single_splits/cpdb_brca_5fold_data_split.pkl
+prad,1234,13627,50,2187,0,2,data/single_splits/cpdb_prad_5fold_data_split.pkl
+stad,1234,13627,73,2187,3,2,data/single_splits/cpdb_stad_5fold_data_split.pkl
+hnsc,1234,13627,143,2187,3,2,data/single_splits/cpdb_hnsc_5fold_data_split.pkl
+luad,1234,13627,179,2187,4,2,data/single_splits/cpdb_luad_5fold_data_split.pkl
+thca,1234,13627,64,2187,4,2,data/single_splits/cpdb_thca_5fold_data_split.pkl
+blca,1234,13627,95,2187,0,2,data/single_splits/cpdb_blca_5fold_data_split.pkl
+esca,1234,13627,71,2187,1,2,data/single_splits/cpdb_esca_5fold_data_split.pkl
+lihc,1234,13627,82,2187,2,2,data/single_splits/cpdb_lihc_5fold_data_split.pkl
+ucec,1234,13627,68,2187,3,2,data/single_splits/cpdb_ucec_5fold_data_split.pkl
+coad,1234,13627,141,2187,1,2,data/single_splits/cpdb_coad_5fold_data_split.pkl
+lusc,1234,13627,26,2187,1,2,data/single_splits/cpdb_lusc_5fold_data_split.pkl
+cesc,1234,13627,16,2187,1,2,data/single_splits/cpdb_cesc_5fold_data_split.pkl
+kirp,1234,13627,22,2187,2,2,data/single_splits/cpdb_kirp_5fold_data_split.pkl

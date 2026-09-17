@@ -20,6 +20,8 @@ result_backup*/
 *.swo
 .DS_Store
 
-# Data files (keep only the original multipart RAR archives tracked)
+# Data files (keep only the original multipart RAR archives and single_splits tracked)
 data/*
 !data/data.part*.rar
+!data/single_splits/
+!data/single_splits/**
