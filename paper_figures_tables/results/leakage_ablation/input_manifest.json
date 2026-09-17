@@ -1,0 +1,82 @@
+{
+  "1_pan_cancer_10x5_cv/pan-cancer_auprc.txt": {
+    "sha256": "298d549ecdcc519821eccb3980d4dbe6aa6d84185fc3aefbbfc4bdd7ee77fa5b",
+    "bytes": 450
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_auroc.txt": {
+    "sha256": "23477cddb39fa628f24c9a74189b11dd0b360ddfc8b43b6abc8f99c4407beacc",
+    "bytes": 450
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_inductive_auprc.txt": {
+    "sha256": "b8ceeeab42d5c5f1a884170895821b76a7ef69cd001ab751c80c6bfaea57611c",
+    "bytes": 350
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_inductive_auroc.txt": {
+    "sha256": "f3643d9cac3ddd151628c22b92b4ae58f521c6e85fe7843081b525acfdf12d39",
+    "bytes": 350
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_masked_auprc.txt": {
+    "sha256": "39cb4b9319041f352e0d878cb194d87a8a8b7ba2efd3c8f6b70789753e92d02a",
+    "bytes": 450
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_masked_auroc.txt": {
+    "sha256": "59535c3433afdf440a7fae254b3c4d8a54cafa52a6223574641d4f8504b98dd0",
+    "bytes": 450
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_masked_inductive_auprc.txt": {
+    "sha256": "f94384bc010d15c6fa46868b885e07814ea8cb568e1de24713a38400e1d25421",
+    "bytes": 350
+  },
+  "1_pan_cancer_10x5_cv/pan-cancer_masked_inductive_auroc.txt": {
+    "sha256": "49d65c0c253435e5b19c29382aabe87e1ba7605afe41d2e2d23f02e3c6f31361",
+    "bytes": 350
+  },
+  "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_clean_to_hit_auprc.txt": {
+    "sha256": "b167ac7abcf1edab5a9d8e11e4576d7f491eb7bbf71d1cbd6e576f15939ee49b",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_clean_to_hit_auroc.txt": {
+    "sha256": "f0c0f488f909f150399ed427278db08946723192db057af62b2803f16ae44052",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_hit_to_clean_auprc.txt": {
+    "sha256": "55149a1eecbdd125bfc0ea382c1ea3790df03991ae909a7dff0a000e9b5715a1",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_hit_to_clean_auroc.txt": {
+    "sha256": "204ad30b1dbcf2834b2880a9e378c94999ac2ecb05cb23f9c1fa557de67bb785",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/disfusion_leakage_clean_to_hit_auprc.txt": {
+    "sha256": "c4774f79d7d1f2f21c0979c1c87f4799cc2f10fb391e83cc77b5686a380f82d2",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/disfusion_leakage_clean_to_hit_auroc.txt": {
+    "sha256": "154d6621110463b94f3fa2b5905ad9dc1db8048b7950b3f3ae01d536640797cf",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/disfusion_leakage_hit_to_clean_auprc.txt": {
+    "sha256": "d7028e6aa4bdecb2c3dbcc44a4f5161a26f8673b18175d5fb185ab41c874651f",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/disfusion_leakage_hit_to_clean_auroc.txt": {
+    "sha256": "5b172131e7e3d57b42f5fb4a30e36f6c8f8284f1c7db8da3d6b244e988f43eb2",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/mngcl_leakage_clean_to_hit_auprc.txt": {
+    "sha256": "e932cf6cc6219ebb3a3af95b4781520a84e67e1f7fd4b4e82b8fc817570a89d5",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/mngcl_leakage_clean_to_hit_auroc.txt": {
+    "sha256": "750acc47f60b3f5c2f7dfeec610a845ee3cfdcf11f67db94b866439a3fa48d80",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/mngcl_leakage_hit_to_clean_auprc.txt": {
+    "sha256": "8f7d200a23bc925f2ad7067a947cb2143478b39b03f0d5481fb1a02e91f54271",
+    "bytes": 90
+  },
+  "2_clean_hit_leakage_benchmark/mngcl_leakage_hit_to_clean_auroc.txt": {
+    "sha256": "23fb16b2a73fe30008ab5ede6d1faa3b52f9b536f4b81a00cf4de61bbc69f49d",
+    "bytes": 90
+  }
+}

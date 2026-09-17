@@ -1,0 +1,401 @@
+Configuration,Metric,Run,Fold,Fold value,Run mean
+Original Transductive,AUROC,1,1,0.926984,0.9310074
+Original Transductive,AUROC,1,2,0.93043,0.9310074
+Original Transductive,AUROC,1,3,0.928461,0.9310074
+Original Transductive,AUROC,1,4,0.945166,0.9310074
+Original Transductive,AUROC,1,5,0.923996,0.9310074
+Original Transductive,AUROC,2,1,0.916573,0.9310824
+Original Transductive,AUROC,2,2,0.939117,0.9310824
+Original Transductive,AUROC,2,3,0.942677,0.9310824
+Original Transductive,AUROC,2,4,0.923147,0.9310824
+Original Transductive,AUROC,2,5,0.933898,0.9310824
+Original Transductive,AUROC,3,1,0.93132,0.9312805999999998
+Original Transductive,AUROC,3,2,0.937681,0.9312805999999998
+Original Transductive,AUROC,3,3,0.929105,0.9312805999999998
+Original Transductive,AUROC,3,4,0.917203,0.9312805999999998
+Original Transductive,AUROC,3,5,0.941094,0.9312805999999998
+Original Transductive,AUROC,4,1,0.924686,0.9318702
+Original Transductive,AUROC,4,2,0.953232,0.9318702
+Original Transductive,AUROC,4,3,0.939831,0.9318702
+Original Transductive,AUROC,4,4,0.917059,0.9318702
+Original Transductive,AUROC,4,5,0.924543,0.9318702
+Original Transductive,AUROC,5,1,0.916961,0.9308796000000001
+Original Transductive,AUROC,5,2,0.95115,0.9308796000000001
+Original Transductive,AUROC,5,3,0.945981,0.9308796000000001
+Original Transductive,AUROC,5,4,0.913993,0.9308796000000001
+Original Transductive,AUROC,5,5,0.926313,0.9308796000000001
+Original Transductive,AUROC,6,1,0.894087,0.9289288000000001
+Original Transductive,AUROC,6,2,0.936432,0.9289288000000001
+Original Transductive,AUROC,6,3,0.915661,0.9289288000000001
+Original Transductive,AUROC,6,4,0.957702,0.9289288000000001
+Original Transductive,AUROC,6,5,0.940762,0.9289288000000001
+Original Transductive,AUROC,7,1,0.916502,0.9286161999999999
+Original Transductive,AUROC,7,2,0.923078,0.9286161999999999
+Original Transductive,AUROC,7,3,0.943636,0.9286161999999999
+Original Transductive,AUROC,7,4,0.931955,0.9286161999999999
+Original Transductive,AUROC,7,5,0.92791,0.9286161999999999
+Original Transductive,AUROC,8,1,0.945105,0.9326108
+Original Transductive,AUROC,8,2,0.912538,0.9326108
+Original Transductive,AUROC,8,3,0.937271,0.9326108
+Original Transductive,AUROC,8,4,0.927579,0.9326108
+Original Transductive,AUROC,8,5,0.940561,0.9326108
+Original Transductive,AUROC,9,1,0.928879,0.929476
+Original Transductive,AUROC,9,2,0.932354,0.929476
+Original Transductive,AUROC,9,3,0.940789,0.929476
+Original Transductive,AUROC,9,4,0.904898,0.929476
+Original Transductive,AUROC,9,5,0.94046,0.929476
+Original Transductive,AUROC,10,1,0.915209,0.929819
+Original Transductive,AUROC,10,2,0.927472,0.929819
+Original Transductive,AUROC,10,3,0.92889,0.929819
+Original Transductive,AUROC,10,4,0.952852,0.929819
+Original Transductive,AUROC,10,5,0.924672,0.929819
+Original Transductive,AUPRC,1,1,0.846329,0.8595535999999999
+Original Transductive,AUPRC,1,2,0.870629,0.8595535999999999
+Original Transductive,AUPRC,1,3,0.869076,0.8595535999999999
+Original Transductive,AUPRC,1,4,0.867238,0.8595535999999999
+Original Transductive,AUPRC,1,5,0.844496,0.8595535999999999
+Original Transductive,AUPRC,2,1,0.821836,0.8603296
+Original Transductive,AUPRC,2,2,0.886321,0.8603296
+Original Transductive,AUPRC,2,3,0.876015,0.8603296
+Original Transductive,AUPRC,2,4,0.853444,0.8603296
+Original Transductive,AUPRC,2,5,0.864032,0.8603296
+Original Transductive,AUPRC,3,1,0.847427,0.8576186
+Original Transductive,AUPRC,3,2,0.864797,0.8576186
+Original Transductive,AUPRC,3,3,0.85041,0.8576186
+Original Transductive,AUPRC,3,4,0.83483,0.8576186
+Original Transductive,AUPRC,3,5,0.890629,0.8576186
+Original Transductive,AUPRC,4,1,0.851018,0.8598954000000001
+Original Transductive,AUPRC,4,2,0.904111,0.8598954000000001
+Original Transductive,AUPRC,4,3,0.859941,0.8598954000000001
+Original Transductive,AUPRC,4,4,0.841503,0.8598954000000001
+Original Transductive,AUPRC,4,5,0.842904,0.8598954000000001
+Original Transductive,AUPRC,5,1,0.849483,0.8584244
+Original Transductive,AUPRC,5,2,0.882729,0.8584244
+Original Transductive,AUPRC,5,3,0.891626,0.8584244
+Original Transductive,AUPRC,5,4,0.821982,0.8584244
+Original Transductive,AUPRC,5,5,0.846302,0.8584244
+Original Transductive,AUPRC,6,1,0.816059,0.857596
+Original Transductive,AUPRC,6,2,0.861719,0.857596
+Original Transductive,AUPRC,6,3,0.827727,0.857596
+Original Transductive,AUPRC,6,4,0.907546,0.857596
+Original Transductive,AUPRC,6,5,0.874929,0.857596
+Original Transductive,AUPRC,7,1,0.828484,0.855313
+Original Transductive,AUPRC,7,2,0.846196,0.855313
+Original Transductive,AUPRC,7,3,0.883644,0.855313
+Original Transductive,AUPRC,7,4,0.870461,0.855313
+Original Transductive,AUPRC,7,5,0.84778,0.855313
+Original Transductive,AUPRC,8,1,0.877508,0.8652329999999999
+Original Transductive,AUPRC,8,2,0.853708,0.8652329999999999
+Original Transductive,AUPRC,8,3,0.868122,0.8652329999999999
+Original Transductive,AUPRC,8,4,0.861338,0.8652329999999999
+Original Transductive,AUPRC,8,5,0.865489,0.8652329999999999
+Original Transductive,AUPRC,9,1,0.82263,0.8545865999999999
+Original Transductive,AUPRC,9,2,0.857562,0.8545865999999999
+Original Transductive,AUPRC,9,3,0.885328,0.8545865999999999
+Original Transductive,AUPRC,9,4,0.822382,0.8545865999999999
+Original Transductive,AUPRC,9,5,0.885031,0.8545865999999999
+Original Transductive,AUPRC,10,1,0.818822,0.8542822000000001
+Original Transductive,AUPRC,10,2,0.861963,0.8542822000000001
+Original Transductive,AUPRC,10,3,0.868053,0.8542822000000001
+Original Transductive,AUPRC,10,4,0.880676,0.8542822000000001
+Original Transductive,AUPRC,10,5,0.841897,0.8542822000000001
+Masked Transductive,AUROC,1,1,0.927587,0.9305620000000001
+Masked Transductive,AUROC,1,2,0.92931,0.9305620000000001
+Masked Transductive,AUROC,1,3,0.928161,0.9305620000000001
+Masked Transductive,AUROC,1,4,0.944217,0.9305620000000001
+Masked Transductive,AUROC,1,5,0.923535,0.9305620000000001
+Masked Transductive,AUROC,2,1,0.916861,0.9306128000000001
+Masked Transductive,AUROC,2,2,0.93883,0.9306128000000001
+Masked Transductive,AUROC,2,3,0.940732,0.9306128000000001
+Masked Transductive,AUROC,2,4,0.922528,0.9306128000000001
+Masked Transductive,AUROC,2,5,0.934113,0.9306128000000001
+Masked Transductive,AUROC,3,1,0.930574,0.9307058000000001
+Masked Transductive,AUROC,3,2,0.937523,0.9307058000000001
+Masked Transductive,AUROC,3,3,0.928647,0.9307058000000001
+Masked Transductive,AUROC,3,4,0.915447,0.9307058000000001
+Masked Transductive,AUROC,3,5,0.941338,0.9307058000000001
+Masked Transductive,AUROC,4,1,0.925174,0.9319402
+Masked Transductive,AUROC,4,2,0.953419,0.9319402
+Masked Transductive,AUROC,4,3,0.938844,0.9319402
+Masked Transductive,AUROC,4,4,0.91716,0.9319402
+Masked Transductive,AUROC,4,5,0.925104,0.9319402
+Masked Transductive,AUROC,5,1,0.917478,0.929775
+Masked Transductive,AUROC,5,2,0.947115,0.929775
+Masked Transductive,AUROC,5,3,0.94661,0.929775
+Masked Transductive,AUROC,5,4,0.913374,0.929775
+Masked Transductive,AUROC,5,5,0.924298,0.929775
+Masked Transductive,AUROC,6,1,0.89446,0.9288168000000001
+Masked Transductive,AUROC,6,2,0.936662,0.9288168000000001
+Masked Transductive,AUROC,6,3,0.915289,0.9288168000000001
+Masked Transductive,AUROC,6,4,0.957112,0.9288168000000001
+Masked Transductive,AUROC,6,5,0.940561,0.9288168000000001
+Masked Transductive,AUROC,7,1,0.915999,0.9284725999999999
+Masked Transductive,AUROC,7,2,0.922145,0.9284725999999999
+Masked Transductive,AUROC,7,3,0.943836,0.9284725999999999
+Masked Transductive,AUROC,7,4,0.933696,0.9284725999999999
+Masked Transductive,AUROC,7,5,0.926687,0.9284725999999999
+Masked Transductive,AUROC,8,1,0.94443,0.9322998
+Masked Transductive,AUROC,8,2,0.91149,0.9322998
+Masked Transductive,AUROC,8,3,0.935841,0.9322998
+Masked Transductive,AUROC,8,4,0.928544,0.9322998
+Masked Transductive,AUROC,8,5,0.941194,0.9322998
+Masked Transductive,AUROC,9,1,0.929051,0.929737
+Masked Transductive,AUROC,9,2,0.932397,0.929737
+Masked Transductive,AUROC,9,3,0.941433,0.929737
+Masked Transductive,AUROC,9,4,0.904883,0.929737
+Masked Transductive,AUROC,9,5,0.940921,0.929737
+Masked Transductive,AUROC,10,1,0.91587,0.9298904
+Masked Transductive,AUROC,10,2,0.927759,0.9298904
+Masked Transductive,AUROC,10,3,0.929062,0.9298904
+Masked Transductive,AUROC,10,4,0.952348,0.9298904
+Masked Transductive,AUROC,10,5,0.924413,0.9298904
+Masked Transductive,AUPRC,1,1,0.846141,0.8590389999999999
+Masked Transductive,AUPRC,1,2,0.869799,0.8590389999999999
+Masked Transductive,AUPRC,1,3,0.870196,0.8590389999999999
+Masked Transductive,AUPRC,1,4,0.865223,0.8590389999999999
+Masked Transductive,AUPRC,1,5,0.843836,0.8590389999999999
+Masked Transductive,AUPRC,2,1,0.821406,0.8591156
+Masked Transductive,AUPRC,2,2,0.886197,0.8591156
+Masked Transductive,AUPRC,2,3,0.870066,0.8591156
+Masked Transductive,AUPRC,2,4,0.852676,0.8591156
+Masked Transductive,AUPRC,2,5,0.865233,0.8591156
+Masked Transductive,AUPRC,3,1,0.84612,0.8572443999999999
+Masked Transductive,AUPRC,3,2,0.866259,0.8572443999999999
+Masked Transductive,AUPRC,3,3,0.849203,0.8572443999999999
+Masked Transductive,AUPRC,3,4,0.834017,0.8572443999999999
+Masked Transductive,AUPRC,3,5,0.890623,0.8572443999999999
+Masked Transductive,AUPRC,4,1,0.851908,0.8603498
+Masked Transductive,AUPRC,4,2,0.905109,0.8603498
+Masked Transductive,AUPRC,4,3,0.858524,0.8603498
+Masked Transductive,AUPRC,4,4,0.842346,0.8603498
+Masked Transductive,AUPRC,4,5,0.843862,0.8603498
+Masked Transductive,AUPRC,5,1,0.851317,0.8573886
+Masked Transductive,AUPRC,5,2,0.879768,0.8573886
+Masked Transductive,AUPRC,5,3,0.891555,0.8573886
+Masked Transductive,AUPRC,5,4,0.822005,0.8573886
+Masked Transductive,AUPRC,5,5,0.842298,0.8573886
+Masked Transductive,AUPRC,6,1,0.816661,0.8573894
+Masked Transductive,AUPRC,6,2,0.862216,0.8573894
+Masked Transductive,AUPRC,6,3,0.827171,0.8573894
+Masked Transductive,AUPRC,6,4,0.906589,0.8573894
+Masked Transductive,AUPRC,6,5,0.87431,0.8573894
+Masked Transductive,AUPRC,7,1,0.824908,0.8546296
+Masked Transductive,AUPRC,7,2,0.845155,0.8546296
+Masked Transductive,AUPRC,7,3,0.8839,0.8546296
+Masked Transductive,AUPRC,7,4,0.872321,0.8546296
+Masked Transductive,AUPRC,7,5,0.846864,0.8546296
+Masked Transductive,AUPRC,8,1,0.879092,0.8646588000000002
+Masked Transductive,AUPRC,8,2,0.852008,0.8646588000000002
+Masked Transductive,AUPRC,8,3,0.86336,0.8646588000000002
+Masked Transductive,AUPRC,8,4,0.862409,0.8646588000000002
+Masked Transductive,AUPRC,8,5,0.866425,0.8646588000000002
+Masked Transductive,AUPRC,9,1,0.823356,0.855291
+Masked Transductive,AUPRC,9,2,0.857279,0.855291
+Masked Transductive,AUPRC,9,3,0.886651,0.855291
+Masked Transductive,AUPRC,9,4,0.822383,0.855291
+Masked Transductive,AUPRC,9,5,0.886786,0.855291
+Masked Transductive,AUPRC,10,1,0.819106,0.854162
+Masked Transductive,AUPRC,10,2,0.862934,0.854162
+Masked Transductive,AUPRC,10,3,0.868522,0.854162
+Masked Transductive,AUPRC,10,4,0.879375,0.854162
+Masked Transductive,AUPRC,10,5,0.840873,0.854162
+Original Strict Inductive,AUROC,1,1,0.9282,0.93048
+Original Strict Inductive,AUROC,1,2,0.9269,0.93048
+Original Strict Inductive,AUROC,1,3,0.928,0.93048
+Original Strict Inductive,AUROC,1,4,0.9436,0.93048
+Original Strict Inductive,AUROC,1,5,0.9257,0.93048
+Original Strict Inductive,AUROC,2,1,0.9184,0.93104
+Original Strict Inductive,AUROC,2,2,0.938,0.93104
+Original Strict Inductive,AUROC,2,3,0.9434,0.93104
+Original Strict Inductive,AUROC,2,4,0.9195,0.93104
+Original Strict Inductive,AUROC,2,5,0.9359,0.93104
+Original Strict Inductive,AUROC,3,1,0.9303,0.93096
+Original Strict Inductive,AUROC,3,2,0.9374,0.93096
+Original Strict Inductive,AUROC,3,3,0.9286,0.93096
+Original Strict Inductive,AUROC,3,4,0.9151,0.93096
+Original Strict Inductive,AUROC,3,5,0.9434,0.93096
+Original Strict Inductive,AUROC,4,1,0.9252,0.9324600000000001
+Original Strict Inductive,AUROC,4,2,0.9574,0.9324600000000001
+Original Strict Inductive,AUROC,4,3,0.9371,0.9324600000000001
+Original Strict Inductive,AUROC,4,4,0.9202,0.9324600000000001
+Original Strict Inductive,AUROC,4,5,0.9224,0.9324600000000001
+Original Strict Inductive,AUROC,5,1,0.92,0.9326399999999999
+Original Strict Inductive,AUROC,5,2,0.9526,0.9326399999999999
+Original Strict Inductive,AUROC,5,3,0.9456,0.9326399999999999
+Original Strict Inductive,AUROC,5,4,0.916,0.9326399999999999
+Original Strict Inductive,AUROC,5,5,0.929,0.9326399999999999
+Original Strict Inductive,AUROC,6,1,0.8883,0.92918
+Original Strict Inductive,AUROC,6,2,0.9419,0.92918
+Original Strict Inductive,AUROC,6,3,0.9137,0.92918
+Original Strict Inductive,AUROC,6,4,0.9579,0.92918
+Original Strict Inductive,AUROC,6,5,0.9441,0.92918
+Original Strict Inductive,AUROC,7,1,0.9172,0.92956
+Original Strict Inductive,AUROC,7,2,0.924,0.92956
+Original Strict Inductive,AUROC,7,3,0.942,0.92956
+Original Strict Inductive,AUROC,7,4,0.9334,0.92956
+Original Strict Inductive,AUROC,7,5,0.9312,0.92956
+Original Strict Inductive,AUROC,8,1,0.9409,0.9324999999999999
+Original Strict Inductive,AUROC,8,2,0.9117,0.9324999999999999
+Original Strict Inductive,AUROC,8,3,0.9406,0.9324999999999999
+Original Strict Inductive,AUROC,8,4,0.9289,0.9324999999999999
+Original Strict Inductive,AUROC,8,5,0.9404,0.9324999999999999
+Original Strict Inductive,AUROC,9,1,0.9303,0.9288000000000001
+Original Strict Inductive,AUROC,9,2,0.9301,0.9288000000000001
+Original Strict Inductive,AUROC,9,3,0.9388,0.9288000000000001
+Original Strict Inductive,AUROC,9,4,0.9046,0.9288000000000001
+Original Strict Inductive,AUROC,9,5,0.9402,0.9288000000000001
+Original Strict Inductive,AUROC,10,1,0.9166,0.93068
+Original Strict Inductive,AUROC,10,2,0.9275,0.93068
+Original Strict Inductive,AUROC,10,3,0.9288,0.93068
+Original Strict Inductive,AUROC,10,4,0.9541,0.93068
+Original Strict Inductive,AUROC,10,5,0.9264,0.93068
+Original Strict Inductive,AUPRC,1,1,0.8497,0.8571799999999999
+Original Strict Inductive,AUPRC,1,2,0.86,0.8571799999999999
+Original Strict Inductive,AUPRC,1,3,0.8663,0.8571799999999999
+Original Strict Inductive,AUPRC,1,4,0.8631,0.8571799999999999
+Original Strict Inductive,AUPRC,1,5,0.8468,0.8571799999999999
+Original Strict Inductive,AUPRC,2,1,0.8283,0.8597400000000001
+Original Strict Inductive,AUPRC,2,2,0.8829,0.8597400000000001
+Original Strict Inductive,AUPRC,2,3,0.8787,0.8597400000000001
+Original Strict Inductive,AUPRC,2,4,0.8431,0.8597400000000001
+Original Strict Inductive,AUPRC,2,5,0.8657,0.8597400000000001
+Original Strict Inductive,AUPRC,3,1,0.8494,0.8580200000000001
+Original Strict Inductive,AUPRC,3,2,0.8652,0.8580200000000001
+Original Strict Inductive,AUPRC,3,3,0.8467,0.8580200000000001
+Original Strict Inductive,AUPRC,3,4,0.8273,0.8580200000000001
+Original Strict Inductive,AUPRC,3,5,0.9015,0.8580200000000001
+Original Strict Inductive,AUPRC,4,1,0.8519,0.86302
+Original Strict Inductive,AUPRC,4,2,0.9134,0.86302
+Original Strict Inductive,AUPRC,4,3,0.8547,0.86302
+Original Strict Inductive,AUPRC,4,4,0.8524,0.86302
+Original Strict Inductive,AUPRC,4,5,0.8427,0.86302
+Original Strict Inductive,AUPRC,5,1,0.8581,0.86126
+Original Strict Inductive,AUPRC,5,2,0.8834,0.86126
+Original Strict Inductive,AUPRC,5,3,0.8922,0.86126
+Original Strict Inductive,AUPRC,5,4,0.8206,0.86126
+Original Strict Inductive,AUPRC,5,5,0.852,0.86126
+Original Strict Inductive,AUPRC,6,1,0.8084,0.8585200000000001
+Original Strict Inductive,AUPRC,6,2,0.8684,0.8585200000000001
+Original Strict Inductive,AUPRC,6,3,0.828,0.8585200000000001
+Original Strict Inductive,AUPRC,6,4,0.9051,0.8585200000000001
+Original Strict Inductive,AUPRC,6,5,0.8827,0.8585200000000001
+Original Strict Inductive,AUPRC,7,1,0.8256,0.8564399999999999
+Original Strict Inductive,AUPRC,7,2,0.8477,0.8564399999999999
+Original Strict Inductive,AUPRC,7,3,0.8831,0.8564399999999999
+Original Strict Inductive,AUPRC,7,4,0.872,0.8564399999999999
+Original Strict Inductive,AUPRC,7,5,0.8538,0.8564399999999999
+Original Strict Inductive,AUPRC,8,1,0.8732,0.86584
+Original Strict Inductive,AUPRC,8,2,0.8549,0.86584
+Original Strict Inductive,AUPRC,8,3,0.8737,0.86584
+Original Strict Inductive,AUPRC,8,4,0.8647,0.86584
+Original Strict Inductive,AUPRC,8,5,0.8627,0.86584
+Original Strict Inductive,AUPRC,9,1,0.8228,0.8554999999999999
+Original Strict Inductive,AUPRC,9,2,0.8605,0.8554999999999999
+Original Strict Inductive,AUPRC,9,3,0.8851,0.8554999999999999
+Original Strict Inductive,AUPRC,9,4,0.8242,0.8554999999999999
+Original Strict Inductive,AUPRC,9,5,0.8849,0.8554999999999999
+Original Strict Inductive,AUPRC,10,1,0.8271,0.85694
+Original Strict Inductive,AUPRC,10,2,0.863,0.85694
+Original Strict Inductive,AUPRC,10,3,0.8658,0.85694
+Original Strict Inductive,AUPRC,10,4,0.8862,0.85694
+Original Strict Inductive,AUPRC,10,5,0.8426,0.85694
+Masked Strict Inductive,AUROC,1,1,0.9269,0.92974
+Masked Strict Inductive,AUROC,1,2,0.927,0.92974
+Masked Strict Inductive,AUROC,1,3,0.927,0.92974
+Masked Strict Inductive,AUROC,1,4,0.9447,0.92974
+Masked Strict Inductive,AUROC,1,5,0.9231,0.92974
+Masked Strict Inductive,AUROC,2,1,0.9202,0.93102
+Masked Strict Inductive,AUROC,2,2,0.938,0.93102
+Masked Strict Inductive,AUROC,2,3,0.9424,0.93102
+Masked Strict Inductive,AUROC,2,4,0.92,0.93102
+Masked Strict Inductive,AUROC,2,5,0.9345,0.93102
+Masked Strict Inductive,AUROC,3,1,0.9291,0.9312999999999999
+Masked Strict Inductive,AUROC,3,2,0.9351,0.9312999999999999
+Masked Strict Inductive,AUROC,3,3,0.9289,0.9312999999999999
+Masked Strict Inductive,AUROC,3,4,0.9183,0.9312999999999999
+Masked Strict Inductive,AUROC,3,5,0.9451,0.9312999999999999
+Masked Strict Inductive,AUROC,4,1,0.9253,0.9328000000000001
+Masked Strict Inductive,AUROC,4,2,0.955,0.9328000000000001
+Masked Strict Inductive,AUROC,4,3,0.9382,0.9328000000000001
+Masked Strict Inductive,AUROC,4,4,0.9205,0.9328000000000001
+Masked Strict Inductive,AUROC,4,5,0.925,0.9328000000000001
+Masked Strict Inductive,AUROC,5,1,0.9194,0.9306000000000001
+Masked Strict Inductive,AUROC,5,2,0.9473,0.9306000000000001
+Masked Strict Inductive,AUROC,5,3,0.9453,0.9306000000000001
+Masked Strict Inductive,AUROC,5,4,0.9112,0.9306000000000001
+Masked Strict Inductive,AUROC,5,5,0.9298,0.9306000000000001
+Masked Strict Inductive,AUROC,6,1,0.896,0.93004
+Masked Strict Inductive,AUROC,6,2,0.9391,0.93004
+Masked Strict Inductive,AUROC,6,3,0.9149,0.93004
+Masked Strict Inductive,AUROC,6,4,0.9586,0.93004
+Masked Strict Inductive,AUROC,6,5,0.9416,0.93004
+Masked Strict Inductive,AUROC,7,1,0.9176,0.92834
+Masked Strict Inductive,AUROC,7,2,0.9221,0.92834
+Masked Strict Inductive,AUROC,7,3,0.9422,0.92834
+Masked Strict Inductive,AUROC,7,4,0.9325,0.92834
+Masked Strict Inductive,AUROC,7,5,0.9273,0.92834
+Masked Strict Inductive,AUROC,8,1,0.9411,0.93148
+Masked Strict Inductive,AUROC,8,2,0.9102,0.93148
+Masked Strict Inductive,AUROC,8,3,0.9411,0.93148
+Masked Strict Inductive,AUROC,8,4,0.9263,0.93148
+Masked Strict Inductive,AUROC,8,5,0.9387,0.93148
+Masked Strict Inductive,AUROC,9,1,0.9304,0.92842
+Masked Strict Inductive,AUROC,9,2,0.9294,0.92842
+Masked Strict Inductive,AUROC,9,3,0.9406,0.92842
+Masked Strict Inductive,AUROC,9,4,0.9026,0.92842
+Masked Strict Inductive,AUROC,9,5,0.9391,0.92842
+Masked Strict Inductive,AUROC,10,1,0.9143,0.9295399999999999
+Masked Strict Inductive,AUROC,10,2,0.9273,0.9295399999999999
+Masked Strict Inductive,AUROC,10,3,0.9279,0.9295399999999999
+Masked Strict Inductive,AUROC,10,4,0.9536,0.9295399999999999
+Masked Strict Inductive,AUROC,10,5,0.9246,0.9295399999999999
+Masked Strict Inductive,AUPRC,1,1,0.8439,0.8552399999999999
+Masked Strict Inductive,AUPRC,1,2,0.8623,0.8552399999999999
+Masked Strict Inductive,AUPRC,1,3,0.8636,0.8552399999999999
+Masked Strict Inductive,AUPRC,1,4,0.8638,0.8552399999999999
+Masked Strict Inductive,AUPRC,1,5,0.8426,0.8552399999999999
+Masked Strict Inductive,AUPRC,2,1,0.8321,0.86026
+Masked Strict Inductive,AUPRC,2,2,0.8839,0.86026
+Masked Strict Inductive,AUPRC,2,3,0.8731,0.86026
+Masked Strict Inductive,AUPRC,2,4,0.8472,0.86026
+Masked Strict Inductive,AUPRC,2,5,0.865,0.86026
+Masked Strict Inductive,AUPRC,3,1,0.8493,0.8577199999999999
+Masked Strict Inductive,AUPRC,3,2,0.8617,0.8577199999999999
+Masked Strict Inductive,AUPRC,3,3,0.8432,0.8577199999999999
+Masked Strict Inductive,AUPRC,3,4,0.8307,0.8577199999999999
+Masked Strict Inductive,AUPRC,3,5,0.9037,0.8577199999999999
+Masked Strict Inductive,AUPRC,4,1,0.8531,0.86356
+Masked Strict Inductive,AUPRC,4,2,0.9081,0.86356
+Masked Strict Inductive,AUPRC,4,3,0.8585,0.86356
+Masked Strict Inductive,AUPRC,4,4,0.8529,0.86356
+Masked Strict Inductive,AUPRC,4,5,0.8452,0.86356
+Masked Strict Inductive,AUPRC,5,1,0.8567,0.8589600000000001
+Masked Strict Inductive,AUPRC,5,2,0.8829,0.8589600000000001
+Masked Strict Inductive,AUPRC,5,3,0.8898,0.8589600000000001
+Masked Strict Inductive,AUPRC,5,4,0.8132,0.8589600000000001
+Masked Strict Inductive,AUPRC,5,5,0.8522,0.8589600000000001
+Masked Strict Inductive,AUPRC,6,1,0.8187,0.85958
+Masked Strict Inductive,AUPRC,6,2,0.8636,0.85958
+Masked Strict Inductive,AUPRC,6,3,0.831,0.85958
+Masked Strict Inductive,AUPRC,6,4,0.9081,0.85958
+Masked Strict Inductive,AUPRC,6,5,0.8765,0.85958
+Masked Strict Inductive,AUPRC,7,1,0.8257,0.85382
+Masked Strict Inductive,AUPRC,7,2,0.8447,0.85382
+Masked Strict Inductive,AUPRC,7,3,0.8808,0.85382
+Masked Strict Inductive,AUPRC,7,4,0.8704,0.85382
+Masked Strict Inductive,AUPRC,7,5,0.8475,0.85382
+Masked Strict Inductive,AUPRC,8,1,0.8738,0.86466
+Masked Strict Inductive,AUPRC,8,2,0.8507,0.86466
+Masked Strict Inductive,AUPRC,8,3,0.8751,0.86466
+Masked Strict Inductive,AUPRC,8,4,0.8638,0.86466
+Masked Strict Inductive,AUPRC,8,5,0.8599,0.86466
+Masked Strict Inductive,AUPRC,9,1,0.8241,0.8552
+Masked Strict Inductive,AUPRC,9,2,0.8616,0.8552
+Masked Strict Inductive,AUPRC,9,3,0.8874,0.8552
+Masked Strict Inductive,AUPRC,9,4,0.8201,0.8552
+Masked Strict Inductive,AUPRC,9,5,0.8828,0.8552
+Masked Strict Inductive,AUPRC,10,1,0.8269,0.85638
+Masked Strict Inductive,AUPRC,10,2,0.8646,0.85638
+Masked Strict Inductive,AUPRC,10,3,0.868,0.85638
+Masked Strict Inductive,AUPRC,10,4,0.8843,0.85638
+Masked Strict Inductive,AUPRC,10,5,0.8381,0.85638

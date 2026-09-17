@@ -1,0 +1,32 @@
+Experiment: 10x5 Cross-Validation [Original Features (原始基线) - 归纳式 (Inductive)]
+Protocol: Strict Inductive Training (Appendix Table A19: Removed all test node edges from CPDB & Semantic KNN graphs; Set feature vectors of all test genes to zero during training; Excluded test genes from contrastive loss [13627 - test_count]; Classification loss strictly on labeled train nodes; Complete network topology & frozen features restored at eval)
+Hyperparameters: lr=0.0005, dropout=0.3, lambdinter=0.001, epochs=160
+Base Seed: 42
+Total Elapsed Time: 73分 13.4秒 (总计 4393.45s, 平均每折 87.87s)
+------------------------------------------------------------
+Overall Metrics (over 10x5 = 50 folds):
+  AUROC : 0.9308 ± 0.0134
+  AUPRC : 0.8592 ± 0.0232
+------------------------------------------------------------
+10x5 AUROC Matrix:
+[[0.9282 0.9269 0.928  0.9436 0.9257]
+ [0.9184 0.938  0.9434 0.9195 0.9359]
+ [0.9303 0.9374 0.9286 0.9151 0.9434]
+ [0.9252 0.9574 0.9371 0.9202 0.9224]
+ [0.92   0.9526 0.9456 0.916  0.929 ]
+ [0.8883 0.9419 0.9137 0.9579 0.9441]
+ [0.9172 0.924  0.942  0.9334 0.9312]
+ [0.9409 0.9117 0.9406 0.9289 0.9404]
+ [0.9303 0.9301 0.9388 0.9046 0.9402]
+ [0.9166 0.9275 0.9288 0.9541 0.9264]]
+10x5 AUPRC Matrix:
+[[0.8497 0.86   0.8663 0.8631 0.8468]
+ [0.8283 0.8829 0.8787 0.8431 0.8657]
+ [0.8494 0.8652 0.8467 0.8273 0.9015]
+ [0.8519 0.9134 0.8547 0.8524 0.8427]
+ [0.8581 0.8834 0.8922 0.8206 0.852 ]
+ [0.8084 0.8684 0.828  0.9051 0.8827]
+ [0.8256 0.8477 0.8831 0.872  0.8538]
+ [0.8732 0.8549 0.8737 0.8647 0.8627]
+ [0.8228 0.8605 0.8851 0.8242 0.8849]
+ [0.8271 0.863  0.8658 0.8862 0.8426]]

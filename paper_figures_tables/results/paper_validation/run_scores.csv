@@ -1,0 +1,3401 @@
+scope,cancer,method,metric,run,run_mean
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,1,0.856151126
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,2,0.86143562
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,3,0.859341526
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,4,0.861163464
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,5,0.863399806
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,6,0.855650704
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,7,0.8551419140000001
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,8,0.8644169180000001
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,9,0.854584318
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUPRC,10,0.8550702360000001
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,1,0.929379766
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,2,0.931816978
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,3,0.9313185239999999
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,4,0.93255669
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,5,0.9330230700000002
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,6,0.929213538
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,7,0.92832124
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,8,0.931069866
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,9,0.927967526
+Pan-cancer CPDB,pan-cancer,BIMODriver,AUROC,10,0.930508698
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,1,0.817775114
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,2,0.814074604
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,3,0.817073654
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,4,0.812834524
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,5,0.8152536940000001
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,6,0.8195735199999999
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,7,0.812899324
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,8,0.8161807299999999
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,9,0.810826294
+Pan-cancer CPDB,pan-cancer,ChebNet,AUPRC,10,0.814724998
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,1,0.904341222
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,2,0.90202122
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,3,0.9025044600000001
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,4,0.902885496
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,5,0.900796598
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,6,0.903312012
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,7,0.9009930479999999
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,8,0.900772434
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,9,0.900735246
+Pan-cancer CPDB,pan-cancer,ChebNet,AUROC,10,0.902063716
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,1,0.8427975999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,2,0.8419482
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,3,0.8497923999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,4,0.844538
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,5,0.8412168
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,6,0.84582
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,7,0.8435094000000001
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,8,0.8494942
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,9,0.8396968000000001
+Pan-cancer CPDB,pan-cancer,DISFusion,AUPRC,10,0.8374362
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,1,0.9241612
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,2,0.92317
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,3,0.9257135999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,4,0.9247780000000001
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,5,0.9216447999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,6,0.9256399999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,7,0.9233132
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,8,0.9264471999999999
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,9,0.921907
+Pan-cancer CPDB,pan-cancer,DISFusion,AUROC,10,0.9216317999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,1,0.652736
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,2,0.6289548
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,3,0.6208092000000001
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,4,0.619438
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,5,0.6073883999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,6,0.6408416000000001
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,7,0.674253
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,8,0.6434698000000001
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,9,0.6602657999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUPRC,10,0.5856313999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,1,0.8964838
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,2,0.8917883999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,3,0.8911382
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,4,0.8863618000000001
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,5,0.8792679999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,6,0.8880894000000001
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,7,0.8952031999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,8,0.9001828
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,9,0.8897561999999999
+Pan-cancer CPDB,pan-cancer,DISHyper,AUROC,10,0.8778252
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,1,0.810368572
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,2,0.8118583959999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,3,0.8020978699999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,4,0.8107266560000002
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,5,0.797423666
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,6,0.8073855860000002
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,7,0.810500026
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,8,0.808610944
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,9,0.8025130239999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUPRC,10,0.805373208
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,1,0.895904944
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,2,0.8983306000000001
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,3,0.8946084320000001
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,4,0.8975410659999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,5,0.8915853960000002
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,6,0.8958011020000001
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,7,0.8972349359999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,8,0.8960098719999999
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,9,0.8957485600000001
+Pan-cancer CPDB,pan-cancer,ECD-CDGI,AUROC,10,0.896151458
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,1,0.818078714
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,2,0.8110377960000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,3,0.8197569619999999
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,4,0.8172278980000002
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,5,0.8065853480000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,6,0.8110340280000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,7,0.817714684
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,8,0.82024838
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,9,0.8106642519999999
+Pan-cancer CPDB,pan-cancer,EMOGI,AUPRC,10,0.812427078
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,1,0.900641298
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,2,0.897089652
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,3,0.900052914
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,4,0.9016046040000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,5,0.8939953580000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,6,0.8984865900000001
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,7,0.9005072139999999
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,8,0.8983475399999999
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,9,0.896912204
+Pan-cancer CPDB,pan-cancer,EMOGI,AUROC,10,0.8988738620000001
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,1,0.566668058
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,2,0.580563312
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,3,0.5803881900000001
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,4,0.5816090580000001
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,5,0.575229538
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,6,0.5795519
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,7,0.58150992
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,8,0.576907672
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,9,0.598505648
+Pan-cancer CPDB,pan-cancer,GAT,AUPRC,10,0.5821242680000001
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,1,0.8046600420000001
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,2,0.808458316
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,3,0.814086436
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,4,0.8158569800000001
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,5,0.811470548
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,6,0.814575434
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,7,0.8125949239999999
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,8,0.817914454
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,9,0.823693352
+Pan-cancer CPDB,pan-cancer,GAT,AUROC,10,0.819995142
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,1,0.813276758
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,2,0.8147001459999998
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,3,0.814073066
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,4,0.812673036
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,5,0.8153155679999999
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,6,0.8160908960000001
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,7,0.814660294
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,8,0.8147489400000001
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,9,0.8094776079999999
+Pan-cancer CPDB,pan-cancer,GCN,AUPRC,10,0.8159070960000001
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,1,0.9016799819999999
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,2,0.90253173
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,3,0.899751388
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,4,0.902308416
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,5,0.900602838
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,6,0.9018799339999999
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,7,0.90083278
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,8,0.89979411
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,9,0.9002393059999999
+Pan-cancer CPDB,pan-cancer,GCN,AUROC,10,0.9020395460000001
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,1,0.844010398
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,2,0.83968098
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,3,0.837265932
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,4,0.840729112
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,5,0.8362654299999999
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,6,0.837980336
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,7,0.839972188
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,8,0.8395401259999999
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,9,0.8390524020000001
+Pan-cancer CPDB,pan-cancer,MNGCL,AUPRC,10,0.8431745979999998
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,1,0.9206646700000001
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,2,0.9185822339999999
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,3,0.9169528
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,4,0.9195820960000001
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,5,0.916344496
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,6,0.9179975419999999
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,7,0.919337552
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,8,0.91698047
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,9,0.9181978919999999
+Pan-cancer CPDB,pan-cancer,MNGCL,AUROC,10,0.9200485520000001
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,1,0.83622
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,2,0.83094
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,3,0.83626
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,4,0.83104
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,5,0.8279799999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,6,0.8309199999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,7,0.82928
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,8,0.84092
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,9,0.8287599999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUPRC,10,0.8329799999999998
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,1,0.91206
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,2,0.90822
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,3,0.9122399999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,4,0.9096799999999998
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,5,0.9068999999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,6,0.90908
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,7,0.9080999999999999
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,8,0.91426
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,9,0.90586
+Pan-cancer CPDB,pan-cancer,MTGCN,AUROC,10,0.9096
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,1,0.843064354
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,2,0.842095256
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,3,0.840533192
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,4,0.841126682
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,5,0.8411587879999999
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,6,0.843297886
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,7,0.8426475840000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,8,0.8429875880000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,9,0.83875805
+Pan-cancer STRING,pan-cancer,BIMODriver,AUPRC,10,0.8385387160000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,1,0.9300117100000002
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,2,0.9292024380000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,3,0.927769122
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,4,0.928082724
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,5,0.9288714199999999
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,6,0.928427114
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,7,0.9294593680000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,8,0.9293699639999999
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,9,0.9269774500000001
+Pan-cancer STRING,pan-cancer,BIMODriver,AUROC,10,0.926738488
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,1,0.8056007599999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,2,0.8060682399999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,3,0.8070899920000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,4,0.8073342520000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,5,0.8057986939999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,6,0.8037124460000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,7,0.808476286
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,8,0.806656348
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,9,0.807299942
+Pan-cancer STRING,pan-cancer,ChebNet,AUPRC,10,0.8065258359999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,1,0.9077107700000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,2,0.9079797559999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,3,0.9089351860000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,4,0.908607602
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,5,0.90833236
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,6,0.9065751800000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,7,0.9100674960000001
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,8,0.9076455259999999
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,9,0.909470164
+Pan-cancer STRING,pan-cancer,ChebNet,AUROC,10,0.908226406
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,1,0.8267092
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,2,0.8341633999999999
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,3,0.8237
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,4,0.8318394000000001
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,5,0.829046
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,6,0.8275497999999999
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,7,0.8297630000000001
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,8,0.8293934000000001
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,9,0.8274779999999999
+Pan-cancer STRING,pan-cancer,DISFusion,AUPRC,10,0.8258664
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,1,0.9239166000000001
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,2,0.9259881999999999
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,3,0.9241116
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,4,0.9259518
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,5,0.9264854
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,6,0.924362
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,7,0.9259366
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,8,0.9258200000000001
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,9,0.9256548
+Pan-cancer STRING,pan-cancer,DISFusion,AUROC,10,0.924347
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,1,0.7487824
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,2,0.7486134
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,3,0.7506337999999999
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,4,0.7542696
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,5,0.7556388
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,6,0.7524894
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,7,0.75754
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,8,0.7522333999999999
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,9,0.7502922
+Pan-cancer STRING,pan-cancer,DISHyper,AUPRC,10,0.7533854
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,1,0.8759443999999998
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,2,0.8766695999999999
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,3,0.8767694
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,4,0.8783436
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,5,0.8784884
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,6,0.8768153999999999
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,7,0.8782348000000001
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,8,0.8771612
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,9,0.8767464
+Pan-cancer STRING,pan-cancer,DISHyper,AUROC,10,0.8777153999999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,1,0.7541000779999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,2,0.7601564040000001
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,3,0.752110494
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,4,0.756619788
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,5,0.7553874780000001
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,6,0.753279062
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,7,0.758516318
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,8,0.7546351340000002
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,9,0.7578078659999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUPRC,10,0.7572063059999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,1,0.894412168
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,2,0.8942444039999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,3,0.891583054
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,4,0.894844118
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,5,0.8923277940000001
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,6,0.89303931
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,7,0.8949102059999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,8,0.8957796479999999
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,9,0.895038918
+Pan-cancer STRING,pan-cancer,ECD-CDGI,AUROC,10,0.8928336760000001
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,1,0.792859154794305
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,2,0.7963517411510328
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,3,0.7933215153958297
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,4,0.7895857955338856
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,5,0.7921728887559139
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,6,0.7951500600178549
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,7,0.7929548449616443
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,8,0.7951059720484918
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,9,0.7942321522800707
+Pan-cancer STRING,pan-cancer,EMOGI,AUPRC,10,0.795144471224657
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,1,0.9030899851863573
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,2,0.9046269048346035
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,3,0.9024327037619754
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,4,0.9009711541420209
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,5,0.9025730969236925
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,6,0.9040585864180436
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,7,0.9035585710329549
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,8,0.9040092865072096
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,9,0.902525470775263
+Pan-cancer STRING,pan-cancer,EMOGI,AUROC,10,0.9027591212443055
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,1,0.581275438
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,2,0.585425856
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,3,0.5861401359999999
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,4,0.600497058
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,5,0.57807186
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,6,0.582869434
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,7,0.594478942
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,8,0.5739998479999999
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,9,0.6107662319999999
+Pan-cancer STRING,pan-cancer,GAT,AUPRC,10,0.590428526
+Pan-cancer STRING,pan-cancer,GAT,AUROC,1,0.8409928820000001
+Pan-cancer STRING,pan-cancer,GAT,AUROC,2,0.8463329819999998
+Pan-cancer STRING,pan-cancer,GAT,AUROC,3,0.843874724
+Pan-cancer STRING,pan-cancer,GAT,AUROC,4,0.848547606
+Pan-cancer STRING,pan-cancer,GAT,AUROC,5,0.840851214
+Pan-cancer STRING,pan-cancer,GAT,AUROC,6,0.8419909560000001
+Pan-cancer STRING,pan-cancer,GAT,AUROC,7,0.8461501339999999
+Pan-cancer STRING,pan-cancer,GAT,AUROC,8,0.8413935460000002
+Pan-cancer STRING,pan-cancer,GAT,AUROC,9,0.8495285240000001
+Pan-cancer STRING,pan-cancer,GAT,AUROC,10,0.8438059040000001
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,1,0.8002384279999999
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,2,0.802800712
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,3,0.80483855
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,4,0.8020179299999999
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,5,0.805825828
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,6,0.803926366
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,7,0.803640254
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,8,0.8053819480000002
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,9,0.8070097559999999
+Pan-cancer STRING,pan-cancer,GCN,AUPRC,10,0.8038774639999999
+Pan-cancer STRING,pan-cancer,GCN,AUROC,1,0.9070244080000001
+Pan-cancer STRING,pan-cancer,GCN,AUROC,2,0.9073868019999999
+Pan-cancer STRING,pan-cancer,GCN,AUROC,3,0.909486462
+Pan-cancer STRING,pan-cancer,GCN,AUROC,4,0.908481664
+Pan-cancer STRING,pan-cancer,GCN,AUROC,5,0.9094805960000001
+Pan-cancer STRING,pan-cancer,GCN,AUROC,6,0.9087522399999999
+Pan-cancer STRING,pan-cancer,GCN,AUROC,7,0.9094810680000001
+Pan-cancer STRING,pan-cancer,GCN,AUROC,8,0.910723322
+Pan-cancer STRING,pan-cancer,GCN,AUROC,9,0.909826998
+Pan-cancer STRING,pan-cancer,GCN,AUROC,10,0.908987344
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,1,0.8163775900000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,2,0.8179816279999998
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,3,0.8184263460000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,4,0.8104904340000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,5,0.8174010660000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,6,0.812765632
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,7,0.8177601260000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,8,0.8169545020000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,9,0.816486766
+Pan-cancer STRING,pan-cancer,MNGCL,AUPRC,10,0.818554268
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,1,0.9195825820000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,2,0.9196204120000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,3,0.919557378
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,4,0.916568932
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,5,0.9205902220000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,6,0.9189455019999999
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,7,0.9209861800000001
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,8,0.91933285
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,9,0.9176596719999999
+Pan-cancer STRING,pan-cancer,MNGCL,AUROC,10,0.92161957
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,1,0.82660870115154
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,2,0.8255209714553221
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,3,0.8260088235063069
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,4,0.8250635516860376
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,5,0.8262345925942697
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,6,0.8246526712475417
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,7,0.8238480497056818
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,8,0.8269081834951495
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,9,0.822433651535943
+Pan-cancer STRING,pan-cancer,MTGCN,AUPRC,10,0.8224102832910554
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,1,0.9199606648928167
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,2,0.9193874604425698
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,3,0.9199737506716182
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,4,0.9190663854745826
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,5,0.9202261675676244
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,6,0.9207107133304862
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,7,0.9190570360744829
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,8,0.9193202394393201
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,9,0.9197649868516665
+Pan-cancer STRING,pan-cancer,MTGCN,AUROC,10,0.9198616254971835
+Cancer-specific,blca,BIMODriver,AUPRC,1,0.653367
+Cancer-specific,blca,BIMODriver,AUPRC,2,0.6933116
+Cancer-specific,blca,BIMODriver,AUPRC,3,0.6566132
+Cancer-specific,blca,BIMODriver,AUPRC,4,0.6650912
+Cancer-specific,blca,BIMODriver,AUPRC,5,0.6526012
+Cancer-specific,blca,BIMODriver,AUPRC,6,0.6599204
+Cancer-specific,blca,BIMODriver,AUPRC,7,0.6631159999999999
+Cancer-specific,blca,BIMODriver,AUPRC,8,0.6649844
+Cancer-specific,blca,BIMODriver,AUPRC,9,0.6664496
+Cancer-specific,blca,BIMODriver,AUPRC,10,0.6541469999999999
+Cancer-specific,blca,BIMODriver,AUROC,1,0.9547392
+Cancer-specific,blca,BIMODriver,AUROC,2,0.954595
+Cancer-specific,blca,BIMODriver,AUROC,3,0.9545465999999999
+Cancer-specific,blca,BIMODriver,AUROC,4,0.9524265999999999
+Cancer-specific,blca,BIMODriver,AUROC,5,0.9515114
+Cancer-specific,blca,BIMODriver,AUROC,6,0.950283
+Cancer-specific,blca,BIMODriver,AUROC,7,0.9502108000000001
+Cancer-specific,blca,BIMODriver,AUROC,8,0.9501624
+Cancer-specific,blca,BIMODriver,AUROC,9,0.9499098
+Cancer-specific,blca,BIMODriver,AUROC,10,0.9498973999999999
+Cancer-specific,blca,ChebNet,AUPRC,1,0.6507395300000001
+Cancer-specific,blca,ChebNet,AUPRC,2,0.6554699239999999
+Cancer-specific,blca,ChebNet,AUPRC,3,0.6570265940000001
+Cancer-specific,blca,ChebNet,AUPRC,4,0.654020684
+Cancer-specific,blca,ChebNet,AUPRC,5,0.643843846
+Cancer-specific,blca,ChebNet,AUPRC,6,0.653008676
+Cancer-specific,blca,ChebNet,AUPRC,7,0.641783968
+Cancer-specific,blca,ChebNet,AUPRC,8,0.643241626
+Cancer-specific,blca,ChebNet,AUPRC,9,0.6515692120000001
+Cancer-specific,blca,ChebNet,AUPRC,10,0.641572508
+Cancer-specific,blca,ChebNet,AUROC,1,0.9488240400000001
+Cancer-specific,blca,ChebNet,AUROC,2,0.947648082
+Cancer-specific,blca,ChebNet,AUROC,3,0.9486062719999999
+Cancer-specific,blca,ChebNet,AUROC,4,0.9487369339999999
+Cancer-specific,blca,ChebNet,AUROC,5,0.9484756080000001
+Cancer-specific,blca,ChebNet,AUROC,6,0.9403310099999999
+Cancer-specific,blca,ChebNet,AUROC,7,0.94351045
+Cancer-specific,blca,ChebNet,AUROC,8,0.944294424
+Cancer-specific,blca,ChebNet,AUROC,9,0.9447735180000001
+Cancer-specific,blca,ChebNet,AUROC,10,0.9477351900000001
+Cancer-specific,blca,DISFusion,AUPRC,1,0.5669094
+Cancer-specific,blca,DISFusion,AUPRC,2,0.6331346
+Cancer-specific,blca,DISFusion,AUPRC,3,0.5935604
+Cancer-specific,blca,DISFusion,AUPRC,4,0.5042209999999999
+Cancer-specific,blca,DISFusion,AUPRC,5,0.5925662
+Cancer-specific,blca,DISFusion,AUPRC,6,0.5351969999999999
+Cancer-specific,blca,DISFusion,AUPRC,7,0.6024856000000001
+Cancer-specific,blca,DISFusion,AUPRC,8,0.6394964000000001
+Cancer-specific,blca,DISFusion,AUPRC,9,0.5915358000000001
+Cancer-specific,blca,DISFusion,AUPRC,10,0.5983874
+Cancer-specific,blca,DISFusion,AUROC,1,0.9351915999999999
+Cancer-specific,blca,DISFusion,AUROC,2,0.9388068
+Cancer-specific,blca,DISFusion,AUROC,3,0.9391116
+Cancer-specific,blca,DISFusion,AUROC,4,0.9222996
+Cancer-specific,blca,DISFusion,AUROC,5,0.9283102
+Cancer-specific,blca,DISFusion,AUROC,6,0.9442510000000001
+Cancer-specific,blca,DISFusion,AUROC,7,0.941507
+Cancer-specific,blca,DISFusion,AUROC,8,0.954007
+Cancer-specific,blca,DISFusion,AUROC,9,0.9346254
+Cancer-specific,blca,DISFusion,AUROC,10,0.9277872
+Cancer-specific,blca,DISHyper,AUPRC,1,0.4369351999999999
+Cancer-specific,blca,DISHyper,AUPRC,2,0.4917622
+Cancer-specific,blca,DISHyper,AUPRC,3,0.4554672
+Cancer-specific,blca,DISHyper,AUPRC,4,0.45396719999999996
+Cancer-specific,blca,DISHyper,AUPRC,5,0.40549599999999997
+Cancer-specific,blca,DISHyper,AUPRC,6,0.4336894
+Cancer-specific,blca,DISHyper,AUPRC,7,0.445193
+Cancer-specific,blca,DISHyper,AUPRC,8,0.35354240000000003
+Cancer-specific,blca,DISHyper,AUPRC,9,0.42051879999999997
+Cancer-specific,blca,DISHyper,AUPRC,10,0.39670320000000003
+Cancer-specific,blca,DISHyper,AUROC,1,0.9128484
+Cancer-specific,blca,DISHyper,AUROC,2,0.9039632000000001
+Cancer-specific,blca,DISHyper,AUROC,3,0.9060539999999999
+Cancer-specific,blca,DISHyper,AUROC,4,0.9215158000000001
+Cancer-specific,blca,DISHyper,AUROC,5,0.8952962000000001
+Cancer-specific,blca,DISHyper,AUROC,6,0.890636
+Cancer-specific,blca,DISHyper,AUROC,7,0.9007403999999999
+Cancer-specific,blca,DISHyper,AUROC,8,0.8814458000000001
+Cancer-specific,blca,DISHyper,AUROC,9,0.8871511999999999
+Cancer-specific,blca,DISHyper,AUROC,10,0.8770467999999999
+Cancer-specific,blca,ECD-CDGI,AUPRC,1,0.6274654
+Cancer-specific,blca,ECD-CDGI,AUPRC,2,0.5812266
+Cancer-specific,blca,ECD-CDGI,AUPRC,3,0.6303099999999999
+Cancer-specific,blca,ECD-CDGI,AUPRC,4,0.5561170000000001
+Cancer-specific,blca,ECD-CDGI,AUPRC,5,0.5931968
+Cancer-specific,blca,ECD-CDGI,AUPRC,6,0.547997
+Cancer-specific,blca,ECD-CDGI,AUPRC,7,0.5786781999999999
+Cancer-specific,blca,ECD-CDGI,AUPRC,8,0.5371482000000001
+Cancer-specific,blca,ECD-CDGI,AUPRC,9,0.5152515999999999
+Cancer-specific,blca,ECD-CDGI,AUPRC,10,0.6422658
+Cancer-specific,blca,ECD-CDGI,AUROC,1,0.9335804
+Cancer-specific,blca,ECD-CDGI,AUROC,2,0.9559234
+Cancer-specific,blca,ECD-CDGI,AUROC,3,0.9532668
+Cancer-specific,blca,ECD-CDGI,AUROC,4,0.9299214000000001
+Cancer-specific,blca,ECD-CDGI,AUROC,5,0.9283971999999998
+Cancer-specific,blca,ECD-CDGI,AUROC,6,0.9067071999999999
+Cancer-specific,blca,ECD-CDGI,AUROC,7,0.9335365999999998
+Cancer-specific,blca,ECD-CDGI,AUROC,8,0.9403307999999999
+Cancer-specific,blca,ECD-CDGI,AUROC,9,0.9222125999999999
+Cancer-specific,blca,ECD-CDGI,AUROC,10,0.9505661999999999
+Cancer-specific,blca,EMOGI,AUPRC,1,0.546383
+Cancer-specific,blca,EMOGI,AUPRC,2,0.5197497999999999
+Cancer-specific,blca,EMOGI,AUPRC,3,0.5471844000000001
+Cancer-specific,blca,EMOGI,AUPRC,4,0.5371196
+Cancer-specific,blca,EMOGI,AUPRC,5,0.5312924
+Cancer-specific,blca,EMOGI,AUPRC,6,0.49771199999999993
+Cancer-specific,blca,EMOGI,AUPRC,7,0.5314336
+Cancer-specific,blca,EMOGI,AUPRC,8,0.5791302
+Cancer-specific,blca,EMOGI,AUPRC,9,0.53198
+Cancer-specific,blca,EMOGI,AUPRC,10,0.5527612
+Cancer-specific,blca,EMOGI,AUROC,1,0.9025696
+Cancer-specific,blca,EMOGI,AUROC,2,0.9300957999999999
+Cancer-specific,blca,EMOGI,AUROC,3,0.9073606
+Cancer-specific,blca,EMOGI,AUROC,4,0.9086234000000001
+Cancer-specific,blca,EMOGI,AUROC,5,0.8893726
+Cancer-specific,blca,EMOGI,AUROC,6,0.8974741999999999
+Cancer-specific,blca,EMOGI,AUROC,7,0.903615
+Cancer-specific,blca,EMOGI,AUROC,8,0.8800086
+Cancer-specific,blca,EMOGI,AUROC,9,0.9113676000000002
+Cancer-specific,blca,EMOGI,AUROC,10,0.9322736
+Cancer-specific,blca,GAT,AUPRC,1,0.16471504199999998
+Cancer-specific,blca,GAT,AUPRC,2,0.156063956
+Cancer-specific,blca,GAT,AUPRC,3,0.17759656399999998
+Cancer-specific,blca,GAT,AUPRC,4,0.139503316
+Cancer-specific,blca,GAT,AUPRC,5,0.17249125
+Cancer-specific,blca,GAT,AUPRC,6,0.15935176
+Cancer-specific,blca,GAT,AUPRC,7,0.157510086
+Cancer-specific,blca,GAT,AUPRC,8,0.145014566
+Cancer-specific,blca,GAT,AUPRC,9,0.165795662
+Cancer-specific,blca,GAT,AUPRC,10,0.18834877
+Cancer-specific,blca,GAT,AUROC,1,0.8358013940000001
+Cancer-specific,blca,GAT,AUROC,2,0.844120208
+Cancer-specific,blca,GAT,AUROC,3,0.8355836219999999
+Cancer-specific,blca,GAT,AUROC,4,0.8354529620000001
+Cancer-specific,blca,GAT,AUROC,5,0.851088852
+Cancer-specific,blca,GAT,AUROC,6,0.830574912
+Cancer-specific,blca,GAT,AUROC,7,0.8334059220000001
+Cancer-specific,blca,GAT,AUROC,8,0.8086236940000001
+Cancer-specific,blca,GAT,AUROC,9,0.8480400719999999
+Cancer-specific,blca,GAT,AUROC,10,0.8576655040000001
+Cancer-specific,blca,MNGCL,AUPRC,1,0.6155727959999999
+Cancer-specific,blca,MNGCL,AUPRC,2,0.604089796
+Cancer-specific,blca,MNGCL,AUPRC,3,0.600040288
+Cancer-specific,blca,MNGCL,AUPRC,4,0.621963088
+Cancer-specific,blca,MNGCL,AUPRC,5,0.6207386460000001
+Cancer-specific,blca,MNGCL,AUPRC,6,0.604718922
+Cancer-specific,blca,MNGCL,AUPRC,7,0.6274507079999999
+Cancer-specific,blca,MNGCL,AUPRC,8,0.6182531019999999
+Cancer-specific,blca,MNGCL,AUPRC,9,0.607584346
+Cancer-specific,blca,MNGCL,AUPRC,10,0.612073616
+Cancer-specific,blca,MNGCL,AUROC,1,0.946907664
+Cancer-specific,blca,MNGCL,AUROC,2,0.9481271760000001
+Cancer-specific,blca,MNGCL,AUROC,3,0.944817072
+Cancer-specific,blca,MNGCL,AUROC,4,0.9520905900000001
+Cancer-specific,blca,MNGCL,AUROC,5,0.9509146319999999
+Cancer-specific,blca,MNGCL,AUROC,6,0.946036584
+Cancer-specific,blca,MNGCL,AUROC,7,0.9518292660000001
+Cancer-specific,blca,MNGCL,AUROC,8,0.94490418
+Cancer-specific,blca,MNGCL,AUROC,9,0.9473432039999998
+Cancer-specific,blca,MNGCL,AUROC,10,0.9479965140000001
+Cancer-specific,blca,MTGCN,AUPRC,1,0.6276634000000001
+Cancer-specific,blca,MTGCN,AUPRC,2,0.6334332
+Cancer-specific,blca,MTGCN,AUPRC,3,0.647475
+Cancer-specific,blca,MTGCN,AUPRC,4,0.6066398000000001
+Cancer-specific,blca,MTGCN,AUPRC,5,0.6128767999999999
+Cancer-specific,blca,MTGCN,AUPRC,6,0.5849604000000002
+Cancer-specific,blca,MTGCN,AUPRC,7,0.6461504
+Cancer-specific,blca,MTGCN,AUPRC,8,0.6106256
+Cancer-specific,blca,MTGCN,AUPRC,9,0.6427062
+Cancer-specific,blca,MTGCN,AUPRC,10,0.6529034
+Cancer-specific,blca,MTGCN,AUROC,1,0.9453210000000001
+Cancer-specific,blca,MTGCN,AUROC,2,0.938504
+Cancer-specific,blca,MTGCN,AUROC,3,0.9476574
+Cancer-specific,blca,MTGCN,AUROC,4,0.9424545999999999
+Cancer-specific,blca,MTGCN,AUROC,5,0.9413465999999999
+Cancer-specific,blca,MTGCN,AUROC,6,0.9405274
+Cancer-specific,blca,MTGCN,AUROC,7,0.9435382000000001
+Cancer-specific,blca,MTGCN,AUROC,8,0.9428882
+Cancer-specific,blca,MTGCN,AUROC,9,0.9467659999999999
+Cancer-specific,blca,MTGCN,AUROC,10,0.9451042
+Cancer-specific,blca,SAGE,AUPRC,1,0.624338506
+Cancer-specific,blca,SAGE,AUPRC,2,0.637252554
+Cancer-specific,blca,SAGE,AUPRC,3,0.632431918
+Cancer-specific,blca,SAGE,AUPRC,4,0.632327932
+Cancer-specific,blca,SAGE,AUPRC,5,0.638197626
+Cancer-specific,blca,SAGE,AUPRC,6,0.633619874
+Cancer-specific,blca,SAGE,AUPRC,7,0.62997592
+Cancer-specific,blca,SAGE,AUPRC,8,0.627829466
+Cancer-specific,blca,SAGE,AUPRC,9,0.6296372459999999
+Cancer-specific,blca,SAGE,AUPRC,10,0.636400988
+Cancer-specific,blca,SAGE,AUROC,1,0.9326219520000001
+Cancer-specific,blca,SAGE,AUROC,2,0.93675958
+Cancer-specific,blca,SAGE,AUROC,3,0.9381097539999999
+Cancer-specific,blca,SAGE,AUROC,4,0.9354094080000002
+Cancer-specific,blca,SAGE,AUROC,5,0.93610627
+Cancer-specific,blca,SAGE,AUROC,6,0.937456444
+Cancer-specific,blca,SAGE,AUROC,7,0.93523519
+Cancer-specific,blca,SAGE,AUROC,8,0.93567073
+Cancer-specific,blca,SAGE,AUROC,9,0.9388066179999999
+Cancer-specific,blca,SAGE,AUROC,10,0.93022648
+Cancer-specific,brca,BIMODriver,AUPRC,1,0.681674
+Cancer-specific,brca,BIMODriver,AUPRC,2,0.7462182
+Cancer-specific,brca,BIMODriver,AUPRC,3,0.6783111999999999
+Cancer-specific,brca,BIMODriver,AUPRC,4,0.7163064
+Cancer-specific,brca,BIMODriver,AUPRC,5,0.719202
+Cancer-specific,brca,BIMODriver,AUPRC,6,0.7170982
+Cancer-specific,brca,BIMODriver,AUPRC,7,0.7229606000000001
+Cancer-specific,brca,BIMODriver,AUPRC,8,0.7178017999999999
+Cancer-specific,brca,BIMODriver,AUPRC,9,0.68688
+Cancer-specific,brca,BIMODriver,AUPRC,10,0.7368754
+Cancer-specific,brca,BIMODriver,AUROC,1,0.9296544000000001
+Cancer-specific,brca,BIMODriver,AUROC,2,0.9293495999999999
+Cancer-specific,brca,BIMODriver,AUROC,3,0.9286787999999999
+Cancer-specific,brca,BIMODriver,AUROC,4,0.9271544
+Cancer-specific,brca,BIMODriver,AUROC,5,0.925935
+Cancer-specific,brca,BIMODriver,AUROC,6,0.9253655999999999
+Cancer-specific,brca,BIMODriver,AUROC,7,0.9244308
+Cancer-specific,brca,BIMODriver,AUROC,8,0.9224798
+Cancer-specific,brca,BIMODriver,AUROC,9,0.9220934
+Cancer-specific,brca,BIMODriver,AUROC,10,0.9220122
+Cancer-specific,brca,ChebNet,AUPRC,1,0.6502128340000001
+Cancer-specific,brca,ChebNet,AUPRC,2,0.653915752
+Cancer-specific,brca,ChebNet,AUPRC,3,0.6613131099999999
+Cancer-specific,brca,ChebNet,AUPRC,4,0.645115222
+Cancer-specific,brca,ChebNet,AUPRC,5,0.652074678
+Cancer-specific,brca,ChebNet,AUPRC,6,0.654492666
+Cancer-specific,brca,ChebNet,AUPRC,7,0.6548253980000001
+Cancer-specific,brca,ChebNet,AUPRC,8,0.65696285
+Cancer-specific,brca,ChebNet,AUPRC,9,0.64762372
+Cancer-specific,brca,ChebNet,AUPRC,10,0.6521715020000001
+Cancer-specific,brca,ChebNet,AUROC,1,0.9044308939999999
+Cancer-specific,brca,ChebNet,AUROC,2,0.906951218
+Cancer-specific,brca,ChebNet,AUROC,3,0.90605691
+Cancer-specific,brca,ChebNet,AUROC,4,0.908780488
+Cancer-specific,brca,ChebNet,AUROC,5,0.911199184
+Cancer-specific,brca,ChebNet,AUROC,6,0.912256098
+Cancer-specific,brca,ChebNet,AUROC,7,0.910995934
+Cancer-specific,brca,ChebNet,AUROC,8,0.9137804879999999
+Cancer-specific,brca,ChebNet,AUROC,9,0.9119715439999998
+Cancer-specific,brca,ChebNet,AUROC,10,0.9110772359999999
+Cancer-specific,brca,DISFusion,AUPRC,1,0.7098038
+Cancer-specific,brca,DISFusion,AUPRC,2,0.6961046
+Cancer-specific,brca,DISFusion,AUPRC,3,0.677267
+Cancer-specific,brca,DISFusion,AUPRC,4,0.6874026
+Cancer-specific,brca,DISFusion,AUPRC,5,0.6747328
+Cancer-specific,brca,DISFusion,AUPRC,6,0.7064418000000001
+Cancer-specific,brca,DISFusion,AUPRC,7,0.7160949999999999
+Cancer-specific,brca,DISFusion,AUPRC,8,0.7138204
+Cancer-specific,brca,DISFusion,AUPRC,9,0.7234398000000001
+Cancer-specific,brca,DISFusion,AUPRC,10,0.6229822
+Cancer-specific,brca,DISFusion,AUROC,1,0.9199186000000001
+Cancer-specific,brca,DISFusion,AUROC,2,0.9066668
+Cancer-specific,brca,DISFusion,AUROC,3,0.9006504
+Cancer-specific,brca,DISFusion,AUROC,4,0.913049
+Cancer-specific,brca,DISFusion,AUROC,5,0.9100813999999999
+Cancer-specific,brca,DISFusion,AUROC,6,0.9202236000000001
+Cancer-specific,brca,DISFusion,AUROC,7,0.9225814
+Cancer-specific,brca,DISFusion,AUROC,8,0.9264431999999999
+Cancer-specific,brca,DISFusion,AUROC,9,0.9180284000000001
+Cancer-specific,brca,DISFusion,AUROC,10,0.893882
+Cancer-specific,brca,DISHyper,AUPRC,1,0.045308600000000004
+Cancer-specific,brca,DISHyper,AUPRC,2,0.0452478
+Cancer-specific,brca,DISHyper,AUPRC,3,0.045956
+Cancer-specific,brca,DISHyper,AUPRC,4,0.04573820000000001
+Cancer-specific,brca,DISHyper,AUPRC,5,0.0468522
+Cancer-specific,brca,DISHyper,AUPRC,6,0.052838399999999994
+Cancer-specific,brca,DISHyper,AUPRC,7,0.045382
+Cancer-specific,brca,DISHyper,AUPRC,8,0.0460862
+Cancer-specific,brca,DISHyper,AUPRC,9,0.046761199999999996
+Cancer-specific,brca,DISHyper,AUPRC,10,0.047607
+Cancer-specific,brca,DISHyper,AUROC,1,0.1009146
+Cancer-specific,brca,DISHyper,AUROC,2,0.10823160000000001
+Cancer-specific,brca,DISHyper,AUROC,3,0.1128048
+Cancer-specific,brca,DISHyper,AUROC,4,0.1198172
+Cancer-specific,brca,DISHyper,AUROC,5,0.123354
+Cancer-specific,brca,DISHyper,AUROC,6,0.1105488
+Cancer-specific,brca,DISHyper,AUROC,7,0.11154440000000002
+Cancer-specific,brca,DISHyper,AUROC,8,0.1070934
+Cancer-specific,brca,DISHyper,AUROC,9,0.11778460000000002
+Cancer-specific,brca,DISHyper,AUROC,10,0.1285974
+Cancer-specific,brca,ECD-CDGI,AUPRC,1,0.6453912
+Cancer-specific,brca,ECD-CDGI,AUPRC,2,0.6684486000000001
+Cancer-specific,brca,ECD-CDGI,AUPRC,3,0.6087536
+Cancer-specific,brca,ECD-CDGI,AUPRC,4,0.6120832
+Cancer-specific,brca,ECD-CDGI,AUPRC,5,0.6483558
+Cancer-specific,brca,ECD-CDGI,AUPRC,6,0.7008306
+Cancer-specific,brca,ECD-CDGI,AUPRC,7,0.6389488
+Cancer-specific,brca,ECD-CDGI,AUPRC,8,0.6229294
+Cancer-specific,brca,ECD-CDGI,AUPRC,9,0.6519893999999999
+Cancer-specific,brca,ECD-CDGI,AUPRC,10,0.6533784
+Cancer-specific,brca,ECD-CDGI,AUROC,1,0.9129064
+Cancer-specific,brca,ECD-CDGI,AUROC,2,0.8957726000000001
+Cancer-specific,brca,ECD-CDGI,AUROC,3,0.8725814
+Cancer-specific,brca,ECD-CDGI,AUROC,4,0.8991463999999999
+Cancer-specific,brca,ECD-CDGI,AUROC,5,0.8987805999999999
+Cancer-specific,brca,ECD-CDGI,AUROC,6,0.9234351999999999
+Cancer-specific,brca,ECD-CDGI,AUROC,7,0.8816666
+Cancer-specific,brca,ECD-CDGI,AUROC,8,0.8923372
+Cancer-specific,brca,ECD-CDGI,AUROC,9,0.9096746
+Cancer-specific,brca,ECD-CDGI,AUROC,10,0.88689
+Cancer-specific,brca,EMOGI,AUPRC,1,0.6088076000000001
+Cancer-specific,brca,EMOGI,AUPRC,2,0.5893736
+Cancer-specific,brca,EMOGI,AUPRC,3,0.6534478
+Cancer-specific,brca,EMOGI,AUPRC,4,0.6261496
+Cancer-specific,brca,EMOGI,AUPRC,5,0.6376508000000001
+Cancer-specific,brca,EMOGI,AUPRC,6,0.6577642
+Cancer-specific,brca,EMOGI,AUPRC,7,0.6328982
+Cancer-specific,brca,EMOGI,AUPRC,8,0.621094
+Cancer-specific,brca,EMOGI,AUPRC,9,0.6468461999999999
+Cancer-specific,brca,EMOGI,AUPRC,10,0.6553878
+Cancer-specific,brca,EMOGI,AUROC,1,0.8881912
+Cancer-specific,brca,EMOGI,AUROC,2,0.8875204
+Cancer-specific,brca,EMOGI,AUROC,3,0.9065652
+Cancer-specific,brca,EMOGI,AUROC,4,0.9028049999999999
+Cancer-specific,brca,EMOGI,AUROC,5,0.8969514000000001
+Cancer-specific,brca,EMOGI,AUROC,6,0.898252
+Cancer-specific,brca,EMOGI,AUROC,7,0.8999796
+Cancer-specific,brca,EMOGI,AUROC,8,0.886951
+Cancer-specific,brca,EMOGI,AUROC,9,0.8931606000000001
+Cancer-specific,brca,EMOGI,AUROC,10,0.8907522
+Cancer-specific,brca,GAT,AUPRC,1,0.306071458
+Cancer-specific,brca,GAT,AUPRC,2,0.30241167799999996
+Cancer-specific,brca,GAT,AUPRC,3,0.348664226
+Cancer-specific,brca,GAT,AUPRC,4,0.31771943199999997
+Cancer-specific,brca,GAT,AUPRC,5,0.31230203999999995
+Cancer-specific,brca,GAT,AUPRC,6,0.3068081
+Cancer-specific,brca,GAT,AUPRC,7,0.351271106
+Cancer-specific,brca,GAT,AUPRC,8,0.292314366
+Cancer-specific,brca,GAT,AUPRC,9,0.30441466000000006
+Cancer-specific,brca,GAT,AUPRC,10,0.303628272
+Cancer-specific,brca,GAT,AUROC,1,0.834247968
+Cancer-specific,brca,GAT,AUROC,2,0.83949187
+Cancer-specific,brca,GAT,AUROC,3,0.855914636
+Cancer-specific,brca,GAT,AUROC,4,0.8475203259999999
+Cancer-specific,brca,GAT,AUROC,5,0.8347357719999999
+Cancer-specific,brca,GAT,AUROC,6,0.8374796740000001
+Cancer-specific,brca,GAT,AUROC,7,0.8459959340000001
+Cancer-specific,brca,GAT,AUROC,8,0.82461382
+Cancer-specific,brca,GAT,AUROC,9,0.8469918700000001
+Cancer-specific,brca,GAT,AUROC,10,0.832418702
+Cancer-specific,brca,MNGCL,AUPRC,1,0.710599972
+Cancer-specific,brca,MNGCL,AUPRC,2,0.7189297179999999
+Cancer-specific,brca,MNGCL,AUPRC,3,0.70712258
+Cancer-specific,brca,MNGCL,AUPRC,4,0.7205634739999999
+Cancer-specific,brca,MNGCL,AUPRC,5,0.7109313219999999
+Cancer-specific,brca,MNGCL,AUPRC,6,0.706187124
+Cancer-specific,brca,MNGCL,AUPRC,7,0.70528674
+Cancer-specific,brca,MNGCL,AUPRC,8,0.709475758
+Cancer-specific,brca,MNGCL,AUPRC,9,0.7141905279999999
+Cancer-specific,brca,MNGCL,AUPRC,10,0.7116651119999999
+Cancer-specific,brca,MNGCL,AUROC,1,0.914939024
+Cancer-specific,brca,MNGCL,AUROC,2,0.913678862
+Cancer-specific,brca,MNGCL,AUROC,3,0.914796748
+Cancer-specific,brca,MNGCL,AUROC,4,0.9189024399999999
+Cancer-specific,brca,MNGCL,AUROC,5,0.9174390240000001
+Cancer-specific,brca,MNGCL,AUROC,6,0.9152845519999999
+Cancer-specific,brca,MNGCL,AUROC,7,0.9125813020000001
+Cancer-specific,brca,MNGCL,AUROC,8,0.9172357740000001
+Cancer-specific,brca,MNGCL,AUROC,9,0.916890246
+Cancer-specific,brca,MNGCL,AUROC,10,0.9140040639999999
+Cancer-specific,brca,MTGCN,AUPRC,1,0.6707156000000001
+Cancer-specific,brca,MTGCN,AUPRC,2,0.6541312
+Cancer-specific,brca,MTGCN,AUPRC,3,0.665472
+Cancer-specific,brca,MTGCN,AUPRC,4,0.663713
+Cancer-specific,brca,MTGCN,AUPRC,5,0.652914
+Cancer-specific,brca,MTGCN,AUPRC,6,0.6513424
+Cancer-specific,brca,MTGCN,AUPRC,7,0.6566598
+Cancer-specific,brca,MTGCN,AUPRC,8,0.6553066
+Cancer-specific,brca,MTGCN,AUPRC,9,0.6562228
+Cancer-specific,brca,MTGCN,AUPRC,10,0.6598834
+Cancer-specific,brca,MTGCN,AUROC,1,0.9060182000000001
+Cancer-specific,brca,MTGCN,AUROC,2,0.9077116000000001
+Cancer-specific,brca,MTGCN,AUROC,3,0.9109954
+Cancer-specific,brca,MTGCN,AUROC,4,0.9059842
+Cancer-specific,brca,MTGCN,AUROC,5,0.9087988000000001
+Cancer-specific,brca,MTGCN,AUROC,6,0.9082149999999999
+Cancer-specific,brca,MTGCN,AUROC,7,0.9060412000000001
+Cancer-specific,brca,MTGCN,AUROC,8,0.90762
+Cancer-specific,brca,MTGCN,AUROC,9,0.9058468
+Cancer-specific,brca,MTGCN,AUROC,10,0.9058809999999999
+Cancer-specific,brca,SAGE,AUPRC,1,0.66165421
+Cancer-specific,brca,SAGE,AUPRC,2,0.649471634
+Cancer-specific,brca,SAGE,AUPRC,3,0.650640338
+Cancer-specific,brca,SAGE,AUPRC,4,0.6604007980000001
+Cancer-specific,brca,SAGE,AUPRC,5,0.653533494
+Cancer-specific,brca,SAGE,AUPRC,6,0.647550894
+Cancer-specific,brca,SAGE,AUPRC,7,0.652393746
+Cancer-specific,brca,SAGE,AUPRC,8,0.6536929340000001
+Cancer-specific,brca,SAGE,AUPRC,9,0.65048719
+Cancer-specific,brca,SAGE,AUPRC,10,0.6684745160000001
+Cancer-specific,brca,SAGE,AUROC,1,0.90296748
+Cancer-specific,brca,SAGE,AUROC,2,0.899898372
+Cancer-specific,brca,SAGE,AUROC,3,0.901463414
+Cancer-specific,brca,SAGE,AUROC,4,0.903191056
+Cancer-specific,brca,SAGE,AUROC,5,0.9020528460000001
+Cancer-specific,brca,SAGE,AUROC,6,0.901890244
+Cancer-specific,brca,SAGE,AUROC,7,0.8997154500000001
+Cancer-specific,brca,SAGE,AUROC,8,0.9017886159999999
+Cancer-specific,brca,SAGE,AUROC,9,0.903089432
+Cancer-specific,brca,SAGE,AUROC,10,0.90813008
+Cancer-specific,cesc,BIMODriver,AUPRC,1,0.6644936
+Cancer-specific,cesc,BIMODriver,AUPRC,2,0.7021812000000001
+Cancer-specific,cesc,BIMODriver,AUPRC,3,0.7356676
+Cancer-specific,cesc,BIMODriver,AUPRC,4,0.6421965999999999
+Cancer-specific,cesc,BIMODriver,AUPRC,5,0.5797046
+Cancer-specific,cesc,BIMODriver,AUPRC,6,0.6161871999999999
+Cancer-specific,cesc,BIMODriver,AUPRC,7,0.633712
+Cancer-specific,cesc,BIMODriver,AUPRC,8,0.49845500000000004
+Cancer-specific,cesc,BIMODriver,AUPRC,9,0.6923068
+Cancer-specific,cesc,BIMODriver,AUPRC,10,0.6734156
+Cancer-specific,cesc,BIMODriver,AUROC,1,0.9957282
+Cancer-specific,cesc,BIMODriver,AUROC,2,0.9949655999999999
+Cancer-specific,cesc,BIMODriver,AUROC,3,0.9949655999999999
+Cancer-specific,cesc,BIMODriver,AUROC,4,0.9926769999999999
+Cancer-specific,cesc,BIMODriver,AUROC,5,0.989321
+Cancer-specific,cesc,BIMODriver,AUROC,6,0.9881005999999999
+Cancer-specific,cesc,BIMODriver,AUROC,7,0.9873378
+Cancer-specific,cesc,BIMODriver,AUROC,8,0.9861175999999998
+Cancer-specific,cesc,BIMODriver,AUROC,9,0.9852022
+Cancer-specific,cesc,BIMODriver,AUROC,10,0.9850494
+Cancer-specific,cesc,ChebNet,AUPRC,1,0.39757644799999997
+Cancer-specific,cesc,ChebNet,AUPRC,2,0.41920010799999996
+Cancer-specific,cesc,ChebNet,AUPRC,3,0.555814092
+Cancer-specific,cesc,ChebNet,AUPRC,4,0.520573948
+Cancer-specific,cesc,ChebNet,AUPRC,5,0.5574018679999999
+Cancer-specific,cesc,ChebNet,AUPRC,6,0.38031247599999995
+Cancer-specific,cesc,ChebNet,AUPRC,7,0.447487906
+Cancer-specific,cesc,ChebNet,AUPRC,8,0.34166078200000005
+Cancer-specific,cesc,ChebNet,AUPRC,9,0.428666474
+Cancer-specific,cesc,ChebNet,AUPRC,10,0.341850504
+Cancer-specific,cesc,ChebNet,AUROC,1,0.952134146
+Cancer-specific,cesc,ChebNet,AUROC,2,0.9451219519999998
+Cancer-specific,cesc,ChebNet,AUROC,3,0.9615853660000001
+Cancer-specific,cesc,ChebNet,AUROC,4,0.96554878
+Cancer-specific,cesc,ChebNet,AUROC,5,0.95945122
+Cancer-specific,cesc,ChebNet,AUROC,6,0.948780488
+Cancer-specific,cesc,ChebNet,AUROC,7,0.959146342
+Cancer-specific,cesc,ChebNet,AUROC,8,0.949695122
+Cancer-specific,cesc,ChebNet,AUROC,9,0.959146342
+Cancer-specific,cesc,ChebNet,AUROC,10,0.962804878
+Cancer-specific,cesc,DISFusion,AUPRC,1,0.42268159999999994
+Cancer-specific,cesc,DISFusion,AUPRC,2,0.5086504000000001
+Cancer-specific,cesc,DISFusion,AUPRC,3,0.36123859999999997
+Cancer-specific,cesc,DISFusion,AUPRC,4,0.43722259999999996
+Cancer-specific,cesc,DISFusion,AUPRC,5,0.5371846
+Cancer-specific,cesc,DISFusion,AUPRC,6,0.6234866
+Cancer-specific,cesc,DISFusion,AUPRC,7,0.5259658
+Cancer-specific,cesc,DISFusion,AUPRC,8,0.6077049999999999
+Cancer-specific,cesc,DISFusion,AUPRC,9,0.5372106000000001
+Cancer-specific,cesc,DISFusion,AUPRC,10,0.4504502
+Cancer-specific,cesc,DISFusion,AUROC,1,0.9521344
+Cancer-specific,cesc,DISFusion,AUROC,2,0.9484756000000001
+Cancer-specific,cesc,DISFusion,AUROC,3,0.9390243999999999
+Cancer-specific,cesc,DISFusion,AUROC,4,0.9445120000000001
+Cancer-specific,cesc,DISFusion,AUROC,5,0.9746952
+Cancer-specific,cesc,DISFusion,AUROC,6,0.9890243999999999
+Cancer-specific,cesc,DISFusion,AUROC,7,0.9033536
+Cancer-specific,cesc,DISFusion,AUROC,8,0.9344512
+Cancer-specific,cesc,DISFusion,AUROC,9,0.9582316000000001
+Cancer-specific,cesc,DISFusion,AUROC,10,0.885061
+Cancer-specific,cesc,DISHyper,AUPRC,1,0.44272560000000005
+Cancer-specific,cesc,DISHyper,AUPRC,2,0.19369580000000003
+Cancer-specific,cesc,DISHyper,AUPRC,3,0.48656360000000004
+Cancer-specific,cesc,DISHyper,AUPRC,4,0.514302
+Cancer-specific,cesc,DISHyper,AUPRC,5,0.3896388
+Cancer-specific,cesc,DISHyper,AUPRC,6,0.3957244
+Cancer-specific,cesc,DISHyper,AUPRC,7,0.3539426
+Cancer-specific,cesc,DISHyper,AUPRC,8,0.1053626
+Cancer-specific,cesc,DISHyper,AUPRC,9,0.330998
+Cancer-specific,cesc,DISHyper,AUPRC,10,0.46034880000000006
+Cancer-specific,cesc,DISHyper,AUROC,1,0.9265244000000001
+Cancer-specific,cesc,DISHyper,AUROC,2,0.9128048
+Cancer-specific,cesc,DISHyper,AUROC,3,0.9710364
+Cancer-specific,cesc,DISHyper,AUROC,4,0.9780485999999999
+Cancer-specific,cesc,DISHyper,AUROC,5,0.9548781999999999
+Cancer-specific,cesc,DISHyper,AUROC,6,0.9301830000000001
+Cancer-specific,cesc,DISHyper,AUROC,7,0.9295731999999999
+Cancer-specific,cesc,DISHyper,AUROC,8,0.9375002
+Cancer-specific,cesc,DISHyper,AUROC,9,0.93689
+Cancer-specific,cesc,DISHyper,AUROC,10,0.9314024
+Cancer-specific,cesc,ECD-CDGI,AUPRC,1,0.526844
+Cancer-specific,cesc,ECD-CDGI,AUPRC,2,0.3538742
+Cancer-specific,cesc,ECD-CDGI,AUPRC,3,0.5902168
+Cancer-specific,cesc,ECD-CDGI,AUPRC,4,0.47942340000000006
+Cancer-specific,cesc,ECD-CDGI,AUPRC,5,0.529478
+Cancer-specific,cesc,ECD-CDGI,AUPRC,6,0.3635156
+Cancer-specific,cesc,ECD-CDGI,AUPRC,7,0.38177900000000003
+Cancer-specific,cesc,ECD-CDGI,AUPRC,8,0.2586542
+Cancer-specific,cesc,ECD-CDGI,AUPRC,9,0.3949044
+Cancer-specific,cesc,ECD-CDGI,AUPRC,10,0.417926
+Cancer-specific,cesc,ECD-CDGI,AUROC,1,0.9899388
+Cancer-specific,cesc,ECD-CDGI,AUROC,2,0.9454268000000001
+Cancer-specific,cesc,ECD-CDGI,AUROC,3,0.9417681999999999
+Cancer-specific,cesc,ECD-CDGI,AUROC,4,0.9621952
+Cancer-specific,cesc,ECD-CDGI,AUROC,5,0.9917681999999999
+Cancer-specific,cesc,ECD-CDGI,AUROC,6,0.9685976000000001
+Cancer-specific,cesc,ECD-CDGI,AUROC,7,0.9826220000000001
+Cancer-specific,cesc,ECD-CDGI,AUROC,8,0.9536586
+Cancer-specific,cesc,ECD-CDGI,AUROC,9,0.989939
+Cancer-specific,cesc,ECD-CDGI,AUROC,10,0.9856708
+Cancer-specific,cesc,EMOGI,AUPRC,1,0.28725180000000006
+Cancer-specific,cesc,EMOGI,AUPRC,2,0.6405824
+Cancer-specific,cesc,EMOGI,AUPRC,3,0.3170344
+Cancer-specific,cesc,EMOGI,AUPRC,4,0.41736000000000006
+Cancer-specific,cesc,EMOGI,AUPRC,5,0.5307366
+Cancer-specific,cesc,EMOGI,AUPRC,6,0.47281780000000007
+Cancer-specific,cesc,EMOGI,AUPRC,7,0.234787
+Cancer-specific,cesc,EMOGI,AUPRC,8,0.4010992
+Cancer-specific,cesc,EMOGI,AUPRC,9,0.40383139999999995
+Cancer-specific,cesc,EMOGI,AUPRC,10,0.5810522
+Cancer-specific,cesc,EMOGI,AUROC,1,0.8939024
+Cancer-specific,cesc,EMOGI,AUROC,2,0.9835366000000001
+Cancer-specific,cesc,EMOGI,AUROC,3,0.9850608000000001
+Cancer-specific,cesc,EMOGI,AUROC,4,0.9301830000000001
+Cancer-specific,cesc,EMOGI,AUROC,5,0.9759146
+Cancer-specific,cesc,EMOGI,AUROC,6,0.989939
+Cancer-specific,cesc,EMOGI,AUROC,7,0.9393291999999999
+Cancer-specific,cesc,EMOGI,AUROC,8,0.9768292000000001
+Cancer-specific,cesc,EMOGI,AUROC,9,0.9490854000000001
+Cancer-specific,cesc,EMOGI,AUROC,10,0.972561
+Cancer-specific,cesc,GAT,AUPRC,1,0.039032524
+Cancer-specific,cesc,GAT,AUPRC,2,0.020573974000000002
+Cancer-specific,cesc,GAT,AUPRC,3,0.040573418
+Cancer-specific,cesc,GAT,AUPRC,4,0.044715946
+Cancer-specific,cesc,GAT,AUPRC,5,0.042753682
+Cancer-specific,cesc,GAT,AUPRC,6,0.042015832
+Cancer-specific,cesc,GAT,AUPRC,7,0.036030394
+Cancer-specific,cesc,GAT,AUPRC,8,0.022770185999999998
+Cancer-specific,cesc,GAT,AUPRC,9,0.030062633999999998
+Cancer-specific,cesc,GAT,AUPRC,10,0.027064468
+Cancer-specific,cesc,GAT,AUROC,1,0.8536585380000001
+Cancer-specific,cesc,GAT,AUROC,2,0.8280487799999999
+Cancer-specific,cesc,GAT,AUROC,3,0.8719512179999999
+Cancer-specific,cesc,GAT,AUROC,4,0.801829268
+Cancer-specific,cesc,GAT,AUROC,5,0.860365854
+Cancer-specific,cesc,GAT,AUROC,6,0.8847560959999999
+Cancer-specific,cesc,GAT,AUROC,7,0.8728658539999999
+Cancer-specific,cesc,GAT,AUROC,8,0.785975608
+Cancer-specific,cesc,GAT,AUROC,9,0.868597562
+Cancer-specific,cesc,GAT,AUROC,10,0.8173780480000001
+Cancer-specific,cesc,MNGCL,AUPRC,1,0.4957267259999999
+Cancer-specific,cesc,MNGCL,AUPRC,2,0.4406846280000001
+Cancer-specific,cesc,MNGCL,AUPRC,3,0.496941462
+Cancer-specific,cesc,MNGCL,AUPRC,4,0.5004909439999999
+Cancer-specific,cesc,MNGCL,AUPRC,5,0.41714796400000004
+Cancer-specific,cesc,MNGCL,AUPRC,6,0.412785272
+Cancer-specific,cesc,MNGCL,AUPRC,7,0.5026536420000001
+Cancer-specific,cesc,MNGCL,AUPRC,8,0.44656781
+Cancer-specific,cesc,MNGCL,AUPRC,9,0.251247564
+Cancer-specific,cesc,MNGCL,AUPRC,10,0.46850992599999997
+Cancer-specific,cesc,MNGCL,AUROC,1,0.813109756
+Cancer-specific,cesc,MNGCL,AUROC,2,0.883536586
+Cancer-specific,cesc,MNGCL,AUROC,3,0.9329268299999999
+Cancer-specific,cesc,MNGCL,AUROC,4,0.90487805
+Cancer-specific,cesc,MNGCL,AUROC,5,0.9246951220000001
+Cancer-specific,cesc,MNGCL,AUROC,6,0.887195122
+Cancer-specific,cesc,MNGCL,AUROC,7,0.8795731699999999
+Cancer-specific,cesc,MNGCL,AUROC,8,0.90945122
+Cancer-specific,cesc,MNGCL,AUROC,9,0.851219514
+Cancer-specific,cesc,MNGCL,AUROC,10,0.9213414639999999
+Cancer-specific,cesc,MTGCN,AUPRC,1,0.6885488
+Cancer-specific,cesc,MTGCN,AUPRC,2,0.5662130000000001
+Cancer-specific,cesc,MTGCN,AUPRC,3,0.489046
+Cancer-specific,cesc,MTGCN,AUPRC,4,0.4980072
+Cancer-specific,cesc,MTGCN,AUPRC,5,0.5622568
+Cancer-specific,cesc,MTGCN,AUPRC,6,0.6138522
+Cancer-specific,cesc,MTGCN,AUPRC,7,0.4633058
+Cancer-specific,cesc,MTGCN,AUPRC,8,0.5859732
+Cancer-specific,cesc,MTGCN,AUPRC,9,0.41767960000000004
+Cancer-specific,cesc,MTGCN,AUPRC,10,0.5442296000000001
+Cancer-specific,cesc,MTGCN,AUROC,1,0.9768116000000001
+Cancer-specific,cesc,MTGCN,AUROC,2,0.9627766
+Cancer-specific,cesc,MTGCN,AUROC,3,0.9588097999999998
+Cancer-specific,cesc,MTGCN,AUROC,4,0.9729978000000001
+Cancer-specific,cesc,MTGCN,AUROC,5,0.960488
+Cancer-specific,cesc,MTGCN,AUROC,6,0.9502668
+Cancer-specific,cesc,MTGCN,AUROC,7,0.9577422
+Cancer-specific,cesc,MTGCN,AUROC,8,0.9665902
+Cancer-specific,cesc,MTGCN,AUROC,9,0.9540808000000001
+Cancer-specific,cesc,MTGCN,AUROC,10,0.9777272
+Cancer-specific,cesc,SAGE,AUPRC,1,0.43712807600000003
+Cancer-specific,cesc,SAGE,AUPRC,2,0.499496784
+Cancer-specific,cesc,SAGE,AUPRC,3,0.423660794
+Cancer-specific,cesc,SAGE,AUPRC,4,0.48291740600000005
+Cancer-specific,cesc,SAGE,AUPRC,5,0.298077936
+Cancer-specific,cesc,SAGE,AUPRC,6,0.5262197420000001
+Cancer-specific,cesc,SAGE,AUPRC,7,0.524268462
+Cancer-specific,cesc,SAGE,AUPRC,8,0.458642298
+Cancer-specific,cesc,SAGE,AUPRC,9,0.5354543279999999
+Cancer-specific,cesc,SAGE,AUPRC,10,0.4250541419999999
+Cancer-specific,cesc,SAGE,AUROC,1,0.957621952
+Cancer-specific,cesc,SAGE,AUROC,2,0.9560975620000001
+Cancer-specific,cesc,SAGE,AUROC,3,0.954268294
+Cancer-specific,cesc,SAGE,AUROC,4,0.9582317079999999
+Cancer-specific,cesc,SAGE,AUROC,5,0.9512195139999999
+Cancer-specific,cesc,SAGE,AUROC,6,0.9585365859999999
+Cancer-specific,cesc,SAGE,AUROC,7,0.9545731719999999
+Cancer-specific,cesc,SAGE,AUROC,8,0.96280488
+Cancer-specific,cesc,SAGE,AUROC,9,0.9493902459999999
+Cancer-specific,cesc,SAGE,AUROC,10,0.9560975600000001
+Cancer-specific,coad,BIMODriver,AUPRC,1,0.42463180000000006
+Cancer-specific,coad,BIMODriver,AUPRC,2,0.42463180000000006
+Cancer-specific,coad,BIMODriver,AUPRC,3,0.40492999999999996
+Cancer-specific,coad,BIMODriver,AUPRC,4,0.40492999999999996
+Cancer-specific,coad,BIMODriver,AUPRC,5,0.3940482
+Cancer-specific,coad,BIMODriver,AUPRC,6,0.3940482
+Cancer-specific,coad,BIMODriver,AUPRC,7,0.3379746
+Cancer-specific,coad,BIMODriver,AUPRC,8,0.3379746
+Cancer-specific,coad,BIMODriver,AUPRC,9,0.39388199999999995
+Cancer-specific,coad,BIMODriver,AUPRC,10,0.39388199999999995
+Cancer-specific,coad,BIMODriver,AUROC,1,0.8367114000000001
+Cancer-specific,coad,BIMODriver,AUROC,2,0.8367114000000001
+Cancer-specific,coad,BIMODriver,AUROC,3,0.8299445999999999
+Cancer-specific,coad,BIMODriver,AUROC,4,0.8299445999999999
+Cancer-specific,coad,BIMODriver,AUROC,5,0.8295524000000001
+Cancer-specific,coad,BIMODriver,AUROC,6,0.8295524000000001
+Cancer-specific,coad,BIMODriver,AUROC,7,0.8294052000000001
+Cancer-specific,coad,BIMODriver,AUROC,8,0.8294052000000001
+Cancer-specific,coad,BIMODriver,AUROC,9,0.8268062
+Cancer-specific,coad,BIMODriver,AUROC,10,0.8268062
+Cancer-specific,coad,ChebNet,AUPRC,1,0.37720907400000003
+Cancer-specific,coad,ChebNet,AUPRC,2,0.370736542
+Cancer-specific,coad,ChebNet,AUPRC,3,0.36126802199999997
+Cancer-specific,coad,ChebNet,AUPRC,4,0.38319722
+Cancer-specific,coad,ChebNet,AUPRC,5,0.36402891000000004
+Cancer-specific,coad,ChebNet,AUPRC,6,0.372920666
+Cancer-specific,coad,ChebNet,AUPRC,7,0.37063223
+Cancer-specific,coad,ChebNet,AUPRC,8,0.35611268999999995
+Cancer-specific,coad,ChebNet,AUPRC,9,0.36827538400000004
+Cancer-specific,coad,ChebNet,AUPRC,10,0.348816824
+Cancer-specific,coad,ChebNet,AUROC,1,0.8164924499999999
+Cancer-specific,coad,ChebNet,AUROC,2,0.8221254360000001
+Cancer-specific,coad,ChebNet,AUROC,3,0.815360048
+Cancer-specific,coad,ChebNet,AUROC,4,0.8193089419999999
+Cancer-specific,coad,ChebNet,AUROC,5,0.825754936
+Cancer-specific,coad,ChebNet,AUROC,6,0.8163763079999999
+Cancer-specific,coad,ChebNet,AUROC,7,0.8175087120000001
+Cancer-specific,coad,ChebNet,AUROC,8,0.826335656
+Cancer-specific,coad,ChebNet,AUROC,9,0.825319396
+Cancer-specific,coad,ChebNet,AUROC,10,0.8168118480000001
+Cancer-specific,coad,DISFusion,AUPRC,1,0.4554952
+Cancer-specific,coad,DISFusion,AUPRC,2,0.3843474
+Cancer-specific,coad,DISFusion,AUPRC,3,0.3493952
+Cancer-specific,coad,DISFusion,AUPRC,4,0.31837079999999995
+Cancer-specific,coad,DISFusion,AUPRC,5,0.40486079999999997
+Cancer-specific,coad,DISFusion,AUPRC,6,0.348409
+Cancer-specific,coad,DISFusion,AUPRC,7,0.3348002
+Cancer-specific,coad,DISFusion,AUPRC,8,0.3382188
+Cancer-specific,coad,DISFusion,AUPRC,9,0.3061948
+Cancer-specific,coad,DISFusion,AUPRC,10,0.3695992
+Cancer-specific,coad,DISFusion,AUROC,1,0.8294424000000001
+Cancer-specific,coad,DISFusion,AUROC,2,0.8083334000000001
+Cancer-specific,coad,DISFusion,AUROC,3,0.8051394000000001
+Cancer-specific,coad,DISFusion,AUROC,4,0.7924794
+Cancer-specific,coad,DISFusion,AUROC,5,0.8367306000000001
+Cancer-specific,coad,DISFusion,AUROC,6,0.8188154000000001
+Cancer-specific,coad,DISFusion,AUROC,7,0.800755
+Cancer-specific,coad,DISFusion,AUROC,8,0.8138791999999999
+Cancer-specific,coad,DISFusion,AUROC,9,0.7558944000000001
+Cancer-specific,coad,DISFusion,AUROC,10,0.811208
+Cancer-specific,coad,DISHyper,AUPRC,1,0.332094
+Cancer-specific,coad,DISHyper,AUPRC,2,0.3071728
+Cancer-specific,coad,DISHyper,AUPRC,3,0.36430860000000004
+Cancer-specific,coad,DISHyper,AUPRC,4,0.334716
+Cancer-specific,coad,DISHyper,AUPRC,5,0.35711139999999997
+Cancer-specific,coad,DISHyper,AUPRC,6,0.36978679999999997
+Cancer-specific,coad,DISHyper,AUPRC,7,0.30244879999999996
+Cancer-specific,coad,DISHyper,AUPRC,8,0.35614019999999996
+Cancer-specific,coad,DISHyper,AUPRC,9,0.3178032
+Cancer-specific,coad,DISHyper,AUPRC,10,0.33285939999999997
+Cancer-specific,coad,DISHyper,AUROC,1,0.7937136
+Cancer-specific,coad,DISHyper,AUROC,2,0.7963706
+Cancer-specific,coad,DISHyper,AUROC,3,0.7966898
+Cancer-specific,coad,DISHyper,AUROC,4,0.7832752000000001
+Cancer-specific,coad,DISHyper,AUROC,5,0.8123694
+Cancer-specific,coad,DISHyper,AUROC,6,0.8134435999999999
+Cancer-specific,coad,DISHyper,AUROC,7,0.7964574
+Cancer-specific,coad,DISHyper,AUROC,8,0.8090590000000001
+Cancer-specific,coad,DISHyper,AUROC,9,0.815447
+Cancer-specific,coad,DISHyper,AUROC,10,0.7955578000000001
+Cancer-specific,coad,ECD-CDGI,AUPRC,1,0.39281679999999997
+Cancer-specific,coad,ECD-CDGI,AUPRC,2,0.362365
+Cancer-specific,coad,ECD-CDGI,AUPRC,3,0.299141
+Cancer-specific,coad,ECD-CDGI,AUPRC,4,0.342125
+Cancer-specific,coad,ECD-CDGI,AUPRC,5,0.3693074
+Cancer-specific,coad,ECD-CDGI,AUPRC,6,0.37432420000000005
+Cancer-specific,coad,ECD-CDGI,AUPRC,7,0.342221
+Cancer-specific,coad,ECD-CDGI,AUPRC,8,0.373687
+Cancer-specific,coad,ECD-CDGI,AUPRC,9,0.3883278
+Cancer-specific,coad,ECD-CDGI,AUPRC,10,0.27670979999999995
+Cancer-specific,coad,ECD-CDGI,AUROC,1,0.808972
+Cancer-specific,coad,ECD-CDGI,AUROC,2,0.7869046
+Cancer-specific,coad,ECD-CDGI,AUROC,3,0.791928
+Cancer-specific,coad,ECD-CDGI,AUROC,4,0.8040648000000001
+Cancer-specific,coad,ECD-CDGI,AUROC,5,0.8204703999999999
+Cancer-specific,coad,ECD-CDGI,AUROC,6,0.8205286
+Cancer-specific,coad,ECD-CDGI,AUROC,7,0.7722998
+Cancer-specific,coad,ECD-CDGI,AUROC,8,0.8085657999999999
+Cancer-specific,coad,ECD-CDGI,AUROC,9,0.7864402
+Cancer-specific,coad,ECD-CDGI,AUROC,10,0.7641696
+Cancer-specific,coad,EMOGI,AUPRC,1,0.3944516
+Cancer-specific,coad,EMOGI,AUPRC,2,0.3719116
+Cancer-specific,coad,EMOGI,AUPRC,3,0.32642340000000003
+Cancer-specific,coad,EMOGI,AUPRC,4,0.2987158
+Cancer-specific,coad,EMOGI,AUPRC,5,0.3894702
+Cancer-specific,coad,EMOGI,AUPRC,6,0.3159788
+Cancer-specific,coad,EMOGI,AUPRC,7,0.3610104
+Cancer-specific,coad,EMOGI,AUPRC,8,0.34465080000000003
+Cancer-specific,coad,EMOGI,AUPRC,9,0.31893099999999996
+Cancer-specific,coad,EMOGI,AUPRC,10,0.31545999999999996
+Cancer-specific,coad,EMOGI,AUROC,1,0.7860626
+Cancer-specific,coad,EMOGI,AUROC,2,0.799158
+Cancer-specific,coad,EMOGI,AUROC,3,0.7788907999999999
+Cancer-specific,coad,EMOGI,AUROC,4,0.7600758
+Cancer-specific,coad,EMOGI,AUROC,5,0.7994484
+Cancer-specific,coad,EMOGI,AUROC,6,0.7895182000000001
+Cancer-specific,coad,EMOGI,AUROC,7,0.8107724
+Cancer-specific,coad,EMOGI,AUROC,8,0.7899826
+Cancer-specific,coad,EMOGI,AUROC,9,0.7506679999999999
+Cancer-specific,coad,EMOGI,AUROC,10,0.7566491999999999
+Cancer-specific,coad,GAT,AUPRC,1,0.132943018
+Cancer-specific,coad,GAT,AUPRC,2,0.122110644
+Cancer-specific,coad,GAT,AUPRC,3,0.115515318
+Cancer-specific,coad,GAT,AUPRC,4,0.11592252200000001
+Cancer-specific,coad,GAT,AUPRC,5,0.14187108799999998
+Cancer-specific,coad,GAT,AUPRC,6,0.130259356
+Cancer-specific,coad,GAT,AUPRC,7,0.12764462999999998
+Cancer-specific,coad,GAT,AUPRC,8,0.13202098
+Cancer-specific,coad,GAT,AUPRC,9,0.139280008
+Cancer-specific,coad,GAT,AUPRC,10,0.13194088799999998
+Cancer-specific,coad,GAT,AUROC,1,0.729761904
+Cancer-specific,coad,GAT,AUROC,2,0.735278746
+Cancer-specific,coad,GAT,AUROC,3,0.712543554
+Cancer-specific,coad,GAT,AUROC,4,0.718437864
+Cancer-specific,coad,GAT,AUROC,5,0.7283391399999999
+Cancer-specific,coad,GAT,AUROC,6,0.7309523820000001
+Cancer-specific,coad,GAT,AUROC,7,0.7339140540000001
+Cancer-specific,coad,GAT,AUROC,8,0.747328686
+Cancer-specific,coad,GAT,AUROC,9,0.74120209
+Cancer-specific,coad,GAT,AUROC,10,0.7311556319999999
+Cancer-specific,coad,MNGCL,AUPRC,1,0.39056499
+Cancer-specific,coad,MNGCL,AUPRC,2,0.396574944
+Cancer-specific,coad,MNGCL,AUPRC,3,0.402022764
+Cancer-specific,coad,MNGCL,AUPRC,4,0.41758963400000004
+Cancer-specific,coad,MNGCL,AUPRC,5,0.407198372
+Cancer-specific,coad,MNGCL,AUPRC,6,0.385687188
+Cancer-specific,coad,MNGCL,AUPRC,7,0.412221544
+Cancer-specific,coad,MNGCL,AUPRC,8,0.40886893999999996
+Cancer-specific,coad,MNGCL,AUPRC,9,0.435077914
+Cancer-specific,coad,MNGCL,AUPRC,10,0.412198932
+Cancer-specific,coad,MNGCL,AUROC,1,0.8248257840000001
+Cancer-specific,coad,MNGCL,AUROC,2,0.836759584
+Cancer-specific,coad,MNGCL,AUROC,3,0.8293844399999999
+Cancer-specific,coad,MNGCL,AUROC,4,0.837340302
+Cancer-specific,coad,MNGCL,AUROC,5,0.8398083639999999
+Cancer-specific,coad,MNGCL,AUROC,6,0.82595819
+Cancer-specific,coad,MNGCL,AUROC,7,0.833420444
+Cancer-specific,coad,MNGCL,AUROC,8,0.8325783999999998
+Cancer-specific,coad,MNGCL,AUROC,9,0.841957026
+Cancer-specific,coad,MNGCL,AUROC,10,0.8422764239999999
+Cancer-specific,coad,MTGCN,AUPRC,1,0.3942094
+Cancer-specific,coad,MTGCN,AUPRC,2,0.3867218
+Cancer-specific,coad,MTGCN,AUPRC,3,0.37300859999999997
+Cancer-specific,coad,MTGCN,AUPRC,4,0.39853180000000005
+Cancer-specific,coad,MTGCN,AUPRC,5,0.377008
+Cancer-specific,coad,MTGCN,AUPRC,6,0.38364240000000005
+Cancer-specific,coad,MTGCN,AUPRC,7,0.39950260000000004
+Cancer-specific,coad,MTGCN,AUPRC,8,0.365508
+Cancer-specific,coad,MTGCN,AUPRC,9,0.37885179999999996
+Cancer-specific,coad,MTGCN,AUPRC,10,0.38509220000000005
+Cancer-specific,coad,MTGCN,AUROC,1,0.8225398
+Cancer-specific,coad,MTGCN,AUROC,2,0.8224743999999999
+Cancer-specific,coad,MTGCN,AUROC,3,0.8215104
+Cancer-specific,coad,MTGCN,AUROC,4,0.8187152
+Cancer-specific,coad,MTGCN,AUROC,5,0.8192384
+Cancer-specific,coad,MTGCN,AUROC,6,0.8143182000000001
+Cancer-specific,coad,MTGCN,AUROC,7,0.8220497999999999
+Cancer-specific,coad,MTGCN,AUROC,8,0.812635
+Cancer-specific,coad,MTGCN,AUROC,9,0.8226381999999999
+Cancer-specific,coad,MTGCN,AUROC,10,0.8211834
+Cancer-specific,coad,SAGE,AUPRC,1,0.297480438
+Cancer-specific,coad,SAGE,AUPRC,2,0.29342276399999995
+Cancer-specific,coad,SAGE,AUPRC,3,0.300529978
+Cancer-specific,coad,SAGE,AUPRC,4,0.294758756
+Cancer-specific,coad,SAGE,AUPRC,5,0.29442366200000003
+Cancer-specific,coad,SAGE,AUPRC,6,0.308840022
+Cancer-specific,coad,SAGE,AUPRC,7,0.30588275800000003
+Cancer-specific,coad,SAGE,AUPRC,8,0.285743158
+Cancer-specific,coad,SAGE,AUPRC,9,0.295242376
+Cancer-specific,coad,SAGE,AUPRC,10,0.300569284
+Cancer-specific,coad,SAGE,AUROC,1,0.7873403019999999
+Cancer-specific,coad,SAGE,AUROC,2,0.784639952
+Cancer-specific,coad,SAGE,AUROC,3,0.787746806
+Cancer-specific,coad,SAGE,AUROC,4,0.78211382
+Cancer-specific,coad,SAGE,AUROC,5,0.7911440160000001
+Cancer-specific,coad,SAGE,AUROC,6,0.7906213679999999
+Cancer-specific,coad,SAGE,AUROC,7,0.788327524
+Cancer-specific,coad,SAGE,AUROC,8,0.781562136
+Cancer-specific,coad,SAGE,AUROC,9,0.7786004639999999
+Cancer-specific,coad,SAGE,AUROC,10,0.783391404
+Cancer-specific,esca,BIMODriver,AUPRC,1,0.5176096
+Cancer-specific,esca,BIMODriver,AUPRC,2,0.5022304
+Cancer-specific,esca,BIMODriver,AUPRC,3,0.48991860000000004
+Cancer-specific,esca,BIMODriver,AUPRC,4,0.509318
+Cancer-specific,esca,BIMODriver,AUPRC,5,0.4787038
+Cancer-specific,esca,BIMODriver,AUPRC,6,0.453553
+Cancer-specific,esca,BIMODriver,AUPRC,7,0.4736498
+Cancer-specific,esca,BIMODriver,AUPRC,8,0.48421699999999995
+Cancer-specific,esca,BIMODriver,AUPRC,9,0.45245119999999994
+Cancer-specific,esca,BIMODriver,AUPRC,10,0.46401919999999997
+Cancer-specific,esca,BIMODriver,AUROC,1,0.9009153999999999
+Cancer-specific,esca,BIMODriver,AUROC,2,0.9002941999999999
+Cancer-specific,esca,BIMODriver,AUROC,3,0.8990845999999999
+Cancer-specific,esca,BIMODriver,AUROC,4,0.8972212
+Cancer-specific,esca,BIMODriver,AUROC,5,0.8969925999999999
+Cancer-specific,esca,BIMODriver,AUROC,6,0.8961098
+Cancer-specific,esca,BIMODriver,AUROC,7,0.8959464
+Cancer-specific,esca,BIMODriver,AUROC,8,0.8957827999999999
+Cancer-specific,esca,BIMODriver,AUROC,9,0.8956519999999999
+Cancer-specific,esca,BIMODriver,AUROC,10,0.8941809999999999
+Cancer-specific,esca,ChebNet,AUPRC,1,0.426412528
+Cancer-specific,esca,ChebNet,AUPRC,2,0.4462655119999999
+Cancer-specific,esca,ChebNet,AUPRC,3,0.421376026
+Cancer-specific,esca,ChebNet,AUPRC,4,0.443788758
+Cancer-specific,esca,ChebNet,AUPRC,5,0.442764432
+Cancer-specific,esca,ChebNet,AUPRC,6,0.43352594599999994
+Cancer-specific,esca,ChebNet,AUPRC,7,0.427275706
+Cancer-specific,esca,ChebNet,AUPRC,8,0.452335574
+Cancer-specific,esca,ChebNet,AUPRC,9,0.43503331999999995
+Cancer-specific,esca,ChebNet,AUPRC,10,0.4266760479999999
+Cancer-specific,esca,ChebNet,AUROC,1,0.884939024
+Cancer-specific,esca,ChebNet,AUROC,2,0.886829268
+Cancer-specific,esca,ChebNet,AUROC,3,0.87987805
+Cancer-specific,esca,ChebNet,AUROC,4,0.8904878039999999
+Cancer-specific,esca,ChebNet,AUROC,5,0.8792682919999999
+Cancer-specific,esca,ChebNet,AUROC,6,0.8884146359999999
+Cancer-specific,esca,ChebNet,AUROC,7,0.887439026
+Cancer-specific,esca,ChebNet,AUROC,8,0.886890242
+Cancer-specific,esca,ChebNet,AUROC,9,0.883536586
+Cancer-specific,esca,ChebNet,AUROC,10,0.890060976
+Cancer-specific,esca,DISFusion,AUPRC,1,0.40711320000000006
+Cancer-specific,esca,DISFusion,AUPRC,2,0.4438956
+Cancer-specific,esca,DISFusion,AUPRC,3,0.35070000000000007
+Cancer-specific,esca,DISFusion,AUPRC,4,0.43826
+Cancer-specific,esca,DISFusion,AUPRC,5,0.37282479999999996
+Cancer-specific,esca,DISFusion,AUPRC,6,0.3108712
+Cancer-specific,esca,DISFusion,AUPRC,7,0.4250358
+Cancer-specific,esca,DISFusion,AUPRC,8,0.43004900000000007
+Cancer-specific,esca,DISFusion,AUPRC,9,0.42302619999999996
+Cancer-specific,esca,DISFusion,AUPRC,10,0.433986
+Cancer-specific,esca,DISFusion,AUROC,1,0.8378048
+Cancer-specific,esca,DISFusion,AUROC,2,0.8889634
+Cancer-specific,esca,DISFusion,AUROC,3,0.8646342
+Cancer-specific,esca,DISFusion,AUROC,4,0.846951
+Cancer-specific,esca,DISFusion,AUROC,5,0.8620122
+Cancer-specific,esca,DISFusion,AUROC,6,0.8198780000000001
+Cancer-specific,esca,DISFusion,AUROC,7,0.8730486000000001
+Cancer-specific,esca,DISFusion,AUROC,8,0.8678658
+Cancer-specific,esca,DISFusion,AUROC,9,0.8588414
+Cancer-specific,esca,DISFusion,AUROC,10,0.8673170000000001
+Cancer-specific,esca,DISHyper,AUPRC,1,0.3031726
+Cancer-specific,esca,DISHyper,AUPRC,2,0.3273366
+Cancer-specific,esca,DISHyper,AUPRC,3,0.38551100000000005
+Cancer-specific,esca,DISHyper,AUPRC,4,0.34738860000000005
+Cancer-specific,esca,DISHyper,AUPRC,5,0.40902199999999994
+Cancer-specific,esca,DISHyper,AUPRC,6,0.4086518
+Cancer-specific,esca,DISHyper,AUPRC,7,0.3055152
+Cancer-specific,esca,DISHyper,AUPRC,8,0.39415140000000004
+Cancer-specific,esca,DISHyper,AUPRC,9,0.38917260000000004
+Cancer-specific,esca,DISHyper,AUPRC,10,0.375391
+Cancer-specific,esca,DISHyper,AUROC,1,0.8882315999999999
+Cancer-specific,esca,DISHyper,AUROC,2,0.8866462
+Cancer-specific,esca,DISHyper,AUROC,3,0.8926217999999999
+Cancer-specific,esca,DISHyper,AUROC,4,0.873049
+Cancer-specific,esca,DISHyper,AUROC,5,0.8964024
+Cancer-specific,esca,DISHyper,AUROC,6,0.8863416000000001
+Cancer-specific,esca,DISHyper,AUROC,7,0.8790851999999999
+Cancer-specific,esca,DISHyper,AUROC,8,0.8895730000000001
+Cancer-specific,esca,DISHyper,AUROC,9,0.8892684000000001
+Cancer-specific,esca,DISHyper,AUROC,10,0.8887804000000001
+Cancer-specific,esca,ECD-CDGI,AUPRC,1,0.4164096
+Cancer-specific,esca,ECD-CDGI,AUPRC,2,0.44548740000000003
+Cancer-specific,esca,ECD-CDGI,AUPRC,3,0.4984648
+Cancer-specific,esca,ECD-CDGI,AUPRC,4,0.42916260000000006
+Cancer-specific,esca,ECD-CDGI,AUPRC,5,0.42369199999999996
+Cancer-specific,esca,ECD-CDGI,AUPRC,6,0.3564792
+Cancer-specific,esca,ECD-CDGI,AUPRC,7,0.4505686
+Cancer-specific,esca,ECD-CDGI,AUPRC,8,0.3288106
+Cancer-specific,esca,ECD-CDGI,AUPRC,9,0.4996192
+Cancer-specific,esca,ECD-CDGI,AUPRC,10,0.4474292
+Cancer-specific,esca,ECD-CDGI,AUROC,1,0.8918902
+Cancer-specific,esca,ECD-CDGI,AUROC,2,0.8804878
+Cancer-specific,esca,ECD-CDGI,AUROC,3,0.8646339999999999
+Cancer-specific,esca,ECD-CDGI,AUROC,4,0.8845123999999999
+Cancer-specific,esca,ECD-CDGI,AUROC,5,0.8790245999999999
+Cancer-specific,esca,ECD-CDGI,AUROC,6,0.8727438
+Cancer-specific,esca,ECD-CDGI,AUROC,7,0.9080486000000001
+Cancer-specific,esca,ECD-CDGI,AUROC,8,0.8582318000000001
+Cancer-specific,esca,ECD-CDGI,AUROC,9,0.8880488
+Cancer-specific,esca,ECD-CDGI,AUROC,10,0.9086584
+Cancer-specific,esca,EMOGI,AUPRC,1,0.38712219999999997
+Cancer-specific,esca,EMOGI,AUPRC,2,0.3903704
+Cancer-specific,esca,EMOGI,AUPRC,3,0.3331296
+Cancer-specific,esca,EMOGI,AUPRC,4,0.24698919999999996
+Cancer-specific,esca,EMOGI,AUPRC,5,0.2920986
+Cancer-specific,esca,EMOGI,AUPRC,6,0.3983358
+Cancer-specific,esca,EMOGI,AUPRC,7,0.3777294
+Cancer-specific,esca,EMOGI,AUPRC,8,0.44228000000000006
+Cancer-specific,esca,EMOGI,AUPRC,9,0.38004720000000003
+Cancer-specific,esca,EMOGI,AUPRC,10,0.362261
+Cancer-specific,esca,EMOGI,AUROC,1,0.8339634
+Cancer-specific,esca,EMOGI,AUROC,2,0.8403660000000001
+Cancer-specific,esca,EMOGI,AUROC,3,0.8422561999999999
+Cancer-specific,esca,EMOGI,AUROC,4,0.800244
+Cancer-specific,esca,EMOGI,AUROC,5,0.825488
+Cancer-specific,esca,EMOGI,AUROC,6,0.8364636000000001
+Cancer-specific,esca,EMOGI,AUROC,7,0.787744
+Cancer-specific,esca,EMOGI,AUROC,8,0.8907925999999999
+Cancer-specific,esca,EMOGI,AUROC,9,0.8384145999999999
+Cancer-specific,esca,EMOGI,AUROC,10,0.8495122
+Cancer-specific,esca,GAT,AUPRC,1,0.16413476999999999
+Cancer-specific,esca,GAT,AUPRC,2,0.17547621
+Cancer-specific,esca,GAT,AUPRC,3,0.16034421199999999
+Cancer-specific,esca,GAT,AUPRC,4,0.164997
+Cancer-specific,esca,GAT,AUPRC,5,0.192105838
+Cancer-specific,esca,GAT,AUPRC,6,0.150627754
+Cancer-specific,esca,GAT,AUPRC,7,0.14135887200000002
+Cancer-specific,esca,GAT,AUPRC,8,0.151572882
+Cancer-specific,esca,GAT,AUPRC,9,0.211139234
+Cancer-specific,esca,GAT,AUPRC,10,0.19386247
+Cancer-specific,esca,GAT,AUROC,1,0.8075609739999999
+Cancer-specific,esca,GAT,AUROC,2,0.793963414
+Cancer-specific,esca,GAT,AUROC,3,0.8126219499999999
+Cancer-specific,esca,GAT,AUROC,4,0.7792682940000001
+Cancer-specific,esca,GAT,AUROC,5,0.83640244
+Cancer-specific,esca,GAT,AUROC,6,0.8094512199999999
+Cancer-specific,esca,GAT,AUROC,7,0.7928048779999999
+Cancer-specific,esca,GAT,AUROC,8,0.776646342
+Cancer-specific,esca,GAT,AUROC,9,0.8125609779999999
+Cancer-specific,esca,GAT,AUROC,10,0.821402438
+Cancer-specific,esca,MNGCL,AUPRC,1,0.384893512
+Cancer-specific,esca,MNGCL,AUPRC,2,0.38985233999999996
+Cancer-specific,esca,MNGCL,AUPRC,3,0.36158869000000005
+Cancer-specific,esca,MNGCL,AUPRC,4,0.349396006
+Cancer-specific,esca,MNGCL,AUPRC,5,0.381814326
+Cancer-specific,esca,MNGCL,AUPRC,6,0.37386552
+Cancer-specific,esca,MNGCL,AUPRC,7,0.379533652
+Cancer-specific,esca,MNGCL,AUPRC,8,0.37928946799999996
+Cancer-specific,esca,MNGCL,AUPRC,9,0.348543472
+Cancer-specific,esca,MNGCL,AUPRC,10,0.37314883
+Cancer-specific,esca,MNGCL,AUROC,1,0.8574390220000001
+Cancer-specific,esca,MNGCL,AUROC,2,0.8833536580000001
+Cancer-specific,esca,MNGCL,AUROC,3,0.8698780479999998
+Cancer-specific,esca,MNGCL,AUROC,4,0.8595121960000001
+Cancer-specific,esca,MNGCL,AUROC,5,0.872256098
+Cancer-specific,esca,MNGCL,AUROC,6,0.86890244
+Cancer-specific,esca,MNGCL,AUROC,7,0.8806707340000001
+Cancer-specific,esca,MNGCL,AUROC,8,0.894999998
+Cancer-specific,esca,MNGCL,AUROC,9,0.8781097600000001
+Cancer-specific,esca,MNGCL,AUROC,10,0.8800000000000001
+Cancer-specific,esca,MTGCN,AUPRC,1,0.4652444
+Cancer-specific,esca,MTGCN,AUPRC,2,0.4617406
+Cancer-specific,esca,MTGCN,AUPRC,3,0.4771516
+Cancer-specific,esca,MTGCN,AUPRC,4,0.4851222
+Cancer-specific,esca,MTGCN,AUPRC,5,0.48765159999999996
+Cancer-specific,esca,MTGCN,AUPRC,6,0.4948118
+Cancer-specific,esca,MTGCN,AUPRC,7,0.4869586
+Cancer-specific,esca,MTGCN,AUPRC,8,0.46723880000000007
+Cancer-specific,esca,MTGCN,AUPRC,9,0.47692959999999995
+Cancer-specific,esca,MTGCN,AUPRC,10,0.5148588000000001
+Cancer-specific,esca,MTGCN,AUROC,1,0.8904213999999999
+Cancer-specific,esca,MTGCN,AUROC,2,0.8925791999999999
+Cancer-specific,esca,MTGCN,AUROC,3,0.895456
+Cancer-specific,esca,MTGCN,AUROC,4,0.8966002
+Cancer-specific,esca,MTGCN,AUROC,5,0.8904544
+Cancer-specific,esca,MTGCN,AUROC,6,0.8955537999999998
+Cancer-specific,esca,MTGCN,AUROC,7,0.9038248
+Cancer-specific,esca,MTGCN,AUROC,8,0.893037
+Cancer-specific,esca,MTGCN,AUROC,9,0.887316
+Cancer-specific,esca,MTGCN,AUROC,10,0.905917
+Cancer-specific,esca,SAGE,AUPRC,1,0.39367381599999995
+Cancer-specific,esca,SAGE,AUPRC,2,0.40560991399999996
+Cancer-specific,esca,SAGE,AUPRC,3,0.4084046740000001
+Cancer-specific,esca,SAGE,AUPRC,4,0.425999018
+Cancer-specific,esca,SAGE,AUPRC,5,0.42547722199999993
+Cancer-specific,esca,SAGE,AUPRC,6,0.401371158
+Cancer-specific,esca,SAGE,AUPRC,7,0.41168549
+Cancer-specific,esca,SAGE,AUPRC,8,0.41114790799999995
+Cancer-specific,esca,SAGE,AUPRC,9,0.40953989599999996
+Cancer-specific,esca,SAGE,AUPRC,10,0.43146700400000004
+Cancer-specific,esca,SAGE,AUROC,1,0.814390242
+Cancer-specific,esca,SAGE,AUROC,2,0.8279268280000001
+Cancer-specific,esca,SAGE,AUROC,3,0.8245731700000001
+Cancer-specific,esca,SAGE,AUROC,4,0.8240243899999999
+Cancer-specific,esca,SAGE,AUROC,5,0.8188414660000001
+Cancer-specific,esca,SAGE,AUROC,6,0.824329268
+Cancer-specific,esca,SAGE,AUROC,7,0.821646342
+Cancer-specific,esca,SAGE,AUROC,8,0.82207317
+Cancer-specific,esca,SAGE,AUROC,9,0.829268294
+Cancer-specific,esca,SAGE,AUROC,10,0.825853658
+Cancer-specific,hnsc,BIMODriver,AUPRC,1,0.46572979999999997
+Cancer-specific,hnsc,BIMODriver,AUPRC,2,0.46572979999999997
+Cancer-specific,hnsc,BIMODriver,AUPRC,3,0.45801600000000003
+Cancer-specific,hnsc,BIMODriver,AUPRC,4,0.45739739999999995
+Cancer-specific,hnsc,BIMODriver,AUPRC,5,0.45739739999999995
+Cancer-specific,hnsc,BIMODriver,AUPRC,6,0.4958596
+Cancer-specific,hnsc,BIMODriver,AUPRC,7,0.472212
+Cancer-specific,hnsc,BIMODriver,AUPRC,8,0.472212
+Cancer-specific,hnsc,BIMODriver,AUPRC,9,0.460862
+Cancer-specific,hnsc,BIMODriver,AUPRC,10,0.46690960000000004
+Cancer-specific,hnsc,BIMODriver,AUROC,1,0.8626840000000001
+Cancer-specific,hnsc,BIMODriver,AUROC,2,0.8626840000000001
+Cancer-specific,hnsc,BIMODriver,AUROC,3,0.8503922000000002
+Cancer-specific,hnsc,BIMODriver,AUROC,4,0.8447532000000001
+Cancer-specific,hnsc,BIMODriver,AUROC,5,0.8447532000000001
+Cancer-specific,hnsc,BIMODriver,AUROC,6,0.8376104
+Cancer-specific,hnsc,BIMODriver,AUROC,7,0.837447
+Cancer-specific,hnsc,BIMODriver,AUROC,8,0.837447
+Cancer-specific,hnsc,BIMODriver,AUROC,9,0.837218
+Cancer-specific,hnsc,BIMODriver,AUROC,10,0.8371033999999999
+Cancer-specific,hnsc,ChebNet,AUPRC,1,0.4124693239999999
+Cancer-specific,hnsc,ChebNet,AUPRC,2,0.42214798600000003
+Cancer-specific,hnsc,ChebNet,AUPRC,3,0.428233002
+Cancer-specific,hnsc,ChebNet,AUPRC,4,0.408237912
+Cancer-specific,hnsc,ChebNet,AUPRC,5,0.419595554
+Cancer-specific,hnsc,ChebNet,AUPRC,6,0.425961132
+Cancer-specific,hnsc,ChebNet,AUPRC,7,0.41817507200000004
+Cancer-specific,hnsc,ChebNet,AUPRC,8,0.41507448199999997
+Cancer-specific,hnsc,ChebNet,AUPRC,9,0.42873806200000003
+Cancer-specific,hnsc,ChebNet,AUPRC,10,0.408623632
+Cancer-specific,hnsc,ChebNet,AUROC,1,0.815185832
+Cancer-specific,hnsc,ChebNet,AUROC,2,0.8274970959999999
+Cancer-specific,hnsc,ChebNet,AUROC,3,0.820789778
+Cancer-specific,hnsc,ChebNet,AUROC,4,0.819425088
+Cancer-specific,hnsc,ChebNet,AUROC,5,0.820092914
+Cancer-specific,hnsc,ChebNet,AUROC,6,0.826684088
+Cancer-specific,hnsc,ChebNet,AUROC,7,0.814750292
+Cancer-specific,hnsc,ChebNet,AUROC,8,0.819802554
+Cancer-specific,hnsc,ChebNet,AUROC,9,0.824941928
+Cancer-specific,hnsc,ChebNet,AUROC,10,0.822793262
+Cancer-specific,hnsc,DISFusion,AUPRC,1,0.486871
+Cancer-specific,hnsc,DISFusion,AUPRC,2,0.5015256
+Cancer-specific,hnsc,DISFusion,AUPRC,3,0.4572312
+Cancer-specific,hnsc,DISFusion,AUPRC,4,0.45684440000000004
+Cancer-specific,hnsc,DISFusion,AUPRC,5,0.39982760000000006
+Cancer-specific,hnsc,DISFusion,AUPRC,6,0.4535870000000001
+Cancer-specific,hnsc,DISFusion,AUPRC,7,0.4642652
+Cancer-specific,hnsc,DISFusion,AUPRC,8,0.4221774
+Cancer-specific,hnsc,DISFusion,AUPRC,9,0.4216826
+Cancer-specific,hnsc,DISFusion,AUPRC,10,0.4606022
+Cancer-specific,hnsc,DISFusion,AUROC,1,0.8612952
+Cancer-specific,hnsc,DISFusion,AUROC,2,0.820877
+Cancer-specific,hnsc,DISFusion,AUROC,3,0.8043844
+Cancer-specific,hnsc,DISFusion,AUROC,4,0.8288909999999999
+Cancer-specific,hnsc,DISFusion,AUROC,5,0.8192219999999999
+Cancer-specific,hnsc,DISFusion,AUROC,6,0.8099012
+Cancer-specific,hnsc,DISFusion,AUROC,7,0.820238
+Cancer-specific,hnsc,DISFusion,AUROC,8,0.8382984
+Cancer-specific,hnsc,DISFusion,AUROC,9,0.8381244000000001
+Cancer-specific,hnsc,DISFusion,AUROC,10,0.8210801999999999
+Cancer-specific,hnsc,DISHyper,AUPRC,1,0.36302840000000003
+Cancer-specific,hnsc,DISHyper,AUPRC,2,0.4903596
+Cancer-specific,hnsc,DISHyper,AUPRC,3,0.4402056
+Cancer-specific,hnsc,DISHyper,AUPRC,4,0.41770880000000005
+Cancer-specific,hnsc,DISHyper,AUPRC,5,0.4722216
+Cancer-specific,hnsc,DISHyper,AUPRC,6,0.4393606
+Cancer-specific,hnsc,DISHyper,AUPRC,7,0.37035640000000003
+Cancer-specific,hnsc,DISHyper,AUPRC,8,0.4356664
+Cancer-specific,hnsc,DISHyper,AUPRC,9,0.4312214
+Cancer-specific,hnsc,DISHyper,AUPRC,10,0.3939438
+Cancer-specific,hnsc,DISHyper,AUROC,1,0.8078107999999998
+Cancer-specific,hnsc,DISHyper,AUROC,2,0.8327236000000001
+Cancer-specific,hnsc,DISHyper,AUROC,3,0.8264228000000001
+Cancer-specific,hnsc,DISHyper,AUROC,4,0.7975608000000001
+Cancer-specific,hnsc,DISHyper,AUROC,5,0.8424797999999999
+Cancer-specific,hnsc,DISHyper,AUROC,6,0.8409406
+Cancer-specific,hnsc,DISHyper,AUROC,7,0.8275551999999999
+Cancer-specific,hnsc,DISHyper,AUROC,8,0.8160278
+Cancer-specific,hnsc,DISHyper,AUROC,9,0.8132116
+Cancer-specific,hnsc,DISHyper,AUROC,10,0.8184378000000001
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,1,0.4571258
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,2,0.316126
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,3,0.4155430000000001
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,4,0.3844106
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,5,0.442225
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,6,0.3262016
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,7,0.364403
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,8,0.3429932
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,9,0.46176839999999997
+Cancer-specific,hnsc,ECD-CDGI,AUPRC,10,0.3851918
+Cancer-specific,hnsc,ECD-CDGI,AUROC,1,0.8324042
+Cancer-specific,hnsc,ECD-CDGI,AUROC,2,0.772648
+Cancer-specific,hnsc,ECD-CDGI,AUROC,3,0.7981416000000001
+Cancer-specific,hnsc,ECD-CDGI,AUROC,4,0.7981998000000001
+Cancer-specific,hnsc,ECD-CDGI,AUROC,5,0.7950348
+Cancer-specific,hnsc,ECD-CDGI,AUROC,6,0.7998256
+Cancer-specific,hnsc,ECD-CDGI,AUROC,7,0.7979383999999999
+Cancer-specific,hnsc,ECD-CDGI,AUROC,8,0.8112657999999999
+Cancer-specific,hnsc,ECD-CDGI,AUROC,9,0.8214866000000001
+Cancer-specific,hnsc,ECD-CDGI,AUROC,10,0.8204701999999999
+Cancer-specific,hnsc,EMOGI,AUPRC,1,0.34811319999999996
+Cancer-specific,hnsc,EMOGI,AUPRC,2,0.3599818
+Cancer-specific,hnsc,EMOGI,AUPRC,3,0.303479
+Cancer-specific,hnsc,EMOGI,AUPRC,4,0.4016192
+Cancer-specific,hnsc,EMOGI,AUPRC,5,0.3545912
+Cancer-specific,hnsc,EMOGI,AUPRC,6,0.3741246
+Cancer-specific,hnsc,EMOGI,AUPRC,7,0.39320839999999996
+Cancer-specific,hnsc,EMOGI,AUPRC,8,0.3441902
+Cancer-specific,hnsc,EMOGI,AUPRC,9,0.3199052
+Cancer-specific,hnsc,EMOGI,AUPRC,10,0.3763004
+Cancer-specific,hnsc,EMOGI,AUROC,1,0.7576655999999999
+Cancer-specific,hnsc,EMOGI,AUROC,2,0.7554877999999999
+Cancer-specific,hnsc,EMOGI,AUROC,3,0.7216319999999999
+Cancer-specific,hnsc,EMOGI,AUROC,4,0.7941056
+Cancer-specific,hnsc,EMOGI,AUROC,5,0.8085945999999999
+Cancer-specific,hnsc,EMOGI,AUROC,6,0.7748258000000001
+Cancer-specific,hnsc,EMOGI,AUROC,7,0.79187
+Cancer-specific,hnsc,EMOGI,AUROC,8,0.8059234
+Cancer-specific,hnsc,EMOGI,AUROC,9,0.774187
+Cancer-specific,hnsc,EMOGI,AUROC,10,0.7778458
+Cancer-specific,hnsc,GAT,AUPRC,1,0.17994364200000001
+Cancer-specific,hnsc,GAT,AUPRC,2,0.16313882200000002
+Cancer-specific,hnsc,GAT,AUPRC,3,0.142439912
+Cancer-specific,hnsc,GAT,AUPRC,4,0.164877228
+Cancer-specific,hnsc,GAT,AUPRC,5,0.157641842
+Cancer-specific,hnsc,GAT,AUPRC,6,0.145726398
+Cancer-specific,hnsc,GAT,AUPRC,7,0.152285104
+Cancer-specific,hnsc,GAT,AUPRC,8,0.15060246800000002
+Cancer-specific,hnsc,GAT,AUPRC,9,0.180582914
+Cancer-specific,hnsc,GAT,AUPRC,10,0.165451568
+Cancer-specific,hnsc,GAT,AUROC,1,0.771312428
+Cancer-specific,hnsc,GAT,AUROC,2,0.770180024
+Cancer-specific,hnsc,GAT,AUROC,3,0.7400696840000001
+Cancer-specific,hnsc,GAT,AUROC,4,0.75879791
+Cancer-specific,hnsc,GAT,AUROC,5,0.771893146
+Cancer-specific,hnsc,GAT,AUROC,6,0.7532520340000001
+Cancer-specific,hnsc,GAT,AUROC,7,0.763356562
+Cancer-specific,hnsc,GAT,AUROC,8,0.735423924
+Cancer-specific,hnsc,GAT,AUROC,9,0.7772067359999999
+Cancer-specific,hnsc,GAT,AUROC,10,0.76126597
+Cancer-specific,hnsc,MNGCL,AUPRC,1,0.445595026
+Cancer-specific,hnsc,MNGCL,AUPRC,2,0.43725416600000006
+Cancer-specific,hnsc,MNGCL,AUPRC,3,0.440762116
+Cancer-specific,hnsc,MNGCL,AUPRC,4,0.45263151599999996
+Cancer-specific,hnsc,MNGCL,AUPRC,5,0.4388957619999999
+Cancer-specific,hnsc,MNGCL,AUPRC,6,0.429410156
+Cancer-specific,hnsc,MNGCL,AUPRC,7,0.44672423599999994
+Cancer-specific,hnsc,MNGCL,AUPRC,8,0.438868978
+Cancer-specific,hnsc,MNGCL,AUPRC,9,0.441659592
+Cancer-specific,hnsc,MNGCL,AUPRC,10,0.441217082
+Cancer-specific,hnsc,MNGCL,AUROC,1,0.8310104519999999
+Cancer-specific,hnsc,MNGCL,AUROC,2,0.8228223
+Cancer-specific,hnsc,MNGCL,AUROC,3,0.82253194
+Cancer-specific,hnsc,MNGCL,AUROC,4,0.828106852
+Cancer-specific,hnsc,MNGCL,AUROC,5,0.825551684
+Cancer-specific,hnsc,MNGCL,AUROC,6,0.827787456
+Cancer-specific,hnsc,MNGCL,AUROC,7,0.821777004
+Cancer-specific,hnsc,MNGCL,AUROC,8,0.8191347280000001
+Cancer-specific,hnsc,MNGCL,AUROC,9,0.8319105700000001
+Cancer-specific,hnsc,MNGCL,AUROC,10,0.831068524
+Cancer-specific,hnsc,MTGCN,AUPRC,1,0.419542
+Cancer-specific,hnsc,MTGCN,AUPRC,2,0.43002900000000005
+Cancer-specific,hnsc,MTGCN,AUPRC,3,0.4226006
+Cancer-specific,hnsc,MTGCN,AUPRC,4,0.42977980000000005
+Cancer-specific,hnsc,MTGCN,AUPRC,5,0.44599839999999996
+Cancer-specific,hnsc,MTGCN,AUPRC,6,0.424619
+Cancer-specific,hnsc,MTGCN,AUPRC,7,0.4256404
+Cancer-specific,hnsc,MTGCN,AUPRC,8,0.4407612
+Cancer-specific,hnsc,MTGCN,AUPRC,9,0.4405852
+Cancer-specific,hnsc,MTGCN,AUPRC,10,0.42865780000000003
+Cancer-specific,hnsc,MTGCN,AUROC,1,0.8275252
+Cancer-specific,hnsc,MTGCN,AUROC,2,0.8312847999999999
+Cancer-specific,hnsc,MTGCN,AUROC,3,0.8373322
+Cancer-specific,hnsc,MTGCN,AUROC,4,0.833426
+Cancer-specific,hnsc,MTGCN,AUROC,5,0.8319876
+Cancer-specific,hnsc,MTGCN,AUROC,6,0.8337038
+Cancer-specific,hnsc,MTGCN,AUROC,7,0.8338672
+Cancer-specific,hnsc,MTGCN,AUROC,8,0.8384438
+Cancer-specific,hnsc,MTGCN,AUROC,9,0.8349459999999999
+Cancer-specific,hnsc,MTGCN,AUROC,10,0.8367114000000001
+Cancer-specific,hnsc,SAGE,AUPRC,1,0.44952829000000005
+Cancer-specific,hnsc,SAGE,AUPRC,2,0.436080338
+Cancer-specific,hnsc,SAGE,AUPRC,3,0.454060272
+Cancer-specific,hnsc,SAGE,AUPRC,4,0.4638078480000001
+Cancer-specific,hnsc,SAGE,AUPRC,5,0.4612287279999999
+Cancer-specific,hnsc,SAGE,AUPRC,6,0.453370168
+Cancer-specific,hnsc,SAGE,AUPRC,7,0.44600437600000004
+Cancer-specific,hnsc,SAGE,AUPRC,8,0.45117329800000006
+Cancer-specific,hnsc,SAGE,AUPRC,9,0.447271232
+Cancer-specific,hnsc,SAGE,AUPRC,10,0.4671145320000001
+Cancer-specific,hnsc,SAGE,AUROC,1,0.844163762
+Cancer-specific,hnsc,SAGE,AUROC,2,0.83757259
+Cancer-specific,hnsc,SAGE,AUROC,3,0.8376596979999998
+Cancer-specific,hnsc,SAGE,AUROC,4,0.8514518000000001
+Cancer-specific,hnsc,SAGE,AUROC,5,0.835133566
+Cancer-specific,hnsc,SAGE,AUROC,6,0.84091173
+Cancer-specific,hnsc,SAGE,AUROC,7,0.83844367
+Cancer-specific,hnsc,SAGE,AUROC,8,0.851596982
+Cancer-specific,hnsc,SAGE,AUROC,9,0.847473868
+Cancer-specific,hnsc,SAGE,AUROC,10,0.8472415799999998
+Cancer-specific,kirc,BIMODriver,AUPRC,1,0.4070686
+Cancer-specific,kirc,BIMODriver,AUPRC,2,0.4070686
+Cancer-specific,kirc,BIMODriver,AUPRC,3,0.3718222
+Cancer-specific,kirc,BIMODriver,AUPRC,4,0.3737478
+Cancer-specific,kirc,BIMODriver,AUPRC,5,0.34432680000000004
+Cancer-specific,kirc,BIMODriver,AUPRC,6,0.3014092
+Cancer-specific,kirc,BIMODriver,AUPRC,7,0.3126588
+Cancer-specific,kirc,BIMODriver,AUPRC,8,0.3126588
+Cancer-specific,kirc,BIMODriver,AUPRC,9,0.2977312
+Cancer-specific,kirc,BIMODriver,AUPRC,10,0.40430679999999997
+Cancer-specific,kirc,BIMODriver,AUROC,1,0.9237414000000002
+Cancer-specific,kirc,BIMODriver,AUROC,2,0.9237414000000002
+Cancer-specific,kirc,BIMODriver,AUROC,3,0.9116132
+Cancer-specific,kirc,BIMODriver,AUROC,4,0.9082663999999999
+Cancer-specific,kirc,BIMODriver,AUROC,5,0.9080092000000001
+Cancer-specific,kirc,BIMODriver,AUROC,6,0.9068362000000001
+Cancer-specific,kirc,BIMODriver,AUROC,7,0.9050915999999999
+Cancer-specific,kirc,BIMODriver,AUROC,8,0.9050915999999999
+Cancer-specific,kirc,BIMODriver,AUROC,9,0.9048628000000001
+Cancer-specific,kirc,BIMODriver,AUROC,10,0.9016306000000001
+Cancer-specific,kirc,ChebNet,AUPRC,1,0.290967388
+Cancer-specific,kirc,ChebNet,AUPRC,2,0.28171873199999997
+Cancer-specific,kirc,ChebNet,AUPRC,3,0.288049804
+Cancer-specific,kirc,ChebNet,AUPRC,4,0.32555166
+Cancer-specific,kirc,ChebNet,AUPRC,5,0.31900773400000004
+Cancer-specific,kirc,ChebNet,AUPRC,6,0.28382085399999996
+Cancer-specific,kirc,ChebNet,AUPRC,7,0.351359422
+Cancer-specific,kirc,ChebNet,AUPRC,8,0.26772058
+Cancer-specific,kirc,ChebNet,AUPRC,9,0.346940572
+Cancer-specific,kirc,ChebNet,AUPRC,10,0.31040007199999997
+Cancer-specific,kirc,ChebNet,AUROC,1,0.87245935
+Cancer-specific,kirc,ChebNet,AUROC,2,0.8678861799999998
+Cancer-specific,kirc,ChebNet,AUROC,3,0.8779979659999999
+Cancer-specific,kirc,ChebNet,AUROC,4,0.886788618
+Cancer-specific,kirc,ChebNet,AUROC,5,0.876930896
+Cancer-specific,kirc,ChebNet,AUROC,6,0.88480691
+Cancer-specific,kirc,ChebNet,AUROC,7,0.8920731700000001
+Cancer-specific,kirc,ChebNet,AUROC,8,0.865294716
+Cancer-specific,kirc,ChebNet,AUROC,9,0.871341464
+Cancer-specific,kirc,ChebNet,AUROC,10,0.867682928
+Cancer-specific,kirc,DISFusion,AUPRC,1,0.2974288
+Cancer-specific,kirc,DISFusion,AUPRC,2,0.3398498
+Cancer-specific,kirc,DISFusion,AUPRC,3,0.33496280000000006
+Cancer-specific,kirc,DISFusion,AUPRC,4,0.3019482
+Cancer-specific,kirc,DISFusion,AUPRC,5,0.3287964
+Cancer-specific,kirc,DISFusion,AUPRC,6,0.2971184
+Cancer-specific,kirc,DISFusion,AUPRC,7,0.3670618
+Cancer-specific,kirc,DISFusion,AUPRC,8,0.24439139999999995
+Cancer-specific,kirc,DISFusion,AUPRC,9,0.3169574
+Cancer-specific,kirc,DISFusion,AUPRC,10,0.3003272
+Cancer-specific,kirc,DISFusion,AUROC,1,0.9043697999999999
+Cancer-specific,kirc,DISFusion,AUROC,2,0.8598578
+Cancer-specific,kirc,DISFusion,AUROC,3,0.9117887999999998
+Cancer-specific,kirc,DISFusion,AUROC,4,0.8997966
+Cancer-specific,kirc,DISFusion,AUROC,5,0.8758132
+Cancer-specific,kirc,DISFusion,AUROC,6,0.8606708
+Cancer-specific,kirc,DISFusion,AUROC,7,0.9160568
+Cancer-specific,kirc,DISFusion,AUROC,8,0.8882114
+Cancer-specific,kirc,DISFusion,AUROC,9,0.8983739999999999
+Cancer-specific,kirc,DISFusion,AUROC,10,0.9260162000000001
+Cancer-specific,kirc,DISHyper,AUPRC,1,0.22662020000000002
+Cancer-specific,kirc,DISHyper,AUPRC,2,0.31201360000000006
+Cancer-specific,kirc,DISHyper,AUPRC,3,0.31102139999999995
+Cancer-specific,kirc,DISHyper,AUPRC,4,0.32835980000000003
+Cancer-specific,kirc,DISHyper,AUPRC,5,0.2790004
+Cancer-specific,kirc,DISHyper,AUPRC,6,0.2305698
+Cancer-specific,kirc,DISHyper,AUPRC,7,0.24084599999999998
+Cancer-specific,kirc,DISHyper,AUPRC,8,0.30493240000000005
+Cancer-specific,kirc,DISHyper,AUPRC,9,0.2937846
+Cancer-specific,kirc,DISHyper,AUPRC,10,0.303411
+Cancer-specific,kirc,DISHyper,AUROC,1,0.8719512
+Cancer-specific,kirc,DISHyper,AUROC,2,0.7675812000000001
+Cancer-specific,kirc,DISHyper,AUROC,3,0.8449188000000001
+Cancer-specific,kirc,DISHyper,AUROC,4,0.8642276000000001
+Cancer-specific,kirc,DISHyper,AUROC,5,0.838008
+Cancer-specific,kirc,DISHyper,AUROC,6,0.8029472
+Cancer-specific,kirc,DISHyper,AUROC,7,0.873882
+Cancer-specific,kirc,DISHyper,AUROC,8,0.8204268000000001
+Cancer-specific,kirc,DISHyper,AUROC,9,0.8693088000000001
+Cancer-specific,kirc,DISHyper,AUROC,10,0.8774390000000001
+Cancer-specific,kirc,ECD-CDGI,AUPRC,1,0.3102262
+Cancer-specific,kirc,ECD-CDGI,AUPRC,2,0.28067919999999996
+Cancer-specific,kirc,ECD-CDGI,AUPRC,3,0.2993692
+Cancer-specific,kirc,ECD-CDGI,AUPRC,4,0.3531682
+Cancer-specific,kirc,ECD-CDGI,AUPRC,5,0.2819776
+Cancer-specific,kirc,ECD-CDGI,AUPRC,6,0.395486
+Cancer-specific,kirc,ECD-CDGI,AUPRC,7,0.377104
+Cancer-specific,kirc,ECD-CDGI,AUPRC,8,0.2369026
+Cancer-specific,kirc,ECD-CDGI,AUPRC,9,0.30164920000000006
+Cancer-specific,kirc,ECD-CDGI,AUPRC,10,0.23873039999999998
+Cancer-specific,kirc,ECD-CDGI,AUROC,1,0.8773374
+Cancer-specific,kirc,ECD-CDGI,AUROC,2,0.8487804000000001
+Cancer-specific,kirc,ECD-CDGI,AUROC,3,0.8572156
+Cancer-specific,kirc,ECD-CDGI,AUROC,4,0.893699
+Cancer-specific,kirc,ECD-CDGI,AUROC,5,0.8457317999999999
+Cancer-specific,kirc,ECD-CDGI,AUROC,6,0.9080282000000001
+Cancer-specific,kirc,ECD-CDGI,AUROC,7,0.8822151999999999
+Cancer-specific,kirc,ECD-CDGI,AUROC,8,0.8637193999999999
+Cancer-specific,kirc,ECD-CDGI,AUROC,9,0.8953253999999999
+Cancer-specific,kirc,ECD-CDGI,AUROC,10,0.866057
+Cancer-specific,kirc,EMOGI,AUPRC,1,0.29885039999999996
+Cancer-specific,kirc,EMOGI,AUPRC,2,0.2668246
+Cancer-specific,kirc,EMOGI,AUPRC,3,0.35123059999999995
+Cancer-specific,kirc,EMOGI,AUPRC,4,0.2924542
+Cancer-specific,kirc,EMOGI,AUPRC,5,0.27044560000000006
+Cancer-specific,kirc,EMOGI,AUPRC,6,0.1525128
+Cancer-specific,kirc,EMOGI,AUPRC,7,0.3156168
+Cancer-specific,kirc,EMOGI,AUPRC,8,0.38095880000000004
+Cancer-specific,kirc,EMOGI,AUPRC,9,0.22539320000000002
+Cancer-specific,kirc,EMOGI,AUPRC,10,0.279854
+Cancer-specific,kirc,EMOGI,AUROC,1,0.8725607999999999
+Cancer-specific,kirc,EMOGI,AUROC,2,0.8549798
+Cancer-specific,kirc,EMOGI,AUROC,3,0.9115853999999999
+Cancer-specific,kirc,EMOGI,AUROC,4,0.9071138
+Cancer-specific,kirc,EMOGI,AUROC,5,0.900508
+Cancer-specific,kirc,EMOGI,AUROC,6,0.8048781999999999
+Cancer-specific,kirc,EMOGI,AUROC,7,0.9052845999999999
+Cancer-specific,kirc,EMOGI,AUROC,8,0.8898883999999999
+Cancer-specific,kirc,EMOGI,AUROC,9,0.8221544
+Cancer-specific,kirc,EMOGI,AUROC,10,0.8585367999999999
+Cancer-specific,kirc,GAT,AUPRC,1,0.068657558
+Cancer-specific,kirc,GAT,AUPRC,2,0.05390191200000001
+Cancer-specific,kirc,GAT,AUPRC,3,0.049808910000000005
+Cancer-specific,kirc,GAT,AUPRC,4,0.044850645999999994
+Cancer-specific,kirc,GAT,AUPRC,5,0.046317397999999996
+Cancer-specific,kirc,GAT,AUPRC,6,0.065100954
+Cancer-specific,kirc,GAT,AUPRC,7,0.066733266
+Cancer-specific,kirc,GAT,AUPRC,8,0.054868996
+Cancer-specific,kirc,GAT,AUPRC,9,0.04559908
+Cancer-specific,kirc,GAT,AUPRC,10,0.050934656
+Cancer-specific,kirc,GAT,AUROC,1,0.758333332
+Cancer-specific,kirc,GAT,AUROC,2,0.759349594
+Cancer-specific,kirc,GAT,AUROC,3,0.7917682920000001
+Cancer-specific,kirc,GAT,AUROC,4,0.757418698
+Cancer-specific,kirc,GAT,AUROC,5,0.755386178
+Cancer-specific,kirc,GAT,AUROC,6,0.7629065039999999
+Cancer-specific,kirc,GAT,AUROC,7,0.82855691
+Cancer-specific,kirc,GAT,AUROC,8,0.748678862
+Cancer-specific,kirc,GAT,AUROC,9,0.76270325
+Cancer-specific,kirc,GAT,AUROC,10,0.776626014
+Cancer-specific,kirc,MNGCL,AUPRC,1,0.28537007999999997
+Cancer-specific,kirc,MNGCL,AUPRC,2,0.249966826
+Cancer-specific,kirc,MNGCL,AUPRC,3,0.323186684
+Cancer-specific,kirc,MNGCL,AUPRC,4,0.34545588
+Cancer-specific,kirc,MNGCL,AUPRC,5,0.32968993
+Cancer-specific,kirc,MNGCL,AUPRC,6,0.30496556999999996
+Cancer-specific,kirc,MNGCL,AUPRC,7,0.29735396999999997
+Cancer-specific,kirc,MNGCL,AUPRC,8,0.350346188
+Cancer-specific,kirc,MNGCL,AUPRC,9,0.25150363200000003
+Cancer-specific,kirc,MNGCL,AUPRC,10,0.330791212
+Cancer-specific,kirc,MNGCL,AUROC,1,0.805995934
+Cancer-specific,kirc,MNGCL,AUROC,2,0.8343495940000001
+Cancer-specific,kirc,MNGCL,AUROC,3,0.839939026
+Cancer-specific,kirc,MNGCL,AUROC,4,0.849898374
+Cancer-specific,kirc,MNGCL,AUROC,5,0.840650406
+Cancer-specific,kirc,MNGCL,AUROC,6,0.8273373980000001
+Cancer-specific,kirc,MNGCL,AUROC,7,0.84105691
+Cancer-specific,kirc,MNGCL,AUROC,8,0.8457317059999999
+Cancer-specific,kirc,MNGCL,AUROC,9,0.8255081280000001
+Cancer-specific,kirc,MNGCL,AUROC,10,0.838109756
+Cancer-specific,kirc,MTGCN,AUPRC,1,0.41225939999999994
+Cancer-specific,kirc,MTGCN,AUPRC,2,0.36854780000000004
+Cancer-specific,kirc,MTGCN,AUPRC,3,0.36610940000000003
+Cancer-specific,kirc,MTGCN,AUPRC,4,0.36565159999999997
+Cancer-specific,kirc,MTGCN,AUPRC,5,0.328363
+Cancer-specific,kirc,MTGCN,AUPRC,6,0.40563279999999996
+Cancer-specific,kirc,MTGCN,AUPRC,7,0.3502242
+Cancer-specific,kirc,MTGCN,AUPRC,8,0.3715402
+Cancer-specific,kirc,MTGCN,AUPRC,9,0.34837660000000004
+Cancer-specific,kirc,MTGCN,AUPRC,10,0.37319800000000003
+Cancer-specific,kirc,MTGCN,AUROC,1,0.8671624
+Cancer-specific,kirc,MTGCN,AUROC,2,0.8725972000000001
+Cancer-specific,kirc,MTGCN,AUROC,3,0.8958808000000001
+Cancer-specific,kirc,MTGCN,AUROC,4,0.885126
+Cancer-specific,kirc,MTGCN,AUROC,5,0.8807782
+Cancer-specific,kirc,MTGCN,AUROC,6,0.8970251999999999
+Cancer-specific,kirc,MTGCN,AUROC,7,0.8831234
+Cancer-specific,kirc,MTGCN,AUROC,8,0.8739129999999999
+Cancer-specific,kirc,MTGCN,AUROC,9,0.8794048
+Cancer-specific,kirc,MTGCN,AUROC,10,0.8871282
+Cancer-specific,kirc,SAGE,AUPRC,1,0.331140856
+Cancer-specific,kirc,SAGE,AUPRC,2,0.322421724
+Cancer-specific,kirc,SAGE,AUPRC,3,0.342641366
+Cancer-specific,kirc,SAGE,AUPRC,4,0.34249661000000003
+Cancer-specific,kirc,SAGE,AUPRC,5,0.343858204
+Cancer-specific,kirc,SAGE,AUPRC,6,0.343930074
+Cancer-specific,kirc,SAGE,AUPRC,7,0.352315308
+Cancer-specific,kirc,SAGE,AUPRC,8,0.34086792800000004
+Cancer-specific,kirc,SAGE,AUPRC,9,0.358505056
+Cancer-specific,kirc,SAGE,AUPRC,10,0.330021946
+Cancer-specific,kirc,SAGE,AUROC,1,0.8704268299999999
+Cancer-specific,kirc,SAGE,AUROC,2,0.8599593480000001
+Cancer-specific,kirc,SAGE,AUROC,3,0.8668699180000001
+Cancer-specific,kirc,SAGE,AUROC,4,0.8628048759999999
+Cancer-specific,kirc,SAGE,AUROC,5,0.8668699180000001
+Cancer-specific,kirc,SAGE,AUROC,6,0.86707317
+Cancer-specific,kirc,SAGE,AUROC,7,0.869817072
+Cancer-specific,kirc,SAGE,AUROC,8,0.85863821
+Cancer-specific,kirc,SAGE,AUROC,9,0.858333332
+Cancer-specific,kirc,SAGE,AUROC,10,0.852235772
+Cancer-specific,kirp,BIMODriver,AUPRC,1,0.4298382
+Cancer-specific,kirp,BIMODriver,AUPRC,2,0.47148899999999994
+Cancer-specific,kirp,BIMODriver,AUPRC,3,0.5005564
+Cancer-specific,kirp,BIMODriver,AUPRC,4,0.37116040000000006
+Cancer-specific,kirp,BIMODriver,AUPRC,5,0.39496359999999997
+Cancer-specific,kirp,BIMODriver,AUPRC,6,0.2960636
+Cancer-specific,kirp,BIMODriver,AUPRC,7,0.3435852
+Cancer-specific,kirp,BIMODriver,AUPRC,8,0.203119
+Cancer-specific,kirp,BIMODriver,AUPRC,9,0.3088052
+Cancer-specific,kirp,BIMODriver,AUPRC,10,0.3813
+Cancer-specific,kirp,BIMODriver,AUROC,1,0.9713958
+Cancer-specific,kirp,BIMODriver,AUROC,2,0.9710525999999999
+Cancer-specific,kirp,BIMODriver,AUROC,3,0.9709384
+Cancer-specific,kirp,BIMODriver,AUROC,4,0.9683064
+Cancer-specific,kirp,BIMODriver,AUROC,5,0.9671624
+Cancer-specific,kirp,BIMODriver,AUROC,6,0.9628148000000001
+Cancer-specific,kirp,BIMODriver,AUROC,7,0.9608692
+Cancer-specific,kirp,BIMODriver,AUROC,8,0.959153
+Cancer-specific,kirp,BIMODriver,AUROC,9,0.9588102
+Cancer-specific,kirp,BIMODriver,AUROC,10,0.9583523999999999
+Cancer-specific,kirp,ChebNet,AUPRC,1,0.34595564999999995
+Cancer-specific,kirp,ChebNet,AUPRC,2,0.31928966999999997
+Cancer-specific,kirp,ChebNet,AUPRC,3,0.32373340400000006
+Cancer-specific,kirp,ChebNet,AUPRC,4,0.33011358199999996
+Cancer-specific,kirp,ChebNet,AUPRC,5,0.319778574
+Cancer-specific,kirp,ChebNet,AUPRC,6,0.332016174
+Cancer-specific,kirp,ChebNet,AUPRC,7,0.28838771799999996
+Cancer-specific,kirp,ChebNet,AUPRC,8,0.31011606399999997
+Cancer-specific,kirp,ChebNet,AUPRC,9,0.287807626
+Cancer-specific,kirp,ChebNet,AUPRC,10,0.32038788599999996
+Cancer-specific,kirp,ChebNet,AUROC,1,0.8886178860000001
+Cancer-specific,kirp,ChebNet,AUROC,2,0.8772357740000001
+Cancer-specific,kirp,ChebNet,AUROC,3,0.868089432
+Cancer-specific,kirp,ChebNet,AUROC,4,0.880081302
+Cancer-specific,kirp,ChebNet,AUROC,5,0.89573171
+Cancer-specific,kirp,ChebNet,AUROC,6,0.8719512220000001
+Cancer-specific,kirp,ChebNet,AUROC,7,0.8806910579999998
+Cancer-specific,kirp,ChebNet,AUROC,8,0.8601626
+Cancer-specific,kirp,ChebNet,AUROC,9,0.8896341480000001
+Cancer-specific,kirp,ChebNet,AUROC,10,0.87987805
+Cancer-specific,kirp,DISFusion,AUPRC,1,0.14773180000000002
+Cancer-specific,kirp,DISFusion,AUPRC,2,0.1276662
+Cancer-specific,kirp,DISFusion,AUPRC,3,0.11655820000000001
+Cancer-specific,kirp,DISFusion,AUPRC,4,0.24130279999999998
+Cancer-specific,kirp,DISFusion,AUPRC,5,0.1803906
+Cancer-specific,kirp,DISFusion,AUPRC,6,0.3072268
+Cancer-specific,kirp,DISFusion,AUPRC,7,0.2861842
+Cancer-specific,kirp,DISFusion,AUPRC,8,0.1312416
+Cancer-specific,kirp,DISFusion,AUPRC,9,0.19301700000000002
+Cancer-specific,kirp,DISFusion,AUPRC,10,0.0969344
+Cancer-specific,kirp,DISFusion,AUROC,1,0.9367886000000001
+Cancer-specific,kirp,DISFusion,AUROC,2,0.9136177999999999
+Cancer-specific,kirp,DISFusion,AUROC,3,0.8782522
+Cancer-specific,kirp,DISFusion,AUROC,4,0.9282522
+Cancer-specific,kirp,DISFusion,AUROC,5,0.9209350000000001
+Cancer-specific,kirp,DISFusion,AUROC,6,0.9229674000000001
+Cancer-specific,kirp,DISFusion,AUROC,7,0.9093494000000002
+Cancer-specific,kirp,DISFusion,AUROC,8,0.9075202000000001
+Cancer-specific,kirp,DISFusion,AUROC,9,0.9670730000000001
+Cancer-specific,kirp,DISFusion,AUROC,10,0.8985772000000001
+Cancer-specific,kirp,DISHyper,AUPRC,1,0.09156840000000001
+Cancer-specific,kirp,DISHyper,AUPRC,2,0.153308
+Cancer-specific,kirp,DISHyper,AUPRC,3,0.13635440000000001
+Cancer-specific,kirp,DISHyper,AUPRC,4,0.20757380000000003
+Cancer-specific,kirp,DISHyper,AUPRC,5,0.081623
+Cancer-specific,kirp,DISHyper,AUPRC,6,0.1475882
+Cancer-specific,kirp,DISHyper,AUPRC,7,0.16395679999999999
+Cancer-specific,kirp,DISHyper,AUPRC,8,0.12333039999999999
+Cancer-specific,kirp,DISHyper,AUPRC,9,0.08862779999999999
+Cancer-specific,kirp,DISHyper,AUPRC,10,0.2390694
+Cancer-specific,kirp,DISHyper,AUROC,1,0.8229674000000001
+Cancer-specific,kirp,DISHyper,AUROC,2,0.8373982
+Cancer-specific,kirp,DISHyper,AUROC,3,0.8617887999999999
+Cancer-specific,kirp,DISHyper,AUROC,4,0.9152440000000001
+Cancer-specific,kirp,DISHyper,AUROC,5,0.8693090000000001
+Cancer-specific,kirp,DISHyper,AUROC,6,0.8780488
+Cancer-specific,kirp,DISHyper,AUROC,7,0.8815042
+Cancer-specific,kirp,DISHyper,AUROC,8,0.8778454
+Cancer-specific,kirp,DISHyper,AUROC,9,0.8621952
+Cancer-specific,kirp,DISHyper,AUROC,10,0.8934962000000001
+Cancer-specific,kirp,ECD-CDGI,AUPRC,1,0.2997762
+Cancer-specific,kirp,ECD-CDGI,AUPRC,2,0.38490339999999995
+Cancer-specific,kirp,ECD-CDGI,AUPRC,3,0.4147304
+Cancer-specific,kirp,ECD-CDGI,AUPRC,4,0.2489596
+Cancer-specific,kirp,ECD-CDGI,AUPRC,5,0.3391294
+Cancer-specific,kirp,ECD-CDGI,AUPRC,6,0.33572480000000005
+Cancer-specific,kirp,ECD-CDGI,AUPRC,7,0.29654020000000003
+Cancer-specific,kirp,ECD-CDGI,AUPRC,8,0.35176779999999996
+Cancer-specific,kirp,ECD-CDGI,AUPRC,9,0.09584020000000001
+Cancer-specific,kirp,ECD-CDGI,AUPRC,10,0.305896
+Cancer-specific,kirp,ECD-CDGI,AUROC,1,0.9308942
+Cancer-specific,kirp,ECD-CDGI,AUROC,2,0.9467481999999998
+Cancer-specific,kirp,ECD-CDGI,AUROC,3,0.9288618
+Cancer-specific,kirp,ECD-CDGI,AUROC,4,0.9329268
+Cancer-specific,kirp,ECD-CDGI,AUROC,5,0.9475612
+Cancer-specific,kirp,ECD-CDGI,AUROC,6,0.9597559999999999
+Cancer-specific,kirp,ECD-CDGI,AUROC,7,0.9319108
+Cancer-specific,kirp,ECD-CDGI,AUROC,8,0.9463414
+Cancer-specific,kirp,ECD-CDGI,AUROC,9,0.9115853999999999
+Cancer-specific,kirp,ECD-CDGI,AUROC,10,0.9294716000000001
+Cancer-specific,kirp,EMOGI,AUPRC,1,0.0906784
+Cancer-specific,kirp,EMOGI,AUPRC,2,0.2733146
+Cancer-specific,kirp,EMOGI,AUPRC,3,0.11987859999999999
+Cancer-specific,kirp,EMOGI,AUPRC,4,0.1394386
+Cancer-specific,kirp,EMOGI,AUPRC,5,0.1129318
+Cancer-specific,kirp,EMOGI,AUPRC,6,0.14732819999999996
+Cancer-specific,kirp,EMOGI,AUPRC,7,0.22522300000000003
+Cancer-specific,kirp,EMOGI,AUPRC,8,0.24854559999999998
+Cancer-specific,kirp,EMOGI,AUPRC,9,0.080154
+Cancer-specific,kirp,EMOGI,AUPRC,10,0.09283759999999999
+Cancer-specific,kirp,EMOGI,AUROC,1,0.8563008
+Cancer-specific,kirp,EMOGI,AUROC,2,0.9211382
+Cancer-specific,kirp,EMOGI,AUROC,3,0.9002036
+Cancer-specific,kirp,EMOGI,AUROC,4,0.8412604
+Cancer-specific,kirp,EMOGI,AUROC,5,0.8481706000000001
+Cancer-specific,kirp,EMOGI,AUROC,6,0.9391264000000001
+Cancer-specific,kirp,EMOGI,AUROC,7,0.8796746000000001
+Cancer-specific,kirp,EMOGI,AUROC,8,0.9172763999999999
+Cancer-specific,kirp,EMOGI,AUROC,9,0.9079267999999999
+Cancer-specific,kirp,EMOGI,AUROC,10,0.8373982
+Cancer-specific,kirp,GAT,AUPRC,1,0.031149009999999998
+Cancer-specific,kirp,GAT,AUPRC,2,0.025250922000000002
+Cancer-specific,kirp,GAT,AUPRC,3,0.020189064
+Cancer-specific,kirp,GAT,AUPRC,4,0.04592055
+Cancer-specific,kirp,GAT,AUPRC,5,0.031110985999999997
+Cancer-specific,kirp,GAT,AUPRC,6,0.026624454
+Cancer-specific,kirp,GAT,AUPRC,7,0.024157568
+Cancer-specific,kirp,GAT,AUPRC,8,0.033292048
+Cancer-specific,kirp,GAT,AUPRC,9,0.028923944
+Cancer-specific,kirp,GAT,AUPRC,10,0.026439914000000002
+Cancer-specific,kirp,GAT,AUROC,1,0.754674796
+Cancer-specific,kirp,GAT,AUROC,2,0.7723577240000001
+Cancer-specific,kirp,GAT,AUROC,3,0.68617886
+Cancer-specific,kirp,GAT,AUROC,4,0.740243902
+Cancer-specific,kirp,GAT,AUROC,5,0.7414634139999999
+Cancer-specific,kirp,GAT,AUROC,6,0.74715447
+Cancer-specific,kirp,GAT,AUROC,7,0.73577236
+Cancer-specific,kirp,GAT,AUROC,8,0.745731706
+Cancer-specific,kirp,GAT,AUROC,9,0.809552848
+Cancer-specific,kirp,GAT,AUROC,10,0.728252032
+Cancer-specific,kirp,MNGCL,AUPRC,1,0.115470196
+Cancer-specific,kirp,MNGCL,AUPRC,2,0.304053314
+Cancer-specific,kirp,MNGCL,AUPRC,3,0.186981314
+Cancer-specific,kirp,MNGCL,AUPRC,4,0.25107584000000005
+Cancer-specific,kirp,MNGCL,AUPRC,5,0.21430091800000003
+Cancer-specific,kirp,MNGCL,AUPRC,6,0.248938704
+Cancer-specific,kirp,MNGCL,AUPRC,7,0.204294818
+Cancer-specific,kirp,MNGCL,AUPRC,8,0.182242252
+Cancer-specific,kirp,MNGCL,AUPRC,9,0.177422674
+Cancer-specific,kirp,MNGCL,AUPRC,10,0.22667638599999998
+Cancer-specific,kirp,MNGCL,AUROC,1,0.871341464
+Cancer-specific,kirp,MNGCL,AUROC,2,0.8796747979999999
+Cancer-specific,kirp,MNGCL,AUROC,3,0.8739837400000001
+Cancer-specific,kirp,MNGCL,AUROC,4,0.8772357740000001
+Cancer-specific,kirp,MNGCL,AUROC,5,0.8792682940000001
+Cancer-specific,kirp,MNGCL,AUROC,6,0.8745934959999999
+Cancer-specific,kirp,MNGCL,AUROC,7,0.86605691
+Cancer-specific,kirp,MNGCL,AUROC,8,0.868089432
+Cancer-specific,kirp,MNGCL,AUROC,9,0.865650406
+Cancer-specific,kirp,MNGCL,AUROC,10,0.892479676
+Cancer-specific,kirp,MTGCN,AUPRC,1,0.3249646
+Cancer-specific,kirp,MTGCN,AUPRC,2,0.3455748
+Cancer-specific,kirp,MTGCN,AUPRC,3,0.3411628
+Cancer-specific,kirp,MTGCN,AUPRC,4,0.32221740000000004
+Cancer-specific,kirp,MTGCN,AUPRC,5,0.363171
+Cancer-specific,kirp,MTGCN,AUPRC,6,0.38341539999999996
+Cancer-specific,kirp,MTGCN,AUPRC,7,0.4680824
+Cancer-specific,kirp,MTGCN,AUPRC,8,0.45556359999999996
+Cancer-specific,kirp,MTGCN,AUPRC,9,0.3668594
+Cancer-specific,kirp,MTGCN,AUPRC,10,0.4047376
+Cancer-specific,kirp,MTGCN,AUROC,1,0.9645308
+Cancer-specific,kirp,MTGCN,AUROC,2,0.9632723999999999
+Cancer-specific,kirp,MTGCN,AUROC,3,0.9652174
+Cancer-specific,kirp,MTGCN,AUROC,4,0.9525172
+Cancer-specific,kirp,MTGCN,AUROC,5,0.9581236000000001
+Cancer-specific,kirp,MTGCN,AUROC,6,0.9520592000000001
+Cancer-specific,kirp,MTGCN,AUROC,7,0.9614418
+Cancer-specific,kirp,MTGCN,AUROC,8,0.9599544000000002
+Cancer-specific,kirp,MTGCN,AUROC,9,0.9681922000000001
+Cancer-specific,kirp,MTGCN,AUROC,10,0.9620138
+Cancer-specific,kirp,SAGE,AUPRC,1,0.206906862
+Cancer-specific,kirp,SAGE,AUPRC,2,0.20009207199999998
+Cancer-specific,kirp,SAGE,AUPRC,3,0.25627222
+Cancer-specific,kirp,SAGE,AUPRC,4,0.246092086
+Cancer-specific,kirp,SAGE,AUPRC,5,0.183431362
+Cancer-specific,kirp,SAGE,AUPRC,6,0.250707568
+Cancer-specific,kirp,SAGE,AUPRC,7,0.273485666
+Cancer-specific,kirp,SAGE,AUPRC,8,0.243392454
+Cancer-specific,kirp,SAGE,AUPRC,9,0.174150604
+Cancer-specific,kirp,SAGE,AUPRC,10,0.242636008
+Cancer-specific,kirp,SAGE,AUROC,1,0.912804878
+Cancer-specific,kirp,SAGE,AUROC,2,0.890650406
+Cancer-specific,kirp,SAGE,AUROC,3,0.882317072
+Cancer-specific,kirp,SAGE,AUROC,4,0.8943089440000002
+Cancer-specific,kirp,SAGE,AUROC,5,0.910365852
+Cancer-specific,kirp,SAGE,AUROC,6,0.8957317079999999
+Cancer-specific,kirp,SAGE,AUROC,7,0.903861788
+Cancer-specific,kirp,SAGE,AUROC,8,0.9136178859999999
+Cancer-specific,kirp,SAGE,AUROC,9,0.8951219499999998
+Cancer-specific,kirp,SAGE,AUROC,10,0.9081300820000001
+Cancer-specific,lihc,BIMODriver,AUPRC,1,0.44484979999999996
+Cancer-specific,lihc,BIMODriver,AUPRC,2,0.45635580000000003
+Cancer-specific,lihc,BIMODriver,AUPRC,3,0.48303240000000003
+Cancer-specific,lihc,BIMODriver,AUPRC,4,0.5050594
+Cancer-specific,lihc,BIMODriver,AUPRC,5,0.41473360000000004
+Cancer-specific,lihc,BIMODriver,AUPRC,6,0.4372363999999999
+Cancer-specific,lihc,BIMODriver,AUPRC,7,0.4842376
+Cancer-specific,lihc,BIMODriver,AUPRC,8,0.45812400000000003
+Cancer-specific,lihc,BIMODriver,AUPRC,9,0.45974380000000004
+Cancer-specific,lihc,BIMODriver,AUPRC,10,0.432065
+Cancer-specific,lihc,BIMODriver,AUROC,1,0.9114415999999999
+Cancer-specific,lihc,BIMODriver,AUROC,2,0.9109838
+Cancer-specific,lihc,BIMODriver,AUROC,3,0.9094396
+Cancer-specific,lihc,BIMODriver,AUROC,4,0.9093820000000001
+Cancer-specific,lihc,BIMODriver,AUROC,5,0.9016876
+Cancer-specific,lihc,BIMODriver,AUROC,6,0.9007436
+Cancer-specific,lihc,BIMODriver,AUROC,7,0.9002288
+Cancer-specific,lihc,BIMODriver,AUROC,8,0.8994850000000001
+Cancer-specific,lihc,BIMODriver,AUROC,9,0.8987702000000001
+Cancer-specific,lihc,BIMODriver,AUROC,10,0.8987126
+Cancer-specific,lihc,ChebNet,AUPRC,1,0.396308296
+Cancer-specific,lihc,ChebNet,AUPRC,2,0.411032344
+Cancer-specific,lihc,ChebNet,AUPRC,3,0.408741502
+Cancer-specific,lihc,ChebNet,AUPRC,4,0.396210488
+Cancer-specific,lihc,ChebNet,AUPRC,5,0.402480252
+Cancer-specific,lihc,ChebNet,AUPRC,6,0.402620924
+Cancer-specific,lihc,ChebNet,AUPRC,7,0.41595318800000003
+Cancer-specific,lihc,ChebNet,AUPRC,8,0.393982472
+Cancer-specific,lihc,ChebNet,AUPRC,9,0.36670890600000006
+Cancer-specific,lihc,ChebNet,AUPRC,10,0.41593047400000005
+Cancer-specific,lihc,ChebNet,AUROC,1,0.8914126019999999
+Cancer-specific,lihc,ChebNet,AUROC,2,0.893343496
+Cancer-specific,lihc,ChebNet,AUROC,3,0.89817073
+Cancer-specific,lihc,ChebNet,AUROC,4,0.887245936
+Cancer-specific,lihc,ChebNet,AUROC,5,0.892327234
+Cancer-specific,lihc,ChebNet,AUROC,6,0.894156504
+Cancer-specific,lihc,ChebNet,AUROC,7,0.885772356
+Cancer-specific,lihc,ChebNet,AUROC,8,0.8925304859999998
+Cancer-specific,lihc,ChebNet,AUROC,9,0.8950711380000002
+Cancer-specific,lihc,ChebNet,AUROC,10,0.887804876
+Cancer-specific,lihc,DISFusion,AUPRC,1,0.45317679999999994
+Cancer-specific,lihc,DISFusion,AUPRC,2,0.49480620000000003
+Cancer-specific,lihc,DISFusion,AUPRC,3,0.4127936
+Cancer-specific,lihc,DISFusion,AUPRC,4,0.46868
+Cancer-specific,lihc,DISFusion,AUPRC,5,0.5132236
+Cancer-specific,lihc,DISFusion,AUPRC,6,0.5263696
+Cancer-specific,lihc,DISFusion,AUPRC,7,0.45240159999999996
+Cancer-specific,lihc,DISFusion,AUPRC,8,0.5050298000000001
+Cancer-specific,lihc,DISFusion,AUPRC,9,0.4437486
+Cancer-specific,lihc,DISFusion,AUPRC,10,0.5426442
+Cancer-specific,lihc,DISFusion,AUROC,1,0.8837398000000001
+Cancer-specific,lihc,DISFusion,AUROC,2,0.8896342
+Cancer-specific,lihc,DISFusion,AUROC,3,0.8745428000000001
+Cancer-specific,lihc,DISFusion,AUROC,4,0.8947662
+Cancer-specific,lihc,DISFusion,AUROC,5,0.8874492
+Cancer-specific,lihc,DISFusion,AUROC,6,0.8903964
+Cancer-specific,lihc,DISFusion,AUROC,7,0.8718496
+Cancer-specific,lihc,DISFusion,AUROC,8,0.894258
+Cancer-specific,lihc,DISFusion,AUROC,9,0.8588922
+Cancer-specific,lihc,DISFusion,AUROC,10,0.9058944
+Cancer-specific,lihc,DISHyper,AUPRC,1,0.3699658
+Cancer-specific,lihc,DISHyper,AUPRC,2,0.368005
+Cancer-specific,lihc,DISHyper,AUPRC,3,0.37949179999999993
+Cancer-specific,lihc,DISHyper,AUPRC,4,0.2478462
+Cancer-specific,lihc,DISHyper,AUPRC,5,0.33523899999999995
+Cancer-specific,lihc,DISHyper,AUPRC,6,0.389202
+Cancer-specific,lihc,DISHyper,AUPRC,7,0.3250406
+Cancer-specific,lihc,DISHyper,AUPRC,8,0.38650840000000003
+Cancer-specific,lihc,DISHyper,AUPRC,9,0.2704816
+Cancer-specific,lihc,DISHyper,AUPRC,10,0.42519640000000003
+Cancer-specific,lihc,DISHyper,AUROC,1,0.8358232000000001
+Cancer-specific,lihc,DISHyper,AUROC,2,0.8560976
+Cancer-specific,lihc,DISHyper,AUROC,3,0.8467988
+Cancer-specific,lihc,DISHyper,AUROC,4,0.8202234
+Cancer-specific,lihc,DISHyper,AUROC,5,0.8358234
+Cancer-specific,lihc,DISHyper,AUROC,6,0.8591972
+Cancer-specific,lihc,DISHyper,AUROC,7,0.8268799999999998
+Cancer-specific,lihc,DISHyper,AUROC,8,0.8762196
+Cancer-specific,lihc,DISHyper,AUROC,9,0.8204267999999999
+Cancer-specific,lihc,DISHyper,AUROC,10,0.8280993999999999
+Cancer-specific,lihc,ECD-CDGI,AUPRC,1,0.44218080000000004
+Cancer-specific,lihc,ECD-CDGI,AUPRC,2,0.41083119999999995
+Cancer-specific,lihc,ECD-CDGI,AUPRC,3,0.38106720000000005
+Cancer-specific,lihc,ECD-CDGI,AUPRC,4,0.4401428
+Cancer-specific,lihc,ECD-CDGI,AUPRC,5,0.47690400000000005
+Cancer-specific,lihc,ECD-CDGI,AUPRC,6,0.4456754
+Cancer-specific,lihc,ECD-CDGI,AUPRC,7,0.4261374
+Cancer-specific,lihc,ECD-CDGI,AUPRC,8,0.43961560000000005
+Cancer-specific,lihc,ECD-CDGI,AUPRC,9,0.5026885999999999
+Cancer-specific,lihc,ECD-CDGI,AUPRC,10,0.4325338
+Cancer-specific,lihc,ECD-CDGI,AUROC,1,0.8834350000000001
+Cancer-specific,lihc,ECD-CDGI,AUROC,2,0.8876017999999999
+Cancer-specific,lihc,ECD-CDGI,AUROC,3,0.8533533999999999
+Cancer-specific,lihc,ECD-CDGI,AUROC,4,0.8666666
+Cancer-specific,lihc,ECD-CDGI,AUROC,5,0.8763718
+Cancer-specific,lihc,ECD-CDGI,AUROC,6,0.8666668
+Cancer-specific,lihc,ECD-CDGI,AUROC,7,0.8573167999999999
+Cancer-specific,lihc,ECD-CDGI,AUROC,8,0.8596543999999999
+Cancer-specific,lihc,ECD-CDGI,AUROC,9,0.8748984
+Cancer-specific,lihc,ECD-CDGI,AUROC,10,0.8933434
+Cancer-specific,lihc,EMOGI,AUPRC,1,0.3178184
+Cancer-specific,lihc,EMOGI,AUPRC,2,0.32152459999999994
+Cancer-specific,lihc,EMOGI,AUPRC,3,0.3913694
+Cancer-specific,lihc,EMOGI,AUPRC,4,0.3717878
+Cancer-specific,lihc,EMOGI,AUPRC,5,0.3830102
+Cancer-specific,lihc,EMOGI,AUPRC,6,0.3331808
+Cancer-specific,lihc,EMOGI,AUPRC,7,0.41709499999999994
+Cancer-specific,lihc,EMOGI,AUPRC,8,0.37075120000000006
+Cancer-specific,lihc,EMOGI,AUPRC,9,0.31580520000000006
+Cancer-specific,lihc,EMOGI,AUPRC,10,0.34266040000000003
+Cancer-specific,lihc,EMOGI,AUROC,1,0.8135670000000002
+Cancer-specific,lihc,EMOGI,AUROC,2,0.7957318
+Cancer-specific,lihc,EMOGI,AUROC,3,0.8361787999999999
+Cancer-specific,lihc,EMOGI,AUROC,4,0.8164125999999999
+Cancer-specific,lihc,EMOGI,AUROC,5,0.8593498
+Cancer-specific,lihc,EMOGI,AUROC,6,0.8406504000000001
+Cancer-specific,lihc,EMOGI,AUROC,7,0.8321135999999999
+Cancer-specific,lihc,EMOGI,AUROC,8,0.8707318000000001
+Cancer-specific,lihc,EMOGI,AUROC,9,0.8077235999999999
+Cancer-specific,lihc,EMOGI,AUROC,10,0.8354674
+Cancer-specific,lihc,GAT,AUPRC,1,0.136721976
+Cancer-specific,lihc,GAT,AUPRC,2,0.105562496
+Cancer-specific,lihc,GAT,AUPRC,3,0.140105638
+Cancer-specific,lihc,GAT,AUPRC,4,0.147128392
+Cancer-specific,lihc,GAT,AUPRC,5,0.12267170999999999
+Cancer-specific,lihc,GAT,AUPRC,6,0.156001114
+Cancer-specific,lihc,GAT,AUPRC,7,0.13842703
+Cancer-specific,lihc,GAT,AUPRC,8,0.17513646400000002
+Cancer-specific,lihc,GAT,AUPRC,9,0.12725208000000002
+Cancer-specific,lihc,GAT,AUPRC,10,0.140375936
+Cancer-specific,lihc,GAT,AUROC,1,0.815904472
+Cancer-specific,lihc,GAT,AUROC,2,0.771087398
+Cancer-specific,lihc,GAT,AUROC,3,0.8029979659999998
+Cancer-specific,lihc,GAT,AUROC,4,0.8151422759999999
+Cancer-specific,lihc,GAT,AUROC,5,0.7942073159999999
+Cancer-specific,lihc,GAT,AUROC,6,0.8318089420000001
+Cancer-specific,lihc,GAT,AUROC,7,0.817987804
+Cancer-specific,lihc,GAT,AUROC,8,0.8367886199999999
+Cancer-specific,lihc,GAT,AUROC,9,0.7982723600000001
+Cancer-specific,lihc,GAT,AUROC,10,0.8121443100000001
+Cancer-specific,lihc,MNGCL,AUPRC,1,0.4697304000000001
+Cancer-specific,lihc,MNGCL,AUPRC,2,0.463816256
+Cancer-specific,lihc,MNGCL,AUPRC,3,0.47584457599999996
+Cancer-specific,lihc,MNGCL,AUPRC,4,0.47859892400000004
+Cancer-specific,lihc,MNGCL,AUPRC,5,0.467274348
+Cancer-specific,lihc,MNGCL,AUPRC,6,0.47364982
+Cancer-specific,lihc,MNGCL,AUPRC,7,0.4766851880000001
+Cancer-specific,lihc,MNGCL,AUPRC,8,0.4615792900000001
+Cancer-specific,lihc,MNGCL,AUPRC,9,0.48481092200000003
+Cancer-specific,lihc,MNGCL,AUPRC,10,0.4751753240000001
+Cancer-specific,lihc,MNGCL,AUROC,1,0.906097562
+Cancer-specific,lihc,MNGCL,AUROC,2,0.8899390239999999
+Cancer-specific,lihc,MNGCL,AUROC,3,0.9008130060000001
+Cancer-specific,lihc,MNGCL,AUROC,4,0.9092479680000001
+Cancer-specific,lihc,MNGCL,AUROC,5,0.907571138
+Cancer-specific,lihc,MNGCL,AUROC,6,0.9054369919999999
+Cancer-specific,lihc,MNGCL,AUROC,7,0.902794716
+Cancer-specific,lihc,MNGCL,AUROC,8,0.903760164
+Cancer-specific,lihc,MNGCL,AUROC,9,0.902439022
+Cancer-specific,lihc,MNGCL,AUROC,10,0.907113822
+Cancer-specific,lihc,MTGCN,AUPRC,1,0.4804138
+Cancer-specific,lihc,MTGCN,AUPRC,2,0.47053720000000004
+Cancer-specific,lihc,MTGCN,AUPRC,3,0.4584106
+Cancer-specific,lihc,MTGCN,AUPRC,4,0.47419880000000003
+Cancer-specific,lihc,MTGCN,AUPRC,5,0.46974199999999994
+Cancer-specific,lihc,MTGCN,AUPRC,6,0.4692464
+Cancer-specific,lihc,MTGCN,AUPRC,7,0.48703199999999996
+Cancer-specific,lihc,MTGCN,AUPRC,8,0.44369140000000007
+Cancer-specific,lihc,MTGCN,AUPRC,9,0.46700359999999996
+Cancer-specific,lihc,MTGCN,AUPRC,10,0.43236379999999996
+Cancer-specific,lihc,MTGCN,AUROC,1,0.8979406000000001
+Cancer-specific,lihc,MTGCN,AUROC,2,0.8946223999999999
+Cancer-specific,lihc,MTGCN,AUROC,3,0.897769
+Cancer-specific,lihc,MTGCN,AUROC,4,0.9001146
+Cancer-specific,lihc,MTGCN,AUROC,5,0.8872426000000001
+Cancer-specific,lihc,MTGCN,AUROC,6,0.8943362
+Cancer-specific,lihc,MTGCN,AUROC,7,0.8994565999999999
+Cancer-specific,lihc,MTGCN,AUROC,8,0.892048
+Cancer-specific,lihc,MTGCN,AUROC,9,0.8944222
+Cancer-specific,lihc,MTGCN,AUROC,10,0.8670194
+Cancer-specific,lihc,SAGE,AUPRC,1,0.42295455200000004
+Cancer-specific,lihc,SAGE,AUPRC,2,0.42784719400000004
+Cancer-specific,lihc,SAGE,AUPRC,3,0.421000554
+Cancer-specific,lihc,SAGE,AUPRC,4,0.41792585000000004
+Cancer-specific,lihc,SAGE,AUPRC,5,0.43439417799999996
+Cancer-specific,lihc,SAGE,AUPRC,6,0.4631583619999999
+Cancer-specific,lihc,SAGE,AUPRC,7,0.42229331600000003
+Cancer-specific,lihc,SAGE,AUPRC,8,0.40395233399999997
+Cancer-specific,lihc,SAGE,AUPRC,9,0.43182643
+Cancer-specific,lihc,SAGE,AUPRC,10,0.44485538399999996
+Cancer-specific,lihc,SAGE,AUROC,1,0.8631097560000001
+Cancer-specific,lihc,SAGE,AUROC,2,0.86656504
+Cancer-specific,lihc,SAGE,AUROC,3,0.869258132
+Cancer-specific,lihc,SAGE,AUROC,4,0.864939028
+Cancer-specific,lihc,SAGE,AUROC,5,0.8711890239999999
+Cancer-specific,lihc,SAGE,AUROC,6,0.87378049
+Cancer-specific,lihc,SAGE,AUROC,7,0.8611788619999998
+Cancer-specific,lihc,SAGE,AUROC,8,0.870020326
+Cancer-specific,lihc,SAGE,AUROC,9,0.865091462
+Cancer-specific,lihc,SAGE,AUROC,10,0.876981708
+Cancer-specific,luad,BIMODriver,AUPRC,1,0.6356534
+Cancer-specific,luad,BIMODriver,AUPRC,2,0.6245616
+Cancer-specific,luad,BIMODriver,AUPRC,3,0.621096
+Cancer-specific,luad,BIMODriver,AUPRC,4,0.5917703999999999
+Cancer-specific,luad,BIMODriver,AUPRC,5,0.6259629999999999
+Cancer-specific,luad,BIMODriver,AUPRC,6,0.6370852
+Cancer-specific,luad,BIMODriver,AUPRC,7,0.62629
+Cancer-specific,luad,BIMODriver,AUPRC,8,0.6138554
+Cancer-specific,luad,BIMODriver,AUPRC,9,0.6250084
+Cancer-specific,luad,BIMODriver,AUPRC,10,0.6327276
+Cancer-specific,luad,BIMODriver,AUROC,1,0.8925008
+Cancer-specific,luad,BIMODriver,AUROC,2,0.8900816
+Cancer-specific,luad,BIMODriver,AUROC,3,0.8870874000000001
+Cancer-specific,luad,BIMODriver,AUROC,4,0.886172
+Cancer-specific,luad,BIMODriver,AUROC,5,0.8857794
+Cancer-specific,luad,BIMODriver,AUROC,6,0.8839554
+Cancer-specific,luad,BIMODriver,AUROC,7,0.883099
+Cancer-specific,luad,BIMODriver,AUROC,8,0.8827200000000002
+Cancer-specific,luad,BIMODriver,AUROC,9,0.8820005999999999
+Cancer-specific,luad,BIMODriver,AUROC,10,0.8794640000000001
+Cancer-specific,luad,ChebNet,AUPRC,1,0.6682273779999999
+Cancer-specific,luad,ChebNet,AUPRC,2,0.642753388
+Cancer-specific,luad,ChebNet,AUPRC,3,0.658275802
+Cancer-specific,luad,ChebNet,AUPRC,4,0.66330595
+Cancer-specific,luad,ChebNet,AUPRC,5,0.6606778739999999
+Cancer-specific,luad,ChebNet,AUPRC,6,0.65497192
+Cancer-specific,luad,ChebNet,AUPRC,7,0.6717058220000001
+Cancer-specific,luad,ChebNet,AUPRC,8,0.6581548359999999
+Cancer-specific,luad,ChebNet,AUPRC,9,0.6520251220000001
+Cancer-specific,luad,ChebNet,AUPRC,10,0.64709428
+Cancer-specific,luad,ChebNet,AUROC,1,0.921130396
+Cancer-specific,luad,ChebNet,AUROC,2,0.9179643519999999
+Cancer-specific,luad,ChebNet,AUROC,3,0.921974674
+Cancer-specific,luad,ChebNet,AUROC,4,0.9238039400000002
+Cancer-specific,luad,ChebNet,AUROC,5,0.9207786099999999
+Cancer-specific,luad,ChebNet,AUROC,6,0.918621012
+Cancer-specific,luad,ChebNet,AUROC,7,0.9254690419999999
+Cancer-specific,luad,ChebNet,AUROC,8,0.91946529
+Cancer-specific,luad,ChebNet,AUROC,9,0.9203799260000001
+Cancer-specific,luad,ChebNet,AUROC,10,0.917354596
+Cancer-specific,luad,DISFusion,AUPRC,1,0.5405848000000001
+Cancer-specific,luad,DISFusion,AUPRC,2,0.5759179999999999
+Cancer-specific,luad,DISFusion,AUPRC,3,0.5315502000000001
+Cancer-specific,luad,DISFusion,AUPRC,4,0.6052168
+Cancer-specific,luad,DISFusion,AUPRC,5,0.590687
+Cancer-specific,luad,DISFusion,AUPRC,6,0.5019818
+Cancer-specific,luad,DISFusion,AUPRC,7,0.5295916
+Cancer-specific,luad,DISFusion,AUPRC,8,0.5469874
+Cancer-specific,luad,DISFusion,AUPRC,9,0.5749622000000001
+Cancer-specific,luad,DISFusion,AUPRC,10,0.5879124
+Cancer-specific,luad,DISFusion,AUROC,1,0.8302999999999999
+Cancer-specific,luad,DISFusion,AUROC,2,0.8755864000000001
+Cancer-specific,luad,DISFusion,AUROC,3,0.846271
+Cancer-specific,luad,DISFusion,AUROC,4,0.8890242
+Cancer-specific,luad,DISFusion,AUROC,5,0.8810976
+Cancer-specific,luad,DISFusion,AUROC,6,0.8488977999999999
+Cancer-specific,luad,DISFusion,AUROC,7,0.862031
+Cancer-specific,luad,DISFusion,AUROC,8,0.856168
+Cancer-specific,luad,DISFusion,AUROC,9,0.89076
+Cancer-specific,luad,DISFusion,AUROC,10,0.8728658000000001
+Cancer-specific,luad,DISHyper,AUPRC,1,0.4394804
+Cancer-specific,luad,DISHyper,AUPRC,2,0.4464646
+Cancer-specific,luad,DISHyper,AUPRC,3,0.4850506
+Cancer-specific,luad,DISHyper,AUPRC,4,0.502532
+Cancer-specific,luad,DISHyper,AUPRC,5,0.5057126000000001
+Cancer-specific,luad,DISHyper,AUPRC,6,0.48869299999999993
+Cancer-specific,luad,DISHyper,AUPRC,7,0.4783842
+Cancer-specific,luad,DISHyper,AUPRC,8,0.5171946000000001
+Cancer-specific,luad,DISHyper,AUPRC,9,0.4153138
+Cancer-specific,luad,DISHyper,AUPRC,10,0.5075381999999999
+Cancer-specific,luad,DISHyper,AUROC,1,0.8337478
+Cancer-specific,luad,DISHyper,AUROC,2,0.8182691999999999
+Cancer-specific,luad,DISHyper,AUROC,3,0.8341932
+Cancer-specific,luad,DISHyper,AUROC,4,0.8321997999999999
+Cancer-specific,luad,DISHyper,AUROC,5,0.8233582
+Cancer-specific,luad,DISHyper,AUROC,6,0.8436912
+Cancer-specific,luad,DISHyper,AUROC,7,0.8229596000000001
+Cancer-specific,luad,DISHyper,AUROC,8,0.8639072000000001
+Cancer-specific,luad,DISHyper,AUROC,9,0.7959894000000001
+Cancer-specific,luad,DISHyper,AUROC,10,0.8463412
+Cancer-specific,luad,ECD-CDGI,AUPRC,1,0.5635034
+Cancer-specific,luad,ECD-CDGI,AUPRC,2,0.5317457999999999
+Cancer-specific,luad,ECD-CDGI,AUPRC,3,0.5383932
+Cancer-specific,luad,ECD-CDGI,AUPRC,4,0.5718618
+Cancer-specific,luad,ECD-CDGI,AUPRC,5,0.5382142
+Cancer-specific,luad,ECD-CDGI,AUPRC,6,0.567637
+Cancer-specific,luad,ECD-CDGI,AUPRC,7,0.5673701999999999
+Cancer-specific,luad,ECD-CDGI,AUPRC,8,0.5634296000000001
+Cancer-specific,luad,ECD-CDGI,AUPRC,9,0.562529
+Cancer-specific,luad,ECD-CDGI,AUPRC,10,0.5831622000000001
+Cancer-specific,luad,ECD-CDGI,AUROC,1,0.8802299999999998
+Cancer-specific,luad,ECD-CDGI,AUROC,2,0.8533066
+Cancer-specific,luad,ECD-CDGI,AUROC,3,0.8584194
+Cancer-specific,luad,ECD-CDGI,AUROC,4,0.8854832
+Cancer-specific,luad,ECD-CDGI,AUROC,5,0.867167
+Cancer-specific,luad,ECD-CDGI,AUROC,6,0.8789870000000001
+Cancer-specific,luad,ECD-CDGI,AUROC,7,0.8879923999999999
+Cancer-specific,luad,ECD-CDGI,AUROC,8,0.8810741999999999
+Cancer-specific,luad,ECD-CDGI,AUROC,9,0.8863274000000001
+Cancer-specific,luad,ECD-CDGI,AUROC,10,0.9002817999999999
+Cancer-specific,luad,EMOGI,AUPRC,1,0.46293179999999995
+Cancer-specific,luad,EMOGI,AUPRC,2,0.46967620000000004
+Cancer-specific,luad,EMOGI,AUPRC,3,0.465127
+Cancer-specific,luad,EMOGI,AUPRC,4,0.481759
+Cancer-specific,luad,EMOGI,AUPRC,5,0.46340059999999994
+Cancer-specific,luad,EMOGI,AUPRC,6,0.45933660000000004
+Cancer-specific,luad,EMOGI,AUPRC,7,0.4530208
+Cancer-specific,luad,EMOGI,AUPRC,8,0.5027988
+Cancer-specific,luad,EMOGI,AUPRC,9,0.5029648
+Cancer-specific,luad,EMOGI,AUPRC,10,0.5374082
+Cancer-specific,luad,EMOGI,AUROC,1,0.8348026
+Cancer-specific,luad,EMOGI,AUROC,2,0.803377
+Cancer-specific,luad,EMOGI,AUROC,3,0.8077626
+Cancer-specific,luad,EMOGI,AUROC,4,0.8114915999999999
+Cancer-specific,luad,EMOGI,AUROC,5,0.8192074
+Cancer-specific,luad,EMOGI,AUROC,6,0.8160411999999999
+Cancer-specific,luad,EMOGI,AUROC,7,0.8132268
+Cancer-specific,luad,EMOGI,AUROC,8,0.8468104000000001
+Cancer-specific,luad,EMOGI,AUROC,9,0.837031
+Cancer-specific,luad,EMOGI,AUROC,10,0.8386488
+Cancer-specific,luad,GAT,AUPRC,1,0.22824920199999998
+Cancer-specific,luad,GAT,AUPRC,2,0.22063299399999997
+Cancer-specific,luad,GAT,AUPRC,3,0.23656579
+Cancer-specific,luad,GAT,AUPRC,4,0.24569592599999995
+Cancer-specific,luad,GAT,AUPRC,5,0.24600123599999998
+Cancer-specific,luad,GAT,AUPRC,6,0.23612122600000002
+Cancer-specific,luad,GAT,AUPRC,7,0.24115832199999998
+Cancer-specific,luad,GAT,AUPRC,8,0.228152578
+Cancer-specific,luad,GAT,AUPRC,9,0.23849157199999996
+Cancer-specific,luad,GAT,AUPRC,10,0.24954774999999998
+Cancer-specific,luad,GAT,AUROC,1,0.753752346
+Cancer-specific,luad,GAT,AUROC,2,0.7446998100000001
+Cancer-specific,luad,GAT,AUROC,3,0.761092872
+Cancer-specific,luad,GAT,AUROC,4,0.7834193239999999
+Cancer-specific,luad,GAT,AUROC,5,0.77431989
+Cancer-specific,luad,GAT,AUROC,6,0.767870542
+Cancer-specific,luad,GAT,AUROC,7,0.766604128
+Cancer-specific,luad,GAT,AUROC,8,0.757012196
+Cancer-specific,luad,GAT,AUROC,9,0.773522512
+Cancer-specific,luad,GAT,AUROC,10,0.784240152
+Cancer-specific,luad,MNGCL,AUPRC,1,0.57711979
+Cancer-specific,luad,MNGCL,AUPRC,2,0.5853137939999999
+Cancer-specific,luad,MNGCL,AUPRC,3,0.58528678
+Cancer-specific,luad,MNGCL,AUPRC,4,0.583344466
+Cancer-specific,luad,MNGCL,AUPRC,5,0.5739304040000001
+Cancer-specific,luad,MNGCL,AUPRC,6,0.556857532
+Cancer-specific,luad,MNGCL,AUPRC,7,0.557048702
+Cancer-specific,luad,MNGCL,AUPRC,8,0.582015028
+Cancer-specific,luad,MNGCL,AUPRC,9,0.5756103159999999
+Cancer-specific,luad,MNGCL,AUPRC,10,0.57453967
+Cancer-specific,luad,MNGCL,AUROC,1,0.9083020639999999
+Cancer-specific,luad,MNGCL,AUROC,2,0.9070591
+Cancer-specific,luad,MNGCL,AUROC,3,0.9084662299999999
+Cancer-specific,luad,MNGCL,AUROC,4,0.9037992500000002
+Cancer-specific,luad,MNGCL,AUROC,5,0.9060272040000001
+Cancer-specific,luad,MNGCL,AUROC,6,0.9054409019999999
+Cancer-specific,luad,MNGCL,AUROC,7,0.9038696079999999
+Cancer-specific,luad,MNGCL,AUROC,8,0.906590056
+Cancer-specific,luad,MNGCL,AUROC,9,0.9035647280000001
+Cancer-specific,luad,MNGCL,AUROC,10,0.91076454
+Cancer-specific,luad,MTGCN,AUPRC,1,0.588628
+Cancer-specific,luad,MTGCN,AUPRC,2,0.6060798000000001
+Cancer-specific,luad,MTGCN,AUPRC,3,0.599111
+Cancer-specific,luad,MTGCN,AUPRC,4,0.5930023999999999
+Cancer-specific,luad,MTGCN,AUPRC,5,0.5938834
+Cancer-specific,luad,MTGCN,AUPRC,6,0.6013402
+Cancer-specific,luad,MTGCN,AUPRC,7,0.592448
+Cancer-specific,luad,MTGCN,AUPRC,8,0.5923784
+Cancer-specific,luad,MTGCN,AUPRC,9,0.5959898
+Cancer-specific,luad,MTGCN,AUPRC,10,0.5864225999999999
+Cancer-specific,luad,MTGCN,AUROC,1,0.8916116000000001
+Cancer-specific,luad,MTGCN,AUROC,2,0.8963711999999999
+Cancer-specific,luad,MTGCN,AUROC,3,0.8951290000000001
+Cancer-specific,luad,MTGCN,AUROC,4,0.8963452000000001
+Cancer-specific,luad,MTGCN,AUROC,5,0.8920823999999999
+Cancer-specific,luad,MTGCN,AUROC,6,0.8935469999999999
+Cancer-specific,luad,MTGCN,AUROC,7,0.884498
+Cancer-specific,luad,MTGCN,AUROC,8,0.8951946
+Cancer-specific,luad,MTGCN,AUROC,9,0.8942138
+Cancer-specific,luad,MTGCN,AUROC,10,0.8844722
+Cancer-specific,luad,SAGE,AUPRC,1,0.62488794
+Cancer-specific,luad,SAGE,AUPRC,2,0.6249122619999999
+Cancer-specific,luad,SAGE,AUPRC,3,0.616889938
+Cancer-specific,luad,SAGE,AUPRC,4,0.6248181180000001
+Cancer-specific,luad,SAGE,AUPRC,5,0.617691154
+Cancer-specific,luad,SAGE,AUPRC,6,0.63029899
+Cancer-specific,luad,SAGE,AUPRC,7,0.627221362
+Cancer-specific,luad,SAGE,AUPRC,8,0.624256666
+Cancer-specific,luad,SAGE,AUPRC,9,0.61694665
+Cancer-specific,luad,SAGE,AUPRC,10,0.615143002
+Cancer-specific,luad,SAGE,AUROC,1,0.875070354
+Cancer-specific,luad,SAGE,AUROC,2,0.875961538
+Cancer-specific,luad,SAGE,AUROC,3,0.879174482
+Cancer-specific,luad,SAGE,AUROC,4,0.88524859
+Cancer-specific,luad,SAGE,AUROC,5,0.884075986
+Cancer-specific,luad,SAGE,AUROC,6,0.8804409
+Cancer-specific,luad,SAGE,AUROC,7,0.8867260779999999
+Cancer-specific,luad,SAGE,AUROC,8,0.879010318
+Cancer-specific,luad,SAGE,AUROC,9,0.8794090059999998
+Cancer-specific,luad,SAGE,AUROC,10,0.879924954
+Cancer-specific,lusc,BIMODriver,AUPRC,1,0.37201239999999997
+Cancer-specific,lusc,BIMODriver,AUPRC,2,0.34170259999999997
+Cancer-specific,lusc,BIMODriver,AUPRC,3,0.3361572
+Cancer-specific,lusc,BIMODriver,AUPRC,4,0.2994128
+Cancer-specific,lusc,BIMODriver,AUPRC,5,0.3252956
+Cancer-specific,lusc,BIMODriver,AUPRC,6,0.407812
+Cancer-specific,lusc,BIMODriver,AUPRC,7,0.2420946
+Cancer-specific,lusc,BIMODriver,AUPRC,8,0.2940778
+Cancer-specific,lusc,BIMODriver,AUPRC,9,0.3328958
+Cancer-specific,lusc,BIMODriver,AUPRC,10,0.3469146
+Cancer-specific,lusc,BIMODriver,AUROC,1,0.9201832
+Cancer-specific,lusc,BIMODriver,AUROC,2,0.9138672
+Cancer-specific,lusc,BIMODriver,AUROC,3,0.9102062
+Cancer-specific,lusc,BIMODriver,AUROC,4,0.907826
+Cancer-specific,lusc,BIMODriver,AUROC,5,0.907826
+Cancer-specific,lusc,BIMODriver,AUROC,6,0.9042562000000001
+Cancer-specific,lusc,BIMODriver,AUROC,7,0.8993133999999999
+Cancer-specific,lusc,BIMODriver,AUROC,8,0.8984895999999999
+Cancer-specific,lusc,BIMODriver,AUROC,9,0.8963842
+Cancer-specific,lusc,BIMODriver,AUROC,10,0.8962014
+Cancer-specific,lusc,ChebNet,AUPRC,1,0.329495992
+Cancer-specific,lusc,ChebNet,AUPRC,2,0.28808211000000006
+Cancer-specific,lusc,ChebNet,AUPRC,3,0.27057089
+Cancer-specific,lusc,ChebNet,AUPRC,4,0.34506465000000003
+Cancer-specific,lusc,ChebNet,AUPRC,5,0.275654104
+Cancer-specific,lusc,ChebNet,AUPRC,6,0.287393214
+Cancer-specific,lusc,ChebNet,AUPRC,7,0.332497588
+Cancer-specific,lusc,ChebNet,AUPRC,8,0.268214684
+Cancer-specific,lusc,ChebNet,AUPRC,9,0.327370338
+Cancer-specific,lusc,ChebNet,AUPRC,10,0.286879622
+Cancer-specific,lusc,ChebNet,AUROC,1,0.812398374
+Cancer-specific,lusc,ChebNet,AUROC,2,0.813414632
+Cancer-specific,lusc,ChebNet,AUROC,3,0.853658536
+Cancer-specific,lusc,ChebNet,AUROC,4,0.818292682
+Cancer-specific,lusc,ChebNet,AUROC,5,0.859349592
+Cancer-specific,lusc,ChebNet,AUROC,6,0.837398374
+Cancer-specific,lusc,ChebNet,AUROC,7,0.8721544719999998
+Cancer-specific,lusc,ChebNet,AUROC,8,0.814634144
+Cancer-specific,lusc,ChebNet,AUROC,9,0.809959346
+Cancer-specific,lusc,ChebNet,AUROC,10,0.8101626
+Cancer-specific,lusc,DISFusion,AUPRC,1,0.316
+Cancer-specific,lusc,DISFusion,AUPRC,2,0.22521940000000001
+Cancer-specific,lusc,DISFusion,AUPRC,3,0.39006719999999995
+Cancer-specific,lusc,DISFusion,AUPRC,4,0.3747906
+Cancer-specific,lusc,DISFusion,AUPRC,5,0.1684154
+Cancer-specific,lusc,DISFusion,AUPRC,6,0.32464480000000007
+Cancer-specific,lusc,DISFusion,AUPRC,7,0.2309758
+Cancer-specific,lusc,DISFusion,AUPRC,8,0.24254760000000003
+Cancer-specific,lusc,DISFusion,AUPRC,9,0.29903979999999997
+Cancer-specific,lusc,DISFusion,AUPRC,10,0.347607
+Cancer-specific,lusc,DISFusion,AUROC,1,0.9441056
+Cancer-specific,lusc,DISFusion,AUROC,2,0.9406504
+Cancer-specific,lusc,DISFusion,AUROC,3,0.9355692
+Cancer-specific,lusc,DISFusion,AUROC,4,0.912805
+Cancer-specific,lusc,DISFusion,AUROC,5,0.883333
+Cancer-specific,lusc,DISFusion,AUROC,6,0.9477642
+Cancer-specific,lusc,DISFusion,AUROC,7,0.9337399999999999
+Cancer-specific,lusc,DISFusion,AUROC,8,0.9077236
+Cancer-specific,lusc,DISFusion,AUROC,9,0.9103657999999999
+Cancer-specific,lusc,DISFusion,AUROC,10,0.9223578
+Cancer-specific,lusc,DISHyper,AUPRC,1,0.0878746
+Cancer-specific,lusc,DISHyper,AUPRC,2,0.3314516
+Cancer-specific,lusc,DISHyper,AUPRC,3,0.0633944
+Cancer-specific,lusc,DISHyper,AUPRC,4,0.19157280000000002
+Cancer-specific,lusc,DISHyper,AUPRC,5,0.2609302
+Cancer-specific,lusc,DISHyper,AUPRC,6,0.2529716
+Cancer-specific,lusc,DISHyper,AUPRC,7,0.13726699999999997
+Cancer-specific,lusc,DISHyper,AUPRC,8,0.22617260000000003
+Cancer-specific,lusc,DISHyper,AUPRC,9,0.071934
+Cancer-specific,lusc,DISHyper,AUPRC,10,0.20486500000000002
+Cancer-specific,lusc,DISHyper,AUROC,1,0.922561
+Cancer-specific,lusc,DISHyper,AUROC,2,0.8241869999999999
+Cancer-specific,lusc,DISHyper,AUROC,3,0.8489838000000001
+Cancer-specific,lusc,DISHyper,AUROC,4,0.8827235999999999
+Cancer-specific,lusc,DISHyper,AUROC,5,0.8520326
+Cancer-specific,lusc,DISHyper,AUROC,6,0.7863819999999999
+Cancer-specific,lusc,DISHyper,AUROC,7,0.8997966
+Cancer-specific,lusc,DISHyper,AUROC,8,0.9103655999999999
+Cancer-specific,lusc,DISHyper,AUROC,9,0.875
+Cancer-specific,lusc,DISHyper,AUROC,10,0.8806908
+Cancer-specific,lusc,ECD-CDGI,AUPRC,1,0.2713232
+Cancer-specific,lusc,ECD-CDGI,AUPRC,2,0.1492318
+Cancer-specific,lusc,ECD-CDGI,AUPRC,3,0.349689
+Cancer-specific,lusc,ECD-CDGI,AUPRC,4,0.2543454
+Cancer-specific,lusc,ECD-CDGI,AUPRC,5,0.22156659999999997
+Cancer-specific,lusc,ECD-CDGI,AUPRC,6,0.2007158
+Cancer-specific,lusc,ECD-CDGI,AUPRC,7,0.31651819999999997
+Cancer-specific,lusc,ECD-CDGI,AUPRC,8,0.153008
+Cancer-specific,lusc,ECD-CDGI,AUPRC,9,0.1423994
+Cancer-specific,lusc,ECD-CDGI,AUPRC,10,0.24400800000000006
+Cancer-specific,lusc,ECD-CDGI,AUROC,1,0.8556908
+Cancer-specific,lusc,ECD-CDGI,AUROC,2,0.8463414
+Cancer-specific,lusc,ECD-CDGI,AUROC,3,0.8298780000000001
+Cancer-specific,lusc,ECD-CDGI,AUROC,4,0.9052846000000001
+Cancer-specific,lusc,ECD-CDGI,AUROC,5,0.8199186
+Cancer-specific,lusc,ECD-CDGI,AUROC,6,0.8363822000000001
+Cancer-specific,lusc,ECD-CDGI,AUROC,7,0.882114
+Cancer-specific,lusc,ECD-CDGI,AUROC,8,0.9164633999999999
+Cancer-specific,lusc,ECD-CDGI,AUROC,9,0.8898375999999999
+Cancer-specific,lusc,ECD-CDGI,AUROC,10,0.8526422
+Cancer-specific,lusc,EMOGI,AUPRC,1,0.17579340000000002
+Cancer-specific,lusc,EMOGI,AUPRC,2,0.1163682
+Cancer-specific,lusc,EMOGI,AUPRC,3,0.20386580000000004
+Cancer-specific,lusc,EMOGI,AUPRC,4,0.1811792
+Cancer-specific,lusc,EMOGI,AUPRC,5,0.128703
+Cancer-specific,lusc,EMOGI,AUPRC,6,0.09573519999999999
+Cancer-specific,lusc,EMOGI,AUPRC,7,0.180212
+Cancer-specific,lusc,EMOGI,AUPRC,8,0.052403599999999995
+Cancer-specific,lusc,EMOGI,AUPRC,9,0.24574980000000002
+Cancer-specific,lusc,EMOGI,AUPRC,10,0.260228
+Cancer-specific,lusc,EMOGI,AUROC,1,0.6699185999999999
+Cancer-specific,lusc,EMOGI,AUROC,2,0.7565042
+Cancer-specific,lusc,EMOGI,AUROC,3,0.7300812000000001
+Cancer-specific,lusc,EMOGI,AUROC,4,0.8504064
+Cancer-specific,lusc,EMOGI,AUROC,5,0.8455286
+Cancer-specific,lusc,EMOGI,AUROC,6,0.6815042
+Cancer-specific,lusc,EMOGI,AUROC,7,0.7932928
+Cancer-specific,lusc,EMOGI,AUROC,8,0.7217480000000001
+Cancer-specific,lusc,EMOGI,AUROC,9,0.8418699999999999
+Cancer-specific,lusc,EMOGI,AUROC,10,0.8004066
+Cancer-specific,lusc,GAT,AUPRC,1,0.08203379200000001
+Cancer-specific,lusc,GAT,AUPRC,2,0.053078658
+Cancer-specific,lusc,GAT,AUPRC,3,0.076752698
+Cancer-specific,lusc,GAT,AUPRC,4,0.06046974200000001
+Cancer-specific,lusc,GAT,AUPRC,5,0.064230766
+Cancer-specific,lusc,GAT,AUPRC,6,0.06295869400000001
+Cancer-specific,lusc,GAT,AUPRC,7,0.06862857
+Cancer-specific,lusc,GAT,AUPRC,8,0.11907069199999998
+Cancer-specific,lusc,GAT,AUPRC,9,0.049419314000000006
+Cancer-specific,lusc,GAT,AUPRC,10,0.05418370400000001
+Cancer-specific,lusc,GAT,AUROC,1,0.90813008
+Cancer-specific,lusc,GAT,AUROC,2,0.850813008
+Cancer-specific,lusc,GAT,AUROC,3,0.8591463420000001
+Cancer-specific,lusc,GAT,AUROC,4,0.8471544699999999
+Cancer-specific,lusc,GAT,AUROC,5,0.906707316
+Cancer-specific,lusc,GAT,AUROC,6,0.859349592
+Cancer-specific,lusc,GAT,AUROC,7,0.917886178
+Cancer-specific,lusc,GAT,AUROC,8,0.896341462
+Cancer-specific,lusc,GAT,AUROC,9,0.859552846
+Cancer-specific,lusc,GAT,AUROC,10,0.8436991879999999
+Cancer-specific,lusc,MNGCL,AUPRC,1,0.172276342
+Cancer-specific,lusc,MNGCL,AUPRC,2,0.260673514
+Cancer-specific,lusc,MNGCL,AUPRC,3,0.176701364
+Cancer-specific,lusc,MNGCL,AUPRC,4,0.181844238
+Cancer-specific,lusc,MNGCL,AUPRC,5,0.291196908
+Cancer-specific,lusc,MNGCL,AUPRC,6,0.239698012
+Cancer-specific,lusc,MNGCL,AUPRC,7,0.25672266
+Cancer-specific,lusc,MNGCL,AUPRC,8,0.16638077
+Cancer-specific,lusc,MNGCL,AUPRC,9,0.17458700600000002
+Cancer-specific,lusc,MNGCL,AUPRC,10,0.225890804
+Cancer-specific,lusc,MNGCL,AUROC,1,0.885365852
+Cancer-specific,lusc,MNGCL,AUROC,2,0.84613821
+Cancer-specific,lusc,MNGCL,AUROC,3,0.8778455280000002
+Cancer-specific,lusc,MNGCL,AUROC,4,0.851626016
+Cancer-specific,lusc,MNGCL,AUROC,5,0.861788618
+Cancer-specific,lusc,MNGCL,AUROC,6,0.873373982
+Cancer-specific,lusc,MNGCL,AUROC,7,0.874390244
+Cancer-specific,lusc,MNGCL,AUROC,8,0.8520325200000001
+Cancer-specific,lusc,MNGCL,AUROC,9,0.8563008159999999
+Cancer-specific,lusc,MNGCL,AUROC,10,0.819715446
+Cancer-specific,lusc,MTGCN,AUPRC,1,0.2442122
+Cancer-specific,lusc,MTGCN,AUPRC,2,0.28777600000000003
+Cancer-specific,lusc,MTGCN,AUPRC,3,0.389984
+Cancer-specific,lusc,MTGCN,AUPRC,4,0.2705384
+Cancer-specific,lusc,MTGCN,AUPRC,5,0.2378824
+Cancer-specific,lusc,MTGCN,AUPRC,6,0.262338
+Cancer-specific,lusc,MTGCN,AUPRC,7,0.28273539999999997
+Cancer-specific,lusc,MTGCN,AUPRC,8,0.2396278
+Cancer-specific,lusc,MTGCN,AUPRC,9,0.2530544
+Cancer-specific,lusc,MTGCN,AUPRC,10,0.3250172
+Cancer-specific,lusc,MTGCN,AUROC,1,0.8905264
+Cancer-specific,lusc,MTGCN,AUROC,2,0.8922656
+Cancer-specific,lusc,MTGCN,AUROC,3,0.8849427999999999
+Cancer-specific,lusc,MTGCN,AUROC,4,0.8681006
+Cancer-specific,lusc,MTGCN,AUROC,5,0.878993
+Cancer-specific,lusc,MTGCN,AUROC,6,0.8771623999999999
+Cancer-specific,lusc,MTGCN,AUROC,7,0.8876885999999999
+Cancer-specific,lusc,MTGCN,AUROC,8,0.8774369999999999
+Cancer-specific,lusc,MTGCN,AUROC,9,0.8702976
+Cancer-specific,lusc,MTGCN,AUROC,10,0.8760640000000001
+Cancer-specific,lusc,SAGE,AUPRC,1,0.20917358400000002
+Cancer-specific,lusc,SAGE,AUPRC,2,0.189570076
+Cancer-specific,lusc,SAGE,AUPRC,3,0.29462026
+Cancer-specific,lusc,SAGE,AUPRC,4,0.19486866200000003
+Cancer-specific,lusc,SAGE,AUPRC,5,0.140270894
+Cancer-specific,lusc,SAGE,AUPRC,6,0.20552224400000002
+Cancer-specific,lusc,SAGE,AUPRC,7,0.21414971600000002
+Cancer-specific,lusc,SAGE,AUPRC,8,0.127421198
+Cancer-specific,lusc,SAGE,AUPRC,9,0.228826302
+Cancer-specific,lusc,SAGE,AUPRC,10,0.269501216
+Cancer-specific,lusc,SAGE,AUROC,1,0.936178862
+Cancer-specific,lusc,SAGE,AUROC,2,0.9280487799999999
+Cancer-specific,lusc,SAGE,AUROC,3,0.932113822
+Cancer-specific,lusc,SAGE,AUROC,4,0.9325203240000001
+Cancer-specific,lusc,SAGE,AUROC,5,0.9406504059999999
+Cancer-specific,lusc,SAGE,AUROC,6,0.9310975619999999
+Cancer-specific,lusc,SAGE,AUROC,7,0.9262195120000001
+Cancer-specific,lusc,SAGE,AUROC,8,0.919918698
+Cancer-specific,lusc,SAGE,AUROC,9,0.94166667
+Cancer-specific,lusc,SAGE,AUROC,10,0.937398372
+Cancer-specific,prad,BIMODriver,AUPRC,1,0.6479161999999999
+Cancer-specific,prad,BIMODriver,AUPRC,2,0.6645220000000001
+Cancer-specific,prad,BIMODriver,AUPRC,3,0.5503386000000001
+Cancer-specific,prad,BIMODriver,AUPRC,4,0.6223228
+Cancer-specific,prad,BIMODriver,AUPRC,5,0.6010852
+Cancer-specific,prad,BIMODriver,AUPRC,6,0.6115809999999999
+Cancer-specific,prad,BIMODriver,AUPRC,7,0.6499458
+Cancer-specific,prad,BIMODriver,AUPRC,8,0.625151
+Cancer-specific,prad,BIMODriver,AUPRC,9,0.6280628
+Cancer-specific,prad,BIMODriver,AUPRC,10,0.6246883999999999
+Cancer-specific,prad,BIMODriver,AUROC,1,0.942334
+Cancer-specific,prad,BIMODriver,AUROC,2,0.9397712
+Cancer-specific,prad,BIMODriver,AUROC,3,0.9390618
+Cancer-specific,prad,BIMODriver,AUROC,4,0.9373455999999999
+Cancer-specific,prad,BIMODriver,AUROC,5,0.9365675999999998
+Cancer-specific,prad,BIMODriver,AUROC,6,0.9342333999999999
+Cancer-specific,prad,BIMODriver,AUROC,7,0.9340048
+Cancer-specific,prad,BIMODriver,AUROC,8,0.9338216000000001
+Cancer-specific,prad,BIMODriver,AUROC,9,0.9335468
+Cancer-specific,prad,BIMODriver,AUROC,10,0.9323113999999999
+Cancer-specific,prad,ChebNet,AUPRC,1,0.5725686079999999
+Cancer-specific,prad,ChebNet,AUPRC,2,0.599096654
+Cancer-specific,prad,ChebNet,AUPRC,3,0.607513862
+Cancer-specific,prad,ChebNet,AUPRC,4,0.579784206
+Cancer-specific,prad,ChebNet,AUPRC,5,0.59150496
+Cancer-specific,prad,ChebNet,AUPRC,6,0.5874676719999999
+Cancer-specific,prad,ChebNet,AUPRC,7,0.609422984
+Cancer-specific,prad,ChebNet,AUPRC,8,0.5611326680000001
+Cancer-specific,prad,ChebNet,AUPRC,9,0.547144764
+Cancer-specific,prad,ChebNet,AUPRC,10,0.571904908
+Cancer-specific,prad,ChebNet,AUROC,1,0.905313588
+Cancer-specific,prad,ChebNet,AUROC,2,0.911585366
+Cancer-specific,prad,ChebNet,AUROC,3,0.9137630659999999
+Cancer-specific,prad,ChebNet,AUROC,4,0.903658536
+Cancer-specific,prad,ChebNet,AUROC,5,0.908449478
+Cancer-specific,prad,ChebNet,AUROC,6,0.9041811839999999
+Cancer-specific,prad,ChebNet,AUROC,7,0.8901567960000001
+Cancer-specific,prad,ChebNet,AUROC,8,0.908885018
+Cancer-specific,prad,ChebNet,AUROC,9,0.9108013939999999
+Cancer-specific,prad,ChebNet,AUROC,10,0.9068815320000001
+Cancer-specific,prad,DISFusion,AUPRC,1,0.499233
+Cancer-specific,prad,DISFusion,AUPRC,2,0.5073002
+Cancer-specific,prad,DISFusion,AUPRC,3,0.5063093999999999
+Cancer-specific,prad,DISFusion,AUPRC,4,0.442967
+Cancer-specific,prad,DISFusion,AUPRC,5,0.5822082
+Cancer-specific,prad,DISFusion,AUPRC,6,0.5068193999999999
+Cancer-specific,prad,DISFusion,AUPRC,7,0.549822
+Cancer-specific,prad,DISFusion,AUPRC,8,0.49587819999999994
+Cancer-specific,prad,DISFusion,AUPRC,9,0.5177271999999999
+Cancer-specific,prad,DISFusion,AUPRC,10,0.46635679999999996
+Cancer-specific,prad,DISFusion,AUROC,1,0.9236064
+Cancer-specific,prad,DISFusion,AUROC,2,0.8697734
+Cancer-specific,prad,DISFusion,AUROC,3,0.9284842
+Cancer-specific,prad,DISFusion,AUROC,4,0.8749998
+Cancer-specific,prad,DISFusion,AUROC,5,0.9086238
+Cancer-specific,prad,DISFusion,AUROC,6,0.9123694
+Cancer-specific,prad,DISFusion,AUROC,7,0.9397211999999999
+Cancer-specific,prad,DISFusion,AUROC,8,0.8725606000000001
+Cancer-specific,prad,DISFusion,AUROC,9,0.9074912000000002
+Cancer-specific,prad,DISFusion,AUROC,10,0.8858014000000001
+Cancer-specific,prad,DISHyper,AUPRC,1,0.3868848
+Cancer-specific,prad,DISHyper,AUPRC,2,0.44881279999999996
+Cancer-specific,prad,DISHyper,AUPRC,3,0.5106434
+Cancer-specific,prad,DISHyper,AUPRC,4,0.516373
+Cancer-specific,prad,DISHyper,AUPRC,5,0.5074069999999999
+Cancer-specific,prad,DISHyper,AUPRC,6,0.45144719999999994
+Cancer-specific,prad,DISHyper,AUPRC,7,0.36118900000000004
+Cancer-specific,prad,DISHyper,AUPRC,8,0.48073940000000004
+Cancer-specific,prad,DISHyper,AUPRC,9,0.4104122
+Cancer-specific,prad,DISHyper,AUPRC,10,0.46553439999999996
+Cancer-specific,prad,DISHyper,AUROC,1,0.9269166
+Cancer-specific,prad,DISHyper,AUROC,2,0.8847558
+Cancer-specific,prad,DISHyper,AUROC,3,0.8988676
+Cancer-specific,prad,DISHyper,AUROC,4,0.8656796
+Cancer-specific,prad,DISHyper,AUROC,5,0.8975607999999999
+Cancer-specific,prad,DISHyper,AUROC,6,0.8640243999999999
+Cancer-specific,prad,DISHyper,AUROC,7,0.9202961999999999
+Cancer-specific,prad,DISHyper,AUROC,8,0.9078398
+Cancer-specific,prad,DISHyper,AUROC,9,0.8838848
+Cancer-specific,prad,DISHyper,AUROC,10,0.8669862
+Cancer-specific,prad,ECD-CDGI,AUPRC,1,0.48516339999999997
+Cancer-specific,prad,ECD-CDGI,AUPRC,2,0.5914796
+Cancer-specific,prad,ECD-CDGI,AUPRC,3,0.5850998000000001
+Cancer-specific,prad,ECD-CDGI,AUPRC,4,0.5525466
+Cancer-specific,prad,ECD-CDGI,AUPRC,5,0.5426439999999999
+Cancer-specific,prad,ECD-CDGI,AUPRC,6,0.4608042
+Cancer-specific,prad,ECD-CDGI,AUPRC,7,0.4251136
+Cancer-specific,prad,ECD-CDGI,AUPRC,8,0.5924238
+Cancer-specific,prad,ECD-CDGI,AUPRC,9,0.518308
+Cancer-specific,prad,ECD-CDGI,AUPRC,10,0.643554
+Cancer-specific,prad,ECD-CDGI,AUROC,1,0.879094
+Cancer-specific,prad,ECD-CDGI,AUROC,2,0.9238676
+Cancer-specific,prad,ECD-CDGI,AUROC,3,0.9662894
+Cancer-specific,prad,ECD-CDGI,AUROC,4,0.9062718000000001
+Cancer-specific,prad,ECD-CDGI,AUROC,5,0.9140244
+Cancer-specific,prad,ECD-CDGI,AUROC,6,0.8980836
+Cancer-specific,prad,ECD-CDGI,AUROC,7,0.8544424000000002
+Cancer-specific,prad,ECD-CDGI,AUROC,8,0.8996516
+Cancer-specific,prad,ECD-CDGI,AUROC,9,0.8670732000000001
+Cancer-specific,prad,ECD-CDGI,AUROC,10,0.8858886
+Cancer-specific,prad,EMOGI,AUPRC,1,0.6270209999999999
+Cancer-specific,prad,EMOGI,AUPRC,2,0.40639339999999996
+Cancer-specific,prad,EMOGI,AUPRC,3,0.5854152000000001
+Cancer-specific,prad,EMOGI,AUPRC,4,0.6029321999999999
+Cancer-specific,prad,EMOGI,AUPRC,5,0.5081938
+Cancer-specific,prad,EMOGI,AUPRC,6,0.5983571999999999
+Cancer-specific,prad,EMOGI,AUPRC,7,0.5164904
+Cancer-specific,prad,EMOGI,AUPRC,8,0.41725779999999996
+Cancer-specific,prad,EMOGI,AUPRC,9,0.5772874
+Cancer-specific,prad,EMOGI,AUPRC,10,0.5528448
+Cancer-specific,prad,EMOGI,AUROC,1,0.8587978
+Cancer-specific,prad,EMOGI,AUROC,2,0.8975610000000002
+Cancer-specific,prad,EMOGI,AUROC,3,0.894425
+Cancer-specific,prad,EMOGI,AUROC,4,0.9463414
+Cancer-specific,prad,EMOGI,AUROC,5,0.8811848
+Cancer-specific,prad,EMOGI,AUROC,6,0.9126306
+Cancer-specific,prad,EMOGI,AUROC,7,0.9415941999999999
+Cancer-specific,prad,EMOGI,AUROC,8,0.8245646000000001
+Cancer-specific,prad,EMOGI,AUROC,9,0.9635454000000001
+Cancer-specific,prad,EMOGI,AUROC,10,0.9229968
+Cancer-specific,prad,GAT,AUPRC,1,0.11433701999999998
+Cancer-specific,prad,GAT,AUPRC,2,0.09841974
+Cancer-specific,prad,GAT,AUPRC,3,0.11608977000000001
+Cancer-specific,prad,GAT,AUPRC,4,0.075618286
+Cancer-specific,prad,GAT,AUPRC,5,0.105713744
+Cancer-specific,prad,GAT,AUPRC,6,0.091522386
+Cancer-specific,prad,GAT,AUPRC,7,0.13136825400000002
+Cancer-specific,prad,GAT,AUPRC,8,0.10775056000000001
+Cancer-specific,prad,GAT,AUPRC,9,0.1242759
+Cancer-specific,prad,GAT,AUPRC,10,0.107236222
+Cancer-specific,prad,GAT,AUROC,1,0.8456446
+Cancer-specific,prad,GAT,AUROC,2,0.8396341459999999
+Cancer-specific,prad,GAT,AUROC,3,0.799651568
+Cancer-specific,prad,GAT,AUROC,4,0.8134146360000001
+Cancer-specific,prad,GAT,AUROC,5,0.833797908
+Cancer-specific,prad,GAT,AUROC,6,0.8259581879999999
+Cancer-specific,prad,GAT,AUROC,7,0.8389372820000001
+Cancer-specific,prad,GAT,AUROC,8,0.787804878
+Cancer-specific,prad,GAT,AUROC,9,0.862543556
+Cancer-specific,prad,GAT,AUROC,10,0.8226480840000001
+Cancer-specific,prad,MNGCL,AUPRC,1,0.627423214
+Cancer-specific,prad,MNGCL,AUPRC,2,0.608048312
+Cancer-specific,prad,MNGCL,AUPRC,3,0.650992586
+Cancer-specific,prad,MNGCL,AUPRC,4,0.632206206
+Cancer-specific,prad,MNGCL,AUPRC,5,0.661464438
+Cancer-specific,prad,MNGCL,AUPRC,6,0.6323959199999999
+Cancer-specific,prad,MNGCL,AUPRC,7,0.6891471919999999
+Cancer-specific,prad,MNGCL,AUPRC,8,0.64994985
+Cancer-specific,prad,MNGCL,AUPRC,9,0.6776862939999999
+Cancer-specific,prad,MNGCL,AUPRC,10,0.658885058
+Cancer-specific,prad,MNGCL,AUROC,1,0.9630662040000001
+Cancer-specific,prad,MNGCL,AUROC,2,0.96367596
+Cancer-specific,prad,MNGCL,AUROC,3,0.9649825799999998
+Cancer-specific,prad,MNGCL,AUROC,4,0.9648954719999999
+Cancer-specific,prad,MNGCL,AUROC,5,0.9662892
+Cancer-specific,prad,MNGCL,AUROC,6,0.9648083640000001
+Cancer-specific,prad,MNGCL,AUROC,7,0.9675087120000001
+Cancer-specific,prad,MNGCL,AUROC,8,0.9656794439999998
+Cancer-specific,prad,MNGCL,AUROC,9,0.9675087120000001
+Cancer-specific,prad,MNGCL,AUROC,10,0.9642857159999998
+Cancer-specific,prad,MTGCN,AUPRC,1,0.5333664
+Cancer-specific,prad,MTGCN,AUPRC,2,0.5975566
+Cancer-specific,prad,MTGCN,AUPRC,3,0.5707253999999999
+Cancer-specific,prad,MTGCN,AUPRC,4,0.6062502
+Cancer-specific,prad,MTGCN,AUPRC,5,0.5269212
+Cancer-specific,prad,MTGCN,AUPRC,6,0.550107
+Cancer-specific,prad,MTGCN,AUPRC,7,0.55655
+Cancer-specific,prad,MTGCN,AUPRC,8,0.5701828
+Cancer-specific,prad,MTGCN,AUPRC,9,0.5603608
+Cancer-specific,prad,MTGCN,AUPRC,10,0.5981254
+Cancer-specific,prad,MTGCN,AUROC,1,0.9081464
+Cancer-specific,prad,MTGCN,AUROC,2,0.9180778
+Cancer-specific,prad,MTGCN,AUROC,3,0.9097484000000001
+Cancer-specific,prad,MTGCN,AUROC,4,0.9213728000000001
+Cancer-specific,prad,MTGCN,AUROC,5,0.9179406
+Cancer-specific,prad,MTGCN,AUROC,6,0.9155606000000001
+Cancer-specific,prad,MTGCN,AUROC,7,0.9167966
+Cancer-specific,prad,MTGCN,AUROC,8,0.9189932000000001
+Cancer-specific,prad,MTGCN,AUROC,9,0.9135012
+Cancer-specific,prad,MTGCN,AUROC,10,0.9128144
+Cancer-specific,prad,SAGE,AUPRC,1,0.372756366
+Cancer-specific,prad,SAGE,AUPRC,2,0.40055821399999997
+Cancer-specific,prad,SAGE,AUPRC,3,0.349598424
+Cancer-specific,prad,SAGE,AUPRC,4,0.371098962
+Cancer-specific,prad,SAGE,AUPRC,5,0.42563911
+Cancer-specific,prad,SAGE,AUPRC,6,0.35185307200000004
+Cancer-specific,prad,SAGE,AUPRC,7,0.422219092
+Cancer-specific,prad,SAGE,AUPRC,8,0.41342037600000003
+Cancer-specific,prad,SAGE,AUPRC,9,0.404993376
+Cancer-specific,prad,SAGE,AUPRC,10,0.40965688799999994
+Cancer-specific,prad,SAGE,AUROC,1,0.9038327519999999
+Cancer-specific,prad,SAGE,AUROC,2,0.891463416
+Cancer-specific,prad,SAGE,AUROC,3,0.9006097580000001
+Cancer-specific,prad,SAGE,AUROC,4,0.9086236939999999
+Cancer-specific,prad,SAGE,AUROC,5,0.9035714279999999
+Cancer-specific,prad,SAGE,AUROC,6,0.892247388
+Cancer-specific,prad,SAGE,AUROC,7,0.9008710799999999
+Cancer-specific,prad,SAGE,AUROC,8,0.891811848
+Cancer-specific,prad,SAGE,AUROC,9,0.888588852
+Cancer-specific,prad,SAGE,AUROC,10,0.9031358879999999
+Cancer-specific,stad,BIMODriver,AUPRC,1,0.6456364
+Cancer-specific,stad,BIMODriver,AUPRC,2,0.6493583999999999
+Cancer-specific,stad,BIMODriver,AUPRC,3,0.6148148
+Cancer-specific,stad,BIMODriver,AUPRC,4,0.5844541999999999
+Cancer-specific,stad,BIMODriver,AUPRC,5,0.5321710000000001
+Cancer-specific,stad,BIMODriver,AUPRC,6,0.5793264
+Cancer-specific,stad,BIMODriver,AUPRC,7,0.583075
+Cancer-specific,stad,BIMODriver,AUPRC,8,0.5846125999999999
+Cancer-specific,stad,BIMODriver,AUPRC,9,0.5477844000000001
+Cancer-specific,stad,BIMODriver,AUPRC,10,0.6128558
+Cancer-specific,stad,BIMODriver,AUROC,1,0.9319057999999998
+Cancer-specific,stad,BIMODriver,AUROC,2,0.9315788000000002
+Cancer-specific,stad,BIMODriver,AUROC,3,0.9239294000000001
+Cancer-specific,stad,BIMODriver,AUROC,4,0.9196795999999999
+Cancer-specific,stad,BIMODriver,AUROC,5,0.9191074
+Cancer-specific,stad,BIMODriver,AUROC,6,0.9183392000000001
+Cancer-specific,stad,BIMODriver,AUROC,7,0.9142856
+Cancer-specific,stad,BIMODriver,AUROC,8,0.9122261999999999
+Cancer-specific,stad,BIMODriver,AUROC,9,0.9114090000000001
+Cancer-specific,stad,BIMODriver,AUROC,10,0.910984
+Cancer-specific,stad,ChebNet,AUPRC,1,0.5425965720000001
+Cancer-specific,stad,ChebNet,AUPRC,2,0.5329989319999999
+Cancer-specific,stad,ChebNet,AUPRC,3,0.5399144079999999
+Cancer-specific,stad,ChebNet,AUPRC,4,0.53563626
+Cancer-specific,stad,ChebNet,AUPRC,5,0.5530426900000001
+Cancer-specific,stad,ChebNet,AUPRC,6,0.537246038
+Cancer-specific,stad,ChebNet,AUPRC,7,0.56948644
+Cancer-specific,stad,ChebNet,AUPRC,8,0.534096238
+Cancer-specific,stad,ChebNet,AUPRC,9,0.5615183800000001
+Cancer-specific,stad,ChebNet,AUPRC,10,0.51284074
+Cancer-specific,stad,ChebNet,AUROC,1,0.8730487819999999
+Cancer-specific,stad,ChebNet,AUROC,2,0.87765244
+Cancer-specific,stad,ChebNet,AUROC,3,0.884146344
+Cancer-specific,stad,ChebNet,AUROC,4,0.886280488
+Cancer-specific,stad,ChebNet,AUROC,5,0.8685975599999999
+Cancer-specific,stad,ChebNet,AUROC,6,0.8791463399999999
+Cancer-specific,stad,ChebNet,AUROC,7,0.892682926
+Cancer-specific,stad,ChebNet,AUROC,8,0.879542682
+Cancer-specific,stad,ChebNet,AUROC,9,0.865945122
+Cancer-specific,stad,ChebNet,AUROC,10,0.8877439020000001
+Cancer-specific,stad,DISFusion,AUPRC,1,0.4234064
+Cancer-specific,stad,DISFusion,AUPRC,2,0.44264939999999997
+Cancer-specific,stad,DISFusion,AUPRC,3,0.5120622
+Cancer-specific,stad,DISFusion,AUPRC,4,0.4797544
+Cancer-specific,stad,DISFusion,AUPRC,5,0.44530059999999994
+Cancer-specific,stad,DISFusion,AUPRC,6,0.49078640000000007
+Cancer-specific,stad,DISFusion,AUPRC,7,0.3994216
+Cancer-specific,stad,DISFusion,AUPRC,8,0.40674299999999997
+Cancer-specific,stad,DISFusion,AUPRC,9,0.5137967999999999
+Cancer-specific,stad,DISFusion,AUPRC,10,0.511336
+Cancer-specific,stad,DISFusion,AUROC,1,0.8867682
+Cancer-specific,stad,DISFusion,AUROC,2,0.8796341999999999
+Cancer-specific,stad,DISFusion,AUROC,3,0.8725609999999999
+Cancer-specific,stad,DISFusion,AUROC,4,0.905244
+Cancer-specific,stad,DISFusion,AUROC,5,0.8856097999999999
+Cancer-specific,stad,DISFusion,AUROC,6,0.9046339999999999
+Cancer-specific,stad,DISFusion,AUROC,7,0.8423171999999999
+Cancer-specific,stad,DISFusion,AUROC,8,0.8698172
+Cancer-specific,stad,DISFusion,AUROC,9,0.8809756
+Cancer-specific,stad,DISFusion,AUROC,10,0.912195
+Cancer-specific,stad,DISHyper,AUPRC,1,0.41435400000000006
+Cancer-specific,stad,DISHyper,AUPRC,2,0.47550859999999995
+Cancer-specific,stad,DISHyper,AUPRC,3,0.49148820000000004
+Cancer-specific,stad,DISHyper,AUPRC,4,0.46563820000000006
+Cancer-specific,stad,DISHyper,AUPRC,5,0.4282458
+Cancer-specific,stad,DISHyper,AUPRC,6,0.4126284
+Cancer-specific,stad,DISHyper,AUPRC,7,0.4854906
+Cancer-specific,stad,DISHyper,AUPRC,8,0.39352059999999994
+Cancer-specific,stad,DISHyper,AUPRC,9,0.4015588
+Cancer-specific,stad,DISHyper,AUPRC,10,0.403632
+Cancer-specific,stad,DISHyper,AUROC,1,0.8861585999999999
+Cancer-specific,stad,DISHyper,AUROC,2,0.8844512
+Cancer-specific,stad,DISHyper,AUROC,3,0.8858537999999999
+Cancer-specific,stad,DISHyper,AUROC,4,0.8814024
+Cancer-specific,stad,DISHyper,AUROC,5,0.8798172000000001
+Cancer-specific,stad,DISHyper,AUROC,6,0.8656706
+Cancer-specific,stad,DISHyper,AUROC,7,0.8795120000000001
+Cancer-specific,stad,DISHyper,AUROC,8,0.8961586
+Cancer-specific,stad,DISHyper,AUROC,9,0.8650610000000001
+Cancer-specific,stad,DISHyper,AUROC,10,0.8574999999999999
+Cancer-specific,stad,ECD-CDGI,AUPRC,1,0.45490519999999995
+Cancer-specific,stad,ECD-CDGI,AUPRC,2,0.5362866000000001
+Cancer-specific,stad,ECD-CDGI,AUPRC,3,0.5165371999999999
+Cancer-specific,stad,ECD-CDGI,AUPRC,4,0.5425356000000001
+Cancer-specific,stad,ECD-CDGI,AUPRC,5,0.41032879999999994
+Cancer-specific,stad,ECD-CDGI,AUPRC,6,0.48532359999999997
+Cancer-specific,stad,ECD-CDGI,AUPRC,7,0.51869
+Cancer-specific,stad,ECD-CDGI,AUPRC,8,0.47700200000000004
+Cancer-specific,stad,ECD-CDGI,AUPRC,9,0.4714728
+Cancer-specific,stad,ECD-CDGI,AUPRC,10,0.5147712
+Cancer-specific,stad,ECD-CDGI,AUROC,1,0.8918902
+Cancer-specific,stad,ECD-CDGI,AUROC,2,0.9307928000000001
+Cancer-specific,stad,ECD-CDGI,AUROC,3,0.9046339999999999
+Cancer-specific,stad,ECD-CDGI,AUROC,4,0.8865852000000001
+Cancer-specific,stad,ECD-CDGI,AUROC,5,0.8674390000000001
+Cancer-specific,stad,ECD-CDGI,AUROC,6,0.890244
+Cancer-specific,stad,ECD-CDGI,AUROC,7,0.9025612000000001
+Cancer-specific,stad,ECD-CDGI,AUROC,8,0.9201827999999999
+Cancer-specific,stad,ECD-CDGI,AUROC,9,0.9015856
+Cancer-specific,stad,ECD-CDGI,AUROC,10,0.9072558
+Cancer-specific,stad,EMOGI,AUPRC,1,0.3309834
+Cancer-specific,stad,EMOGI,AUPRC,2,0.4042567999999999
+Cancer-specific,stad,EMOGI,AUPRC,3,0.3680896
+Cancer-specific,stad,EMOGI,AUPRC,4,0.36402460000000003
+Cancer-specific,stad,EMOGI,AUPRC,5,0.5234836
+Cancer-specific,stad,EMOGI,AUPRC,6,0.34772499999999995
+Cancer-specific,stad,EMOGI,AUPRC,7,0.38848520000000003
+Cancer-specific,stad,EMOGI,AUPRC,8,0.3388908
+Cancer-specific,stad,EMOGI,AUPRC,9,0.33559700000000003
+Cancer-specific,stad,EMOGI,AUPRC,10,0.3803646
+Cancer-specific,stad,EMOGI,AUROC,1,0.8050608
+Cancer-specific,stad,EMOGI,AUROC,2,0.8410974
+Cancer-specific,stad,EMOGI,AUROC,3,0.8345428
+Cancer-specific,stad,EMOGI,AUROC,4,0.8060366
+Cancer-specific,stad,EMOGI,AUROC,5,0.8242074
+Cancer-specific,stad,EMOGI,AUROC,6,0.8104876000000001
+Cancer-specific,stad,EMOGI,AUROC,7,0.8765243999999999
+Cancer-specific,stad,EMOGI,AUROC,8,0.8242072
+Cancer-specific,stad,EMOGI,AUROC,9,0.8287804
+Cancer-specific,stad,EMOGI,AUROC,10,0.8082926
+Cancer-specific,stad,GAT,AUPRC,1,0.10006481599999999
+Cancer-specific,stad,GAT,AUPRC,2,0.09038421999999999
+Cancer-specific,stad,GAT,AUPRC,3,0.10827807200000002
+Cancer-specific,stad,GAT,AUPRC,4,0.10377942000000002
+Cancer-specific,stad,GAT,AUPRC,5,0.124243294
+Cancer-specific,stad,GAT,AUPRC,6,0.110842598
+Cancer-specific,stad,GAT,AUPRC,7,0.11694175
+Cancer-specific,stad,GAT,AUPRC,8,0.12078028599999999
+Cancer-specific,stad,GAT,AUPRC,9,0.10275061
+Cancer-specific,stad,GAT,AUPRC,10,0.12088666399999999
+Cancer-specific,stad,GAT,AUROC,1,0.7857926840000001
+Cancer-specific,stad,GAT,AUROC,2,0.7439024399999999
+Cancer-specific,stad,GAT,AUROC,3,0.7794512199999999
+Cancer-specific,stad,GAT,AUROC,4,0.7484146340000001
+Cancer-specific,stad,GAT,AUROC,5,0.758658538
+Cancer-specific,stad,GAT,AUROC,6,0.7534146340000001
+Cancer-specific,stad,GAT,AUROC,7,0.771707316
+Cancer-specific,stad,GAT,AUROC,8,0.7821951219999999
+Cancer-specific,stad,GAT,AUROC,9,0.763414632
+Cancer-specific,stad,GAT,AUROC,10,0.765304878
+Cancer-specific,stad,MNGCL,AUPRC,1,0.498619104
+Cancer-specific,stad,MNGCL,AUPRC,2,0.524821078
+Cancer-specific,stad,MNGCL,AUPRC,3,0.5122286739999999
+Cancer-specific,stad,MNGCL,AUPRC,4,0.474646872
+Cancer-specific,stad,MNGCL,AUPRC,5,0.48799782799999997
+Cancer-specific,stad,MNGCL,AUPRC,6,0.509383724
+Cancer-specific,stad,MNGCL,AUPRC,7,0.501887938
+Cancer-specific,stad,MNGCL,AUPRC,8,0.501768408
+Cancer-specific,stad,MNGCL,AUPRC,9,0.47536720599999993
+Cancer-specific,stad,MNGCL,AUPRC,10,0.508046096
+Cancer-specific,stad,MNGCL,AUROC,1,0.89207317
+Cancer-specific,stad,MNGCL,AUROC,2,0.8877439020000001
+Cancer-specific,stad,MNGCL,AUROC,3,0.883597562
+Cancer-specific,stad,MNGCL,AUROC,4,0.887926828
+Cancer-specific,stad,MNGCL,AUROC,5,0.872743904
+Cancer-specific,stad,MNGCL,AUROC,6,0.8750609739999999
+Cancer-specific,stad,MNGCL,AUROC,7,0.88597561
+Cancer-specific,stad,MNGCL,AUROC,8,0.8772560979999999
+Cancer-specific,stad,MNGCL,AUROC,9,0.88945122
+Cancer-specific,stad,MNGCL,AUROC,10,0.8696341479999999
+Cancer-specific,stad,MTGCN,AUPRC,1,0.5513374000000001
+Cancer-specific,stad,MTGCN,AUPRC,2,0.5467616
+Cancer-specific,stad,MTGCN,AUPRC,3,0.5715154
+Cancer-specific,stad,MTGCN,AUPRC,4,0.5551808
+Cancer-specific,stad,MTGCN,AUPRC,5,0.5254808000000001
+Cancer-specific,stad,MTGCN,AUPRC,6,0.5462948
+Cancer-specific,stad,MTGCN,AUPRC,7,0.5050154
+Cancer-specific,stad,MTGCN,AUPRC,8,0.5331768
+Cancer-specific,stad,MTGCN,AUPRC,9,0.535822
+Cancer-specific,stad,MTGCN,AUPRC,10,0.5528025999999999
+Cancer-specific,stad,MTGCN,AUROC,1,0.9230791999999999
+Cancer-specific,stad,MTGCN,AUROC,2,0.9085648
+Cancer-specific,stad,MTGCN,AUROC,3,0.91069
+Cancer-specific,stad,MTGCN,AUROC,4,0.9198756000000001
+Cancer-specific,stad,MTGCN,AUROC,5,0.9086956
+Cancer-specific,stad,MTGCN,AUROC,6,0.9063748
+Cancer-specific,stad,MTGCN,AUROC,7,0.911213
+Cancer-specific,stad,MTGCN,AUROC,8,0.9198104
+Cancer-specific,stad,MTGCN,AUROC,9,0.9104281999999999
+Cancer-specific,stad,MTGCN,AUROC,10,0.9061783999999999
+Cancer-specific,stad,SAGE,AUPRC,1,0.492066594
+Cancer-specific,stad,SAGE,AUPRC,2,0.5085066460000001
+Cancer-specific,stad,SAGE,AUPRC,3,0.523430994
+Cancer-specific,stad,SAGE,AUPRC,4,0.49751205600000004
+Cancer-specific,stad,SAGE,AUPRC,5,0.503696308
+Cancer-specific,stad,SAGE,AUPRC,6,0.50979708
+Cancer-specific,stad,SAGE,AUPRC,7,0.5052050419999999
+Cancer-specific,stad,SAGE,AUPRC,8,0.509479652
+Cancer-specific,stad,SAGE,AUPRC,9,0.526397178
+Cancer-specific,stad,SAGE,AUPRC,10,0.531594414
+Cancer-specific,stad,SAGE,AUROC,1,0.8524390260000001
+Cancer-specific,stad,SAGE,AUROC,2,0.8645731699999999
+Cancer-specific,stad,SAGE,AUROC,3,0.8505487840000001
+Cancer-specific,stad,SAGE,AUROC,4,0.866585364
+Cancer-specific,stad,SAGE,AUROC,5,0.849146342
+Cancer-specific,stad,SAGE,AUROC,6,0.8564024399999999
+Cancer-specific,stad,SAGE,AUROC,7,0.842256098
+Cancer-specific,stad,SAGE,AUROC,8,0.8579268299999999
+Cancer-specific,stad,SAGE,AUROC,9,0.846097562
+Cancer-specific,stad,SAGE,AUROC,10,0.856585366
+Cancer-specific,thca,BIMODriver,AUPRC,1,0.3402172
+Cancer-specific,thca,BIMODriver,AUPRC,2,0.30124739999999994
+Cancer-specific,thca,BIMODriver,AUPRC,3,0.3283066
+Cancer-specific,thca,BIMODriver,AUPRC,4,0.30091640000000003
+Cancer-specific,thca,BIMODriver,AUPRC,5,0.264958
+Cancer-specific,thca,BIMODriver,AUPRC,6,0.2773016
+Cancer-specific,thca,BIMODriver,AUPRC,7,0.3372512
+Cancer-specific,thca,BIMODriver,AUPRC,8,0.30355
+Cancer-specific,thca,BIMODriver,AUPRC,9,0.25121340000000003
+Cancer-specific,thca,BIMODriver,AUPRC,10,0.3054926
+Cancer-specific,thca,BIMODriver,AUROC,1,0.8536994
+Cancer-specific,thca,BIMODriver,AUROC,2,0.8458812000000002
+Cancer-specific,thca,BIMODriver,AUROC,3,0.8434018
+Cancer-specific,thca,BIMODriver,AUROC,4,0.8373761999999999
+Cancer-specific,thca,BIMODriver,AUROC,5,0.8366896
+Cancer-specific,thca,BIMODriver,AUROC,6,0.8324181999999999
+Cancer-specific,thca,BIMODriver,AUROC,7,0.8319601999999999
+Cancer-specific,thca,BIMODriver,AUROC,8,0.8241035999999999
+Cancer-specific,thca,BIMODriver,AUROC,9,0.8209382
+Cancer-specific,thca,BIMODriver,AUROC,10,0.8207091999999999
+Cancer-specific,thca,ChebNet,AUPRC,1,0.21742544800000002
+Cancer-specific,thca,ChebNet,AUPRC,2,0.190252004
+Cancer-specific,thca,ChebNet,AUPRC,3,0.20353988800000003
+Cancer-specific,thca,ChebNet,AUPRC,4,0.216597706
+Cancer-specific,thca,ChebNet,AUPRC,5,0.19198911600000002
+Cancer-specific,thca,ChebNet,AUPRC,6,0.21523284
+Cancer-specific,thca,ChebNet,AUPRC,7,0.21011944800000001
+Cancer-specific,thca,ChebNet,AUPRC,8,0.213369688
+Cancer-specific,thca,ChebNet,AUPRC,9,0.20911953999999996
+Cancer-specific,thca,ChebNet,AUPRC,10,0.20858077800000002
+Cancer-specific,thca,ChebNet,AUROC,1,0.793563686
+Cancer-specific,thca,ChebNet,AUROC,2,0.778794038
+Cancer-specific,thca,ChebNet,AUROC,3,0.7983062320000001
+Cancer-specific,thca,ChebNet,AUROC,4,0.795460708
+Cancer-specific,thca,ChebNet,AUROC,5,0.7884823839999999
+Cancer-specific,thca,ChebNet,AUROC,6,0.7988482379999999
+Cancer-specific,thca,ChebNet,AUROC,7,0.7977642279999999
+Cancer-specific,thca,ChebNet,AUROC,8,0.791395664
+Cancer-specific,thca,ChebNet,AUROC,9,0.797425474
+Cancer-specific,thca,ChebNet,AUROC,10,0.7802168
+Cancer-specific,thca,DISFusion,AUPRC,1,0.21236800000000003
+Cancer-specific,thca,DISFusion,AUPRC,2,0.21525080000000002
+Cancer-specific,thca,DISFusion,AUPRC,3,0.3139284
+Cancer-specific,thca,DISFusion,AUPRC,4,0.3740242
+Cancer-specific,thca,DISFusion,AUPRC,5,0.3157776
+Cancer-specific,thca,DISFusion,AUPRC,6,0.33559680000000003
+Cancer-specific,thca,DISFusion,AUPRC,7,0.26157400000000003
+Cancer-specific,thca,DISFusion,AUPRC,8,0.3422084
+Cancer-specific,thca,DISFusion,AUPRC,9,0.27251400000000003
+Cancer-specific,thca,DISFusion,AUPRC,10,0.2380024
+Cancer-specific,thca,DISFusion,AUROC,1,0.8077234000000001
+Cancer-specific,thca,DISFusion,AUROC,2,0.8232381999999999
+Cancer-specific,thca,DISFusion,AUROC,3,0.8098238
+Cancer-specific,thca,DISFusion,AUROC,4,0.8213416
+Cancer-specific,thca,DISFusion,AUROC,5,0.8026424000000001
+Cancer-specific,thca,DISFusion,AUROC,6,0.8517614
+Cancer-specific,thca,DISFusion,AUROC,7,0.8012874
+Cancer-specific,thca,DISFusion,AUROC,8,0.8511518
+Cancer-specific,thca,DISFusion,AUROC,9,0.8181574000000001
+Cancer-specific,thca,DISFusion,AUROC,10,0.8338075999999999
+Cancer-specific,thca,DISHyper,AUPRC,1,0.3232848
+Cancer-specific,thca,DISHyper,AUPRC,2,0.2878034
+Cancer-specific,thca,DISHyper,AUPRC,3,0.3301616
+Cancer-specific,thca,DISHyper,AUPRC,4,0.3088496
+Cancer-specific,thca,DISHyper,AUPRC,5,0.24901279999999995
+Cancer-specific,thca,DISHyper,AUPRC,6,0.2623122
+Cancer-specific,thca,DISHyper,AUPRC,7,0.38739559999999995
+Cancer-specific,thca,DISHyper,AUPRC,8,0.3169436
+Cancer-specific,thca,DISHyper,AUPRC,9,0.2894524
+Cancer-specific,thca,DISHyper,AUPRC,10,0.35473459999999996
+Cancer-specific,thca,DISHyper,AUROC,1,0.8505418
+Cancer-specific,thca,DISHyper,AUROC,2,0.8272357999999999
+Cancer-specific,thca,DISHyper,AUROC,3,0.8476288000000001
+Cancer-specific,thca,DISHyper,AUROC,4,0.8729676
+Cancer-specific,thca,DISHyper,AUROC,5,0.837737
+Cancer-specific,thca,DISHyper,AUROC,6,0.8657184000000001
+Cancer-specific,thca,DISHyper,AUROC,7,0.8480352
+Cancer-specific,thca,DISHyper,AUROC,8,0.8491869999999999
+Cancer-specific,thca,DISHyper,AUROC,9,0.8731028000000001
+Cancer-specific,thca,DISHyper,AUROC,10,0.8518969999999999
+Cancer-specific,thca,ECD-CDGI,AUPRC,1,0.3147192
+Cancer-specific,thca,ECD-CDGI,AUPRC,2,0.300854
+Cancer-specific,thca,ECD-CDGI,AUPRC,3,0.31509180000000003
+Cancer-specific,thca,ECD-CDGI,AUPRC,4,0.2447506
+Cancer-specific,thca,ECD-CDGI,AUPRC,5,0.3161412
+Cancer-specific,thca,ECD-CDGI,AUPRC,6,0.25777659999999997
+Cancer-specific,thca,ECD-CDGI,AUPRC,7,0.19231440000000002
+Cancer-specific,thca,ECD-CDGI,AUPRC,8,0.23553220000000002
+Cancer-specific,thca,ECD-CDGI,AUPRC,9,0.2105136
+Cancer-specific,thca,ECD-CDGI,AUPRC,10,0.2535088
+Cancer-specific,thca,ECD-CDGI,AUROC,1,0.8517614
+Cancer-specific,thca,ECD-CDGI,AUROC,2,0.8134148
+Cancer-specific,thca,ECD-CDGI,AUROC,3,0.806504
+Cancer-specific,thca,ECD-CDGI,AUROC,4,0.7917344000000001
+Cancer-specific,thca,ECD-CDGI,AUROC,5,0.8324524
+Cancer-specific,thca,ECD-CDGI,AUROC,6,0.7740516
+Cancer-specific,thca,ECD-CDGI,AUROC,7,0.780149
+Cancer-specific,thca,ECD-CDGI,AUROC,8,0.7882792000000001
+Cancer-specific,thca,ECD-CDGI,AUROC,9,0.8051489999999999
+Cancer-specific,thca,ECD-CDGI,AUROC,10,0.7998643999999999
+Cancer-specific,thca,EMOGI,AUPRC,1,0.28637579999999996
+Cancer-specific,thca,EMOGI,AUPRC,2,0.277286
+Cancer-specific,thca,EMOGI,AUPRC,3,0.24054859999999997
+Cancer-specific,thca,EMOGI,AUPRC,4,0.1982168
+Cancer-specific,thca,EMOGI,AUPRC,5,0.16557159999999999
+Cancer-specific,thca,EMOGI,AUPRC,6,0.24930120000000003
+Cancer-specific,thca,EMOGI,AUPRC,7,0.16147099999999998
+Cancer-specific,thca,EMOGI,AUPRC,8,0.21003180000000002
+Cancer-specific,thca,EMOGI,AUPRC,9,0.20390199999999997
+Cancer-specific,thca,EMOGI,AUPRC,10,0.21360180000000004
+Cancer-specific,thca,EMOGI,AUROC,1,0.7385501999999999
+Cancer-specific,thca,EMOGI,AUROC,2,0.749187
+Cancer-specific,thca,EMOGI,AUROC,3,0.7547424
+Cancer-specific,thca,EMOGI,AUROC,4,0.7239838000000001
+Cancer-specific,thca,EMOGI,AUROC,5,0.7205961999999999
+Cancer-specific,thca,EMOGI,AUROC,6,0.8002032
+Cancer-specific,thca,EMOGI,AUROC,7,0.7599594000000002
+Cancer-specific,thca,EMOGI,AUROC,8,0.7361114
+Cancer-specific,thca,EMOGI,AUROC,9,0.7257452
+Cancer-specific,thca,EMOGI,AUROC,10,0.7392278
+Cancer-specific,thca,GAT,AUPRC,1,0.064621088
+Cancer-specific,thca,GAT,AUPRC,2,0.073486356
+Cancer-specific,thca,GAT,AUPRC,3,0.07214298599999999
+Cancer-specific,thca,GAT,AUPRC,4,0.069265028
+Cancer-specific,thca,GAT,AUPRC,5,0.068684194
+Cancer-specific,thca,GAT,AUPRC,6,0.072281784
+Cancer-specific,thca,GAT,AUPRC,7,0.062102432000000006
+Cancer-specific,thca,GAT,AUPRC,8,0.068781186
+Cancer-specific,thca,GAT,AUPRC,9,0.058809672
+Cancer-specific,thca,GAT,AUPRC,10,0.062864004
+Cancer-specific,thca,GAT,AUROC,1,0.7498644980000001
+Cancer-specific,thca,GAT,AUROC,2,0.788617888
+Cancer-specific,thca,GAT,AUROC,3,0.7952574520000001
+Cancer-specific,thca,GAT,AUROC,4,0.7762872620000001
+Cancer-specific,thca,GAT,AUROC,5,0.772154472
+Cancer-specific,thca,GAT,AUROC,6,0.7845528439999999
+Cancer-specific,thca,GAT,AUROC,7,0.761788618
+Cancer-specific,thca,GAT,AUROC,8,0.775609756
+Cancer-specific,thca,GAT,AUROC,9,0.7487127360000001
+Cancer-specific,thca,GAT,AUROC,10,0.756368562
+Cancer-specific,thca,MNGCL,AUPRC,1,0.32083488200000004
+Cancer-specific,thca,MNGCL,AUPRC,2,0.29047262199999996
+Cancer-specific,thca,MNGCL,AUPRC,3,0.28153858200000004
+Cancer-specific,thca,MNGCL,AUPRC,4,0.274449488
+Cancer-specific,thca,MNGCL,AUPRC,5,0.31397030800000003
+Cancer-specific,thca,MNGCL,AUPRC,6,0.311694566
+Cancer-specific,thca,MNGCL,AUPRC,7,0.309997512
+Cancer-specific,thca,MNGCL,AUPRC,8,0.319344526
+Cancer-specific,thca,MNGCL,AUPRC,9,0.278280896
+Cancer-specific,thca,MNGCL,AUPRC,10,0.29274942600000003
+Cancer-specific,thca,MNGCL,AUROC,1,0.8394986440000001
+Cancer-specific,thca,MNGCL,AUROC,2,0.838550136
+Cancer-specific,thca,MNGCL,AUROC,3,0.8406504060000002
+Cancer-specific,thca,MNGCL,AUROC,4,0.85392954
+Cancer-specific,thca,MNGCL,AUROC,5,0.840853656
+Cancer-specific,thca,MNGCL,AUROC,6,0.8474254760000001
+Cancer-specific,thca,MNGCL,AUROC,7,0.8433604320000001
+Cancer-specific,thca,MNGCL,AUROC,8,0.84485095
+Cancer-specific,thca,MNGCL,AUROC,9,0.8396341460000001
+Cancer-specific,thca,MNGCL,AUROC,10,0.848238482
+Cancer-specific,thca,MTGCN,AUPRC,1,0.29071159999999996
+Cancer-specific,thca,MTGCN,AUPRC,2,0.25952319999999995
+Cancer-specific,thca,MTGCN,AUPRC,3,0.2603342
+Cancer-specific,thca,MTGCN,AUPRC,4,0.2902172
+Cancer-specific,thca,MTGCN,AUPRC,5,0.3027682
+Cancer-specific,thca,MTGCN,AUPRC,6,0.283786
+Cancer-specific,thca,MTGCN,AUPRC,7,0.27971840000000003
+Cancer-specific,thca,MTGCN,AUPRC,8,0.2792424
+Cancer-specific,thca,MTGCN,AUPRC,9,0.2441126
+Cancer-specific,thca,MTGCN,AUPRC,10,0.3323442
+Cancer-specific,thca,MTGCN,AUROC,1,0.7999618
+Cancer-specific,thca,MTGCN,AUROC,2,0.8024789999999999
+Cancer-specific,thca,MTGCN,AUROC,3,0.8085812000000001
+Cancer-specific,thca,MTGCN,AUROC,4,0.8160181999999999
+Cancer-specific,thca,MTGCN,AUROC,5,0.8311591999999999
+Cancer-specific,thca,MTGCN,AUROC,6,0.8198703999999999
+Cancer-specific,thca,MTGCN,AUROC,7,0.8289092
+Cancer-specific,thca,MTGCN,AUROC,8,0.8323798
+Cancer-specific,thca,MTGCN,AUROC,9,0.7803584
+Cancer-specific,thca,MTGCN,AUROC,10,0.8226544
+Cancer-specific,thca,SAGE,AUPRC,1,0.24503634800000001
+Cancer-specific,thca,SAGE,AUPRC,2,0.22767064400000003
+Cancer-specific,thca,SAGE,AUPRC,3,0.22618223799999998
+Cancer-specific,thca,SAGE,AUPRC,4,0.22946201200000002
+Cancer-specific,thca,SAGE,AUPRC,5,0.203879418
+Cancer-specific,thca,SAGE,AUPRC,6,0.24679774400000004
+Cancer-specific,thca,SAGE,AUPRC,7,0.21580504
+Cancer-specific,thca,SAGE,AUPRC,8,0.226193066
+Cancer-specific,thca,SAGE,AUPRC,9,0.203087736
+Cancer-specific,thca,SAGE,AUPRC,10,0.214902542
+Cancer-specific,thca,SAGE,AUROC,1,0.784823848
+Cancer-specific,thca,SAGE,AUROC,2,0.779539296
+Cancer-specific,thca,SAGE,AUROC,3,0.7789295380000001
+Cancer-specific,thca,SAGE,AUROC,4,0.78204607
+Cancer-specific,thca,SAGE,AUROC,5,0.789227642
+Cancer-specific,thca,SAGE,AUROC,6,0.7741869899999999
+Cancer-specific,thca,SAGE,AUROC,7,0.790989158
+Cancer-specific,thca,SAGE,AUROC,8,0.7807588080000001
+Cancer-specific,thca,SAGE,AUROC,9,0.780555556
+Cancer-specific,thca,SAGE,AUROC,10,0.787669376
+Cancer-specific,ucec,BIMODriver,AUPRC,1,0.48742979999999997
+Cancer-specific,ucec,BIMODriver,AUPRC,2,0.48742979999999997
+Cancer-specific,ucec,BIMODriver,AUPRC,3,0.4516454
+Cancer-specific,ucec,BIMODriver,AUPRC,4,0.4516454
+Cancer-specific,ucec,BIMODriver,AUPRC,5,0.43572360000000004
+Cancer-specific,ucec,BIMODriver,AUPRC,6,0.46987619999999997
+Cancer-specific,ucec,BIMODriver,AUPRC,7,0.46987619999999997
+Cancer-specific,ucec,BIMODriver,AUPRC,8,0.40572860000000005
+Cancer-specific,ucec,BIMODriver,AUPRC,9,0.47943820000000004
+Cancer-specific,ucec,BIMODriver,AUPRC,10,0.47943820000000004
+Cancer-specific,ucec,BIMODriver,AUROC,1,0.9129732
+Cancer-specific,ucec,BIMODriver,AUROC,2,0.9129732
+Cancer-specific,ucec,BIMODriver,AUROC,3,0.9120226
+Cancer-specific,ucec,BIMODriver,AUROC,4,0.9120226
+Cancer-specific,ucec,BIMODriver,AUROC,5,0.9055448
+Cancer-specific,ucec,BIMODriver,AUROC,6,0.9048756000000001
+Cancer-specific,ucec,BIMODriver,AUROC,7,0.9048756000000001
+Cancer-specific,ucec,BIMODriver,AUROC,8,0.90213
+Cancer-specific,ucec,BIMODriver,AUROC,9,0.8999828000000001
+Cancer-specific,ucec,BIMODriver,AUROC,10,0.8999828000000001
+Cancer-specific,ucec,ChebNet,AUPRC,1,0.37746680999999993
+Cancer-specific,ucec,ChebNet,AUPRC,2,0.370150418
+Cancer-specific,ucec,ChebNet,AUPRC,3,0.411198436
+Cancer-specific,ucec,ChebNet,AUPRC,4,0.37384175000000003
+Cancer-specific,ucec,ChebNet,AUPRC,5,0.35945288599999997
+Cancer-specific,ucec,ChebNet,AUPRC,6,0.382482318
+Cancer-specific,ucec,ChebNet,AUPRC,7,0.400085522
+Cancer-specific,ucec,ChebNet,AUPRC,8,0.37483062600000006
+Cancer-specific,ucec,ChebNet,AUPRC,9,0.40062029
+Cancer-specific,ucec,ChebNet,AUPRC,10,0.36460663800000004
+Cancer-specific,ucec,ChebNet,AUROC,1,0.842713414
+Cancer-specific,ucec,ChebNet,AUROC,2,0.843292684
+Cancer-specific,ucec,ChebNet,AUROC,3,0.842987802
+Cancer-specific,ucec,ChebNet,AUROC,4,0.847378048
+Cancer-specific,ucec,ChebNet,AUROC,5,0.8430487820000001
+Cancer-specific,ucec,ChebNet,AUROC,6,0.854451218
+Cancer-specific,ucec,ChebNet,AUROC,7,0.8487804860000001
+Cancer-specific,ucec,ChebNet,AUROC,8,0.846707318
+Cancer-specific,ucec,ChebNet,AUROC,9,0.852439024
+Cancer-specific,ucec,ChebNet,AUROC,10,0.831890244
+Cancer-specific,ucec,DISFusion,AUPRC,1,0.35726660000000005
+Cancer-specific,ucec,DISFusion,AUPRC,2,0.40777460000000004
+Cancer-specific,ucec,DISFusion,AUPRC,3,0.404598
+Cancer-specific,ucec,DISFusion,AUPRC,4,0.429353
+Cancer-specific,ucec,DISFusion,AUPRC,5,0.39268580000000003
+Cancer-specific,ucec,DISFusion,AUPRC,6,0.46129060000000005
+Cancer-specific,ucec,DISFusion,AUPRC,7,0.4649348
+Cancer-specific,ucec,DISFusion,AUPRC,8,0.40890499999999996
+Cancer-specific,ucec,DISFusion,AUPRC,9,0.398516
+Cancer-specific,ucec,DISFusion,AUPRC,10,0.36737380000000003
+Cancer-specific,ucec,DISFusion,AUROC,1,0.8892072000000001
+Cancer-specific,ucec,DISFusion,AUROC,2,0.8875
+Cancer-specific,ucec,DISFusion,AUROC,3,0.8598169999999999
+Cancer-specific,ucec,DISFusion,AUROC,4,0.8734145999999999
+Cancer-specific,ucec,DISFusion,AUROC,5,0.8790243999999999
+Cancer-specific,ucec,DISFusion,AUROC,6,0.8801218000000001
+Cancer-specific,ucec,DISFusion,AUROC,7,0.8850002
+Cancer-specific,ucec,DISFusion,AUROC,8,0.8670732000000001
+Cancer-specific,ucec,DISFusion,AUROC,9,0.8874390000000002
+Cancer-specific,ucec,DISFusion,AUROC,10,0.9035976
+Cancer-specific,ucec,DISHyper,AUPRC,1,0.38700840000000003
+Cancer-specific,ucec,DISHyper,AUPRC,2,0.3285694
+Cancer-specific,ucec,DISHyper,AUPRC,3,0.21923000000000004
+Cancer-specific,ucec,DISHyper,AUPRC,4,0.36687739999999996
+Cancer-specific,ucec,DISHyper,AUPRC,5,0.284708
+Cancer-specific,ucec,DISHyper,AUPRC,6,0.3110812
+Cancer-specific,ucec,DISHyper,AUPRC,7,0.2776378
+Cancer-specific,ucec,DISHyper,AUPRC,8,0.32482059999999996
+Cancer-specific,ucec,DISHyper,AUPRC,9,0.299334
+Cancer-specific,ucec,DISHyper,AUPRC,10,0.20414440000000003
+Cancer-specific,ucec,DISHyper,AUROC,1,0.8622558
+Cancer-specific,ucec,DISHyper,AUROC,2,0.8477437999999999
+Cancer-specific,ucec,DISHyper,AUROC,3,0.8315241999999999
+Cancer-specific,ucec,DISHyper,AUROC,4,0.85061
+Cancer-specific,ucec,DISHyper,AUROC,5,0.8690244
+Cancer-specific,ucec,DISHyper,AUROC,6,0.8639024000000001
+Cancer-specific,ucec,DISHyper,AUROC,7,0.8605488000000001
+Cancer-specific,ucec,DISHyper,AUROC,8,0.8242072
+Cancer-specific,ucec,DISHyper,AUROC,9,0.8249998
+Cancer-specific,ucec,DISHyper,AUROC,10,0.8579267999999999
+Cancer-specific,ucec,ECD-CDGI,AUPRC,1,0.4108384000000001
+Cancer-specific,ucec,ECD-CDGI,AUPRC,2,0.4166442
+Cancer-specific,ucec,ECD-CDGI,AUPRC,3,0.41813420000000007
+Cancer-specific,ucec,ECD-CDGI,AUPRC,4,0.3954436
+Cancer-specific,ucec,ECD-CDGI,AUPRC,5,0.343315
+Cancer-specific,ucec,ECD-CDGI,AUPRC,6,0.358148
+Cancer-specific,ucec,ECD-CDGI,AUPRC,7,0.4635736
+Cancer-specific,ucec,ECD-CDGI,AUPRC,8,0.46081800000000006
+Cancer-specific,ucec,ECD-CDGI,AUPRC,9,0.3255314
+Cancer-specific,ucec,ECD-CDGI,AUPRC,10,0.3591867999999999
+Cancer-specific,ucec,ECD-CDGI,AUROC,1,0.8854266000000001
+Cancer-specific,ucec,ECD-CDGI,AUROC,2,0.8970732
+Cancer-specific,ucec,ECD-CDGI,AUROC,3,0.8699389999999999
+Cancer-specific,ucec,ECD-CDGI,AUROC,4,0.8789024000000001
+Cancer-specific,ucec,ECD-CDGI,AUROC,5,0.8941462000000001
+Cancer-specific,ucec,ECD-CDGI,AUROC,6,0.8907316
+Cancer-specific,ucec,ECD-CDGI,AUROC,7,0.8943291999999999
+Cancer-specific,ucec,ECD-CDGI,AUROC,8,0.8868292
+Cancer-specific,ucec,ECD-CDGI,AUROC,9,0.851951
+Cancer-specific,ucec,ECD-CDGI,AUROC,10,0.8762196
+Cancer-specific,ucec,EMOGI,AUPRC,1,0.31409560000000003
+Cancer-specific,ucec,EMOGI,AUPRC,2,0.31594
+Cancer-specific,ucec,EMOGI,AUPRC,3,0.332901
+Cancer-specific,ucec,EMOGI,AUPRC,4,0.42634720000000004
+Cancer-specific,ucec,EMOGI,AUPRC,5,0.33189460000000004
+Cancer-specific,ucec,EMOGI,AUPRC,6,0.3851068
+Cancer-specific,ucec,EMOGI,AUPRC,7,0.3526188
+Cancer-specific,ucec,EMOGI,AUPRC,8,0.302555
+Cancer-specific,ucec,EMOGI,AUPRC,9,0.32356599999999996
+Cancer-specific,ucec,EMOGI,AUPRC,10,0.35868199999999995
+Cancer-specific,ucec,EMOGI,AUROC,1,0.8550913999999998
+Cancer-specific,ucec,EMOGI,AUROC,2,0.8349392
+Cancer-specific,ucec,EMOGI,AUROC,3,0.8412194
+Cancer-specific,ucec,EMOGI,AUROC,4,0.8853047999999999
+Cancer-specific,ucec,EMOGI,AUROC,5,0.8608537999999999
+Cancer-specific,ucec,EMOGI,AUROC,6,0.8614022
+Cancer-specific,ucec,EMOGI,AUROC,7,0.8890242
+Cancer-specific,ucec,EMOGI,AUROC,8,0.837256
+Cancer-specific,ucec,EMOGI,AUROC,9,0.8317682
+Cancer-specific,ucec,EMOGI,AUROC,10,0.8481097999999999
+Cancer-specific,ucec,GAT,AUPRC,1,0.09553094
+Cancer-specific,ucec,GAT,AUPRC,2,0.101961664
+Cancer-specific,ucec,GAT,AUPRC,3,0.10681119800000001
+Cancer-specific,ucec,GAT,AUPRC,4,0.16687459600000001
+Cancer-specific,ucec,GAT,AUPRC,5,0.10078883000000001
+Cancer-specific,ucec,GAT,AUPRC,6,0.091894648
+Cancer-specific,ucec,GAT,AUPRC,7,0.114233314
+Cancer-specific,ucec,GAT,AUPRC,8,0.09385423200000001
+Cancer-specific,ucec,GAT,AUPRC,9,0.17125454999999998
+Cancer-specific,ucec,GAT,AUPRC,10,0.091993732
+Cancer-specific,ucec,GAT,AUROC,1,0.8049390240000001
+Cancer-specific,ucec,GAT,AUROC,2,0.818292682
+Cancer-specific,ucec,GAT,AUROC,3,0.8098780480000001
+Cancer-specific,ucec,GAT,AUROC,4,0.8109146340000001
+Cancer-specific,ucec,GAT,AUROC,5,0.802012196
+Cancer-specific,ucec,GAT,AUROC,6,0.808170732
+Cancer-specific,ucec,GAT,AUROC,7,0.830243902
+Cancer-specific,ucec,GAT,AUROC,8,0.8034756099999999
+Cancer-specific,ucec,GAT,AUROC,9,0.83347561
+Cancer-specific,ucec,GAT,AUROC,10,0.8022560980000002
+Cancer-specific,ucec,MNGCL,AUPRC,1,0.41530131
+Cancer-specific,ucec,MNGCL,AUPRC,2,0.43466965599999996
+Cancer-specific,ucec,MNGCL,AUPRC,3,0.43471899199999997
+Cancer-specific,ucec,MNGCL,AUPRC,4,0.41484847
+Cancer-specific,ucec,MNGCL,AUPRC,5,0.411170788
+Cancer-specific,ucec,MNGCL,AUPRC,6,0.416880314
+Cancer-specific,ucec,MNGCL,AUPRC,7,0.42309494999999997
+Cancer-specific,ucec,MNGCL,AUPRC,8,0.43334425200000004
+Cancer-specific,ucec,MNGCL,AUPRC,9,0.377154078
+Cancer-specific,ucec,MNGCL,AUPRC,10,0.389563576
+Cancer-specific,ucec,MNGCL,AUROC,1,0.8990243900000001
+Cancer-specific,ucec,MNGCL,AUROC,2,0.9111585379999999
+Cancer-specific,ucec,MNGCL,AUROC,3,0.8975609740000001
+Cancer-specific,ucec,MNGCL,AUROC,4,0.921646344
+Cancer-specific,ucec,MNGCL,AUROC,5,0.903353658
+Cancer-specific,ucec,MNGCL,AUROC,6,0.898536586
+Cancer-specific,ucec,MNGCL,AUROC,7,0.895243904
+Cancer-specific,ucec,MNGCL,AUROC,8,0.896341462
+Cancer-specific,ucec,MNGCL,AUROC,9,0.9052439019999999
+Cancer-specific,ucec,MNGCL,AUROC,10,0.901036586
+Cancer-specific,ucec,MTGCN,AUPRC,1,0.4378322
+Cancer-specific,ucec,MTGCN,AUPRC,2,0.4664925999999999
+Cancer-specific,ucec,MTGCN,AUPRC,3,0.4730442
+Cancer-specific,ucec,MTGCN,AUPRC,4,0.4352544
+Cancer-specific,ucec,MTGCN,AUPRC,5,0.4677316
+Cancer-specific,ucec,MTGCN,AUPRC,6,0.4520568
+Cancer-specific,ucec,MTGCN,AUPRC,7,0.46429159999999997
+Cancer-specific,ucec,MTGCN,AUPRC,8,0.470009
+Cancer-specific,ucec,MTGCN,AUPRC,9,0.456533
+Cancer-specific,ucec,MTGCN,AUPRC,10,0.4525084
+Cancer-specific,ucec,MTGCN,AUROC,1,0.8822744
+Cancer-specific,ucec,MTGCN,AUROC,2,0.8816756
+Cancer-specific,ucec,MTGCN,AUROC,3,0.8848444000000001
+Cancer-specific,ucec,MTGCN,AUROC,4,0.8845626000000001
+Cancer-specific,ucec,MTGCN,AUROC,5,0.8985038000000001
+Cancer-specific,ucec,MTGCN,AUROC,6,0.8876958
+Cancer-specific,ucec,MTGCN,AUROC,7,0.8974124
+Cancer-specific,ucec,MTGCN,AUROC,8,0.8827320000000001
+Cancer-specific,ucec,MTGCN,AUROC,9,0.8915330000000001
+Cancer-specific,ucec,MTGCN,AUROC,10,0.8898082
+Cancer-specific,ucec,SAGE,AUPRC,1,0.39615857
+Cancer-specific,ucec,SAGE,AUPRC,2,0.406388588
+Cancer-specific,ucec,SAGE,AUPRC,3,0.41183273
+Cancer-specific,ucec,SAGE,AUPRC,4,0.406649492
+Cancer-specific,ucec,SAGE,AUPRC,5,0.4009904860000001
+Cancer-specific,ucec,SAGE,AUPRC,6,0.3771179539999999
+Cancer-specific,ucec,SAGE,AUPRC,7,0.399145358
+Cancer-specific,ucec,SAGE,AUPRC,8,0.41241882399999996
+Cancer-specific,ucec,SAGE,AUPRC,9,0.40305509199999995
+Cancer-specific,ucec,SAGE,AUPRC,10,0.398875768
+Cancer-specific,ucec,SAGE,AUROC,1,0.8862195119999999
+Cancer-specific,ucec,SAGE,AUROC,2,0.8932317079999998
+Cancer-specific,ucec,SAGE,AUROC,3,0.897012196
+Cancer-specific,ucec,SAGE,AUROC,4,0.893841464
+Cancer-specific,ucec,SAGE,AUROC,5,0.886036586
+Cancer-specific,ucec,SAGE,AUROC,6,0.8891463419999999
+Cancer-specific,ucec,SAGE,AUROC,7,0.886341464
+Cancer-specific,ucec,SAGE,AUROC,8,0.893780488
+Cancer-specific,ucec,SAGE,AUROC,9,0.892987806
+Cancer-specific,ucec,SAGE,AUROC,10,0.885853658

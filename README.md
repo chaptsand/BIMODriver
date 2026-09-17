@@ -49,10 +49,19 @@ BIMODriver/
 ├── LLM/                             # Biological knowledge prompt and statement extraction
 │   ├── LLM-go-part.py               # GO-guided prompt pipeline for BP, MF, and CC descriptions
 │   ├── LLM-satment.py               # Multi-scale statement generator (self, neighbor, together)
-│   ├── embedding.ipynb              # BioBERT statement embedding extraction notebook
+│   ├── extract_embeddings.py        # BioBERT statement and GO embedding extraction CLI
 │   ├── contxt_prompt.txt            # Domain knowledge context prompt template
 │   ├── go_prompt.txt                # Gene Ontology prompt template
 │   └── README.md                    # Detailed documentation for LLM feature generation
+│
+├── paper_figures_tables/            # Statistical validation & paper figure reproduction suite
+│   ├── reproduce_all.py             # Master one-click reproduction CLI entrypoint
+│   ├── REPRODUCTION_GUIDE.md        # Comprehensive paper item-to-code mapping guide
+│   ├── scripts/                     # Standalone figure plotting and statistical test scripts
+│   ├── notebooks/                   # Interactive Jupyter Notebooks for Figures 2-5
+│   ├── data/                        # 10x5 cross-validation arrays and supplementary matrices
+│   ├── results/                     # Generated publication-ready figures (PNG/PDF) and workbooks
+│   └── README.md                    # Dedicated statistical suite documentation
 │
 ├── data/                            # Multi-omics features and biological network archives
 │   ├── data.part01.rar ~ part27.rar # Multi-volume compressed dataset archives
@@ -192,6 +201,43 @@ Results will be automatically summarized and displayed as side-by-side compariso
 | DISFusion (200 ep) | 0.9255 ± 0.0023 | 0.8948 ± 0.0048 | 0.8904 ± 0.0072 | 0.7711 ± 0.0137 |
 
 Across all scenarios, **BIMODriver achieves superior performance** on both AUROC and AUPRC metrics with statistically significant improvements ($p < 0.01$ over MNGCL, $p < 0.05$ over DISFusion).
+
+---
+
+## 📈 Statistical Validation & Figure Reproduction Suite (`paper_figures_tables/`)
+
+To support rigorous scientific auditability and direct peer review, we provide a complete, self-contained reproduction and statistical analysis suite in [`paper_figures_tables/`](paper_figures_tables/).
+
+### 1. Scope & Deliverables
+- **Tables 1 & 2**: Pan-cancer (CPDB & STRING) and 15 individual cancer benchmarks (10 runs × 5-fold CV across 10 methods).
+- **Statistical Significance (Tables A8–A11)**: Exact Wilcoxon signed-rank tests, Benjamini–Hochberg (BH) FDR corrections, rank-biserial effect sizes ($r_{rb}$), and Hodges–Lehmann median differences with 95% bootstrap confidence intervals.
+- **Vocabulary Leakage & Masking Ablations**: Clean $\leftrightarrow$ Hit cross-distribution evaluations, edge-masking information exposure (Table A19), and label-like phrase masking (Table R5).
+- **Publication Figures (Figures 2–5)**: Standalone plotting scripts producing publication-grade 300 DPI PNG and vector PDF figures (including Sparse Mixture-of-Experts gating visualizations and candidate driver gene functional validation).
+- **Standardized Workbooks**: Multi-tab Excel workbooks containing complete empirical runs, sensitivity matrices, and statistical deliverables.
+
+### 2. Environment Setup
+```bash
+# Using Conda
+conda env create -f paper_figures_tables/environment.yml
+conda activate bimodriver-statistics
+
+# Or using Pip
+pip install -r paper_figures_tables/requirements.txt
+```
+
+### 3. Master One-Click Reproduction
+```bash
+# Execute the full reproduction pipeline (tables, statistical tests, figures, workbooks, verification)
+python paper_figures_tables/reproduce_all.py --all
+
+# Or execute individual components:
+python paper_figures_tables/reproduce_all.py --tables     # Tables 1, 2, A8-A11, Clean-Hit, A19, R5
+python paper_figures_tables/reproduce_all.py --figures    # Figures 2, 3, 4, 5 (PNG & PDF)
+python paper_figures_tables/reproduce_all.py --workbooks  # Standardized multi-sheet Excel deliverables
+python paper_figures_tables/reproduce_all.py --verify     # Audit integrity of all generated artifacts
+```
+
+For exhaustive item-to-code mapping and methodology specifications, see [`paper_figures_tables/README.md`](paper_figures_tables/README.md) and [`paper_figures_tables/REPRODUCTION_GUIDE.md`](paper_figures_tables/REPRODUCTION_GUIDE.md).
 
 ---
 

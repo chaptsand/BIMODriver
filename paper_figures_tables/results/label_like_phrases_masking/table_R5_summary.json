@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "title": "Table R5: Label-Like Phrases Masking Statistical Validation",
+    "dataset": "CPDB Pan-Cancer (13,627 genes)",
+    "n_runs": 10,
+    "n_folds_per_run": 5,
+    "total_folds": 50,
+    "unit_of_analysis": "10 paired run-level means",
+    "bootstrap_samples": 10000,
+    "seed": 20260916,
+    "sd_ddof": 0,
+    "input_file_hashes_sha256": {
+      "cpdb_pancancer": "dff2f586d786bfb599bc01fa409527d72ca296f428cd76b1fcb5ffb3f54d6104",
+      "masked_auroc": "59535c3433afdf440a7fae254b3c4d8a54cafa52a6223574641d4f8504b98dd0",
+      "masked_auprc": "39cb4b9319041f352e0d878cb194d87a8a8b7ba2efd3c8f6b70789753e92d02a",
+      "masked_ind_auroc": "ef7ab5139f815f14f384e2e7f5bf997db96688853442d685ea67ec28be462c50",
+      "masked_ind_auprc": "910c1c07bbb605e0c0df868d68f048c5e33396f5e01e55f15ca62d4e4f1cb7d4"
+    },
+    "protocol": {
+      "test": "Two-sided paired Wilcoxon signed-rank test",
+      "multiple_testing": "Benjamini-Hochberg FDR correction across m=4 tests",
+      "effect_size": "Paired rank-biserial correlation (r_rb)",
+      "location_shift": "Hodges-Lehmann difference (Walsh averages median)",
+      "ci": "95% bootstrap CI (10,000 resamples)"
+    }
+  },
+  "descriptive_summary": [
+    {
+      "Model Configuration": "Original Transductive BIMODriver",
+      "Metric": "AUROC",
+      "50-Fold Mean": 0.9305175896000002,
+      "50-Fold SD (ddof=0)": 0.012814179337501251,
+      "50-Fold Mean ± SD": "0.9305 ± 0.0128",
+      "10-Run Mean": 0.9305175896000002,
+      "10-Run SD (ddof=0)": 0.001655062715893714,
+      "10-Run Mean ± SD": "0.9305 ± 0.0017"
+    },
+    {
+      "Model Configuration": "Original Transductive BIMODriver",
+      "Metric": "AUPRC",
+      "50-Fold Mean": 0.8586355632,
+      "50-Fold SD (ddof=0)": 0.02277177911229998,
+      "50-Fold Mean ± SD": "0.8586 ± 0.0228",
+      "10-Run Mean": 0.8586355632,
+      "10-Run SD (ddof=0)": 0.0035673883988780546,
+      "10-Run Mean ± SD": "0.8586 ± 0.0036"
+    },
+    {
+      "Model Configuration": "Masked Transductive",
+      "Metric": "AUROC",
+      "50-Fold Mean": 0.93028124,
+      "50-Fold SD (ddof=0)": 0.01276007865737511,
+      "50-Fold Mean ± SD": "0.9303 ± 0.0128",
+      "10-Run Mean": 0.93028124,
+      "10-Run SD (ddof=0)": 0.0011539816872030678,
+      "10-Run Mean ± SD": "0.9303 ± 0.0012"
+    },
+    {
+      "Model Configuration": "Masked Transductive",
+      "Metric": "AUPRC",
+      "50-Fold Mean": 0.85792682,
+      "50-Fold SD (ddof=0)": 0.02259943378555313,
+      "50-Fold Mean ± SD": "0.8579 ± 0.0226",
+      "10-Run Mean": 0.85792682,
+      "10-Run SD (ddof=0)": 0.002947504089157513,
+      "10-Run Mean ± SD": "0.8579 ± 0.0029"
+    },
+    {
+      "Model Configuration": "Masked Inductive",
+      "Metric": "AUROC",
+      "50-Fold Mean": 0.93032978,
+      "50-Fold SD (ddof=0)": 0.012855458198430736,
+      "50-Fold Mean ± SD": "0.9303 ± 0.0129",
+      "10-Run Mean": 0.9303297799999999,
+      "10-Run SD (ddof=0)": 0.0013299278008974719,
+      "10-Run Mean ± SD": "0.9303 ± 0.0013"
+    },
+    {
+      "Model Configuration": "Masked Inductive",
+      "Metric": "AUPRC",
+      "50-Fold Mean": 0.8585389600000001,
+      "50-Fold SD (ddof=0)": 0.022733200301726104,
+      "50-Fold Mean ± SD": "0.8585 ± 0.0227",
+      "10-Run Mean": 0.85853896,
+      "10-Run SD (ddof=0)": 0.0034153125828246264,
+      "10-Run Mean ± SD": "0.8585 ± 0.0034"
+    }
+  ],
+  "table_R5_full_precision": [
+    {
+      "Metric": "AUROC",
+      "Comparator": "Masked Transductive vs Original Transductive BIMODriver",
+      "Left": "Masked Transductive",
+      "Right": "Original Transductive BIMODriver",
+      "Mean diff": -0.0002363495999999632,
+      "Wilcoxon W": 24.0,
+      "Wilcoxon p": 0.76953125,
+      "Wilcoxon p (scipy)": 0.76953125,
+      "Effect size r_rb": -0.12727272727272726,
+      "HL diff": -0.0002325650000000734,
+      "HL 95% CI low": -0.0010090680000000574,
+      "HL 95% CI high": 0.0005783750000001309,
+      "HL 95% CI": "[-0.001009, 0.000578]",
+      "BH q": 1.0,
+      "Conclusion": "No statistically significant difference"
+    },
+    {
+      "Metric": "AUROC",
+      "Comparator": "Masked Inductive vs Original Transductive BIMODriver",
+      "Left": "Masked Inductive",
+      "Right": "Original Transductive BIMODriver",
+      "Mean diff": -0.00018780960000001068,
+      "Wilcoxon W": 27.0,
+      "Wilcoxon p": 1.0,
+      "Wilcoxon p (scipy)": 1.0,
+      "Effect size r_rb": 0.01818181818181818,
+      "HL diff": 3.818000000044286e-06,
+      "HL 95% CI low": -0.0009739980000001425,
+      "HL 95% CI high": 0.0003958540000000288,
+      "HL 95% CI": "[-0.000974, 0.000396]",
+      "BH q": 1.0,
+      "Conclusion": "No statistically significant difference"
+    },
+    {
+      "Metric": "AUPRC",
+      "Comparator": "Masked Transductive vs Original Transductive BIMODriver",
+      "Left": "Masked Transductive",
+      "Right": "Original Transductive BIMODriver",
+      "Mean diff": -0.0007087432000000282,
+      "Wilcoxon W": 19.0,
+      "Wilcoxon p": 0.431640625,
+      "Wilcoxon p (scipy)": 0.431640625,
+      "Effect size r_rb": -0.3090909090909091,
+      "HL diff": -0.0006629890000000027,
+      "HL 95% CI low": -0.0021362550000000313,
+      "HL 95% CI high": 0.000706682000000014,
+      "HL 95% CI": "[-0.002136, 0.000707]",
+      "BH q": 1.0,
+      "Conclusion": "No statistically significant difference"
+    },
+    {
+      "Metric": "AUPRC",
+      "Comparator": "Masked Inductive vs Original Transductive BIMODriver",
+      "Left": "Masked Inductive",
+      "Right": "Original Transductive BIMODriver",
+      "Mean diff": -9.660320000004496e-05,
+      "Wilcoxon W": 25.0,
+      "Wilcoxon p": 0.845703125,
+      "Wilcoxon p (scipy)": 0.845703125,
+      "Effect size r_rb": -0.09090909090909091,
+      "HL diff": -0.00016192199999998103,
+      "HL 95% CI low": -0.0013916730000000377,
+      "HL 95% CI high": 0.0013169089999999772,
+      "HL 95% CI": "[-0.001392, 0.001317]",
+      "BH q": 1.0,
+      "Conclusion": "No statistically significant difference"
+    }
+  ]
+}

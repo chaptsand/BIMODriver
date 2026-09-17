@@ -1,0 +1,21 @@
+Method: BIMODriver (Original)
+Leakage Split Experiment: hit_to_clean
+Feature Mode: Original Features (原始基线特征)
+Loaded Statement Feature File: ./data/CPDB/PAN-CANCER_statement_features.pt
+Training Candidate Pool : 581 (Drivers: 225, Non-drivers: 356)
+Inner Train/Val Split   : 80% Train / 20% Val
+Fixed Testing Set       : 2402 (Drivers: 571, Non-drivers: 1831)
+Protocol                : Transductive (Full graph message passing during training), Checkpoint selected on validation set, test set evaluated ONCE
+Experiments             : 10 independent runs, 160 epochs each
+Hyperparameters         : lr=0.0005, dropout=0.3, lambdinter=0.001
+------------------------------------------------------------
+Final Fixed Test Metrics (Evaluated ONCE with Best Checkpoint):
+  AUROC : 0.8986 ± 0.0029
+  AUPRC : 0.7764 ± 0.0053
+  All Test AUROC per exp: [0.9013 0.8982 0.9021 0.8966 0.9013 0.9035 0.8958 0.8954 0.8964 0.8958]
+  All Test AUPRC per exp: [0.7841 0.7798 0.7793 0.7761 0.7807 0.7781 0.7778 0.765  0.7726 0.7706]
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9298 ± 0.0171
+  Val AUPRC : 0.9086 ± 0.0205
+  Best Epochs per exp: [68, 91, 158, 142, 121, 74, 151, 52, 74, 78]

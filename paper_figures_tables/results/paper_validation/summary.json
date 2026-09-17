@@ -1,0 +1,63 @@
+{
+  "source": "data/paper_supplementary",
+  "pan_methods": [
+    "BIMODriver",
+    "ChebNet",
+    "DISFusion",
+    "DISHyper",
+    "ECD-CDGI",
+    "EMOGI",
+    "GAT",
+    "GCN",
+    "MNGCL",
+    "MTGCN"
+  ],
+  "string_pan_methods": [
+    "BIMODriver",
+    "ChebNet",
+    "DISFusion",
+    "DISHyper",
+    "ECD-CDGI",
+    "EMOGI",
+    "GAT",
+    "GCN",
+    "MNGCL",
+    "MTGCN"
+  ],
+  "cancer_methods": [
+    "BIMODriver",
+    "ChebNet",
+    "DISFusion",
+    "DISHyper",
+    "ECD-CDGI",
+    "EMOGI",
+    "GAT",
+    "MNGCL",
+    "MTGCN",
+    "SAGE"
+  ],
+  "cancers": [
+    "blca",
+    "brca",
+    "cesc",
+    "coad",
+    "esca",
+    "hnsc",
+    "kirc",
+    "kirp",
+    "lihc",
+    "luad",
+    "lusc",
+    "prad",
+    "stad",
+    "thca",
+    "ucec"
+  ],
+  "primary_family_size": 288,
+  "across15_family_size": 18,
+  "qa_all_nonmissing_pass": true,
+  "legacy_p_reproduced_matches": 36,
+  "legacy_p_checks": 36,
+  "cancer_header_mean_matches": 300,
+  "cancer_header_mean_checks": 300
+}

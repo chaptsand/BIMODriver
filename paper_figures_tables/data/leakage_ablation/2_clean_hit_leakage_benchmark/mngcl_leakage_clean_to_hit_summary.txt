@@ -1,0 +1,17 @@
+Method: MNGCL
+Task: clean_to_hit
+Runs: 10 (Smoke test: False)
+Epochs: 1000
+Views: 2 views (PPI + GO similarity, Paper Table Setting)
+LR: 0.001, Tau: 0.3, Lambda: 0.1
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9132 ± 0.0109
+  Val AUPRC : 0.8111 ± 0.0234
+  Best Epochs: [758, 817, 904, 914, 979, 966, 999, 960, 1000, 950]
+------------------------------------------------------------
+Final Fixed Test Metrics:
+  Test AUROC : 0.9321 ± 0.0027
+  Test AUPRC : 0.9053 ± 0.0035
+  Per-run AUROC: [0.9285 0.9357 0.932  0.9337 0.9291 0.9273 0.9332 0.9342 0.9334 0.9342]
+  Per-run AUPRC: [0.9021 0.9088 0.9069 0.9058 0.9036 0.8966 0.9069 0.908  0.9079 0.9065]

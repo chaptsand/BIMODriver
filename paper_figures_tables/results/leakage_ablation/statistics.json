@@ -1,0 +1,4526 @@
+{
+  "method": {
+    "clean_hit": "two-sided paired Wilcoxon on 10 fixed-test run values; BH over 8 comparisons",
+    "ablation_primary": "two-sided paired Wilcoxon on 10 run means; BH over 6 comparisons",
+    "ablation_supplement": "two-sided asymptotic paired Wilcoxon on 50 fold values; BH over 6 comparisons",
+    "effect_size": "paired rank-biserial correlation",
+    "estimate": "paired Hodges-Lehmann difference (left minus right)",
+    "confidence_interval": "percentile bootstrap, 10000 resamples",
+    "descriptive_sd": "population SD (ddof=0), matching the supplied experiment summaries"
+  },
+  "tables": {
+    "clean_hit_two_sided": [
+      {
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Comparison": "BIMODriver - DISFusion",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.9287113999999999,
+        "Left SD (ddof=0)": 0.0028872196383372185,
+        "Right mean": 0.9251996,
+        "Right SD (ddof=0)": 0.002095754002739821,
+        "Mean difference": 0.003511799999999998,
+        "Wilcoxon p (two-sided)": 0.00390625,
+        "Effect size r_rb": 0.9636363636363636,
+        "HL difference": 0.003526499999999988,
+        "95% CI low": 0.001523000000000052,
+        "95% CI high": 0.005281000000000036,
+        "BH q": 0.010416666666666666,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Comparison": "BIMODriver - MNGCL",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.9287113999999999,
+        "Left SD (ddof=0)": 0.0028872196383372185,
+        "Right mean": 0.9321048000000001,
+        "Right SD (ddof=0)": 0.002679427916552339,
+        "Mean difference": -0.003393399999999991,
+        "Wilcoxon p (two-sided)": 0.037109375,
+        "Effect size r_rb": -0.7454545454545455,
+        "HL difference": -0.0034894999999999787,
+        "95% CI low": -0.006423000000000012,
+        "95% CI high": -0.00031249999999999334,
+        "BH q": 0.04241071428571429,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Comparison": "BIMODriver - DISFusion",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.9012846,
+        "Left SD (ddof=0)": 0.00491213713570782,
+        "Right mean": 0.8951769000000003,
+        "Right SD (ddof=0)": 0.004583380007156288,
+        "Mean difference": 0.006107699999999994,
+        "Wilcoxon p (two-sided)": 0.005859375,
+        "Effect size r_rb": 0.9272727272727272,
+        "HL difference": 0.005808999999999953,
+        "95% CI low": 0.002145000000000008,
+        "95% CI high": 0.009335999999999955,
+        "BH q": 0.01171875,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Comparison": "BIMODriver - MNGCL",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.9012846,
+        "Left SD (ddof=0)": 0.00491213713570782,
+        "Right mean": 0.9053123,
+        "Right SD (ddof=0)": 0.0034855485378918485,
+        "Mean difference": -0.004027700000000012,
+        "Wilcoxon p (two-sided)": 0.037109375,
+        "Effect size r_rb": -0.7454545454545455,
+        "HL difference": -0.004358500000000043,
+        "95% CI low": -0.007369000000000014,
+        "95% CI high": -0.0008050000000000002,
+        "BH q": 0.04241071428571429,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Comparison": "BIMODriver - DISFusion",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.8993863000000001,
+        "Left SD (ddof=0)": 0.003187550252152907,
+        "Right mean": 0.8875688,
+        "Right SD (ddof=0)": 0.007242963368677224,
+        "Mean difference": 0.011817499999999991,
+        "Wilcoxon p (two-sided)": 0.001953125,
+        "Effect size r_rb": 1.0,
+        "HL difference": 0.011046999999999974,
+        "95% CI low": 0.007111499999999993,
+        "95% CI high": 0.016021499999999966,
+        "BH q": 0.010416666666666666,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Comparison": "BIMODriver - MNGCL",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.8993863000000001,
+        "Left SD (ddof=0)": 0.003187550252152907,
+        "Right mean": 0.8926539,
+        "Right SD (ddof=0)": 0.0028517985009463747,
+        "Mean difference": 0.006732399999999994,
+        "Wilcoxon p (two-sided)": 0.00390625,
+        "Effect size r_rb": 0.9636363636363636,
+        "HL difference": 0.006772500000000015,
+        "95% CI low": 0.004365500000000022,
+        "95% CI high": 0.009195499999999968,
+        "BH q": 0.010416666666666666,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Comparison": "BIMODriver - DISFusion",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.7794728999999999,
+        "Left SD (ddof=0)": 0.005685728510050402,
+        "Right mean": 0.7667547,
+        "Right SD (ddof=0)": 0.013884676870924997,
+        "Mean difference": 0.012718199999999968,
+        "Wilcoxon p (two-sided)": 0.037109375,
+        "Effect size r_rb": 0.7454545454545455,
+        "HL difference": 0.010523999999999978,
+        "95% CI low": 0.00019599999999997397,
+        "95% CI high": 0.020903999999999923,
+        "BH q": 0.04241071428571429,
+        "Significant (q<0.05)": true
+      },
+      {
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Comparison": "BIMODriver - MNGCL",
+        "Paired unit": "run on the same fixed test set",
+        "N": 10,
+        "Left mean": 0.7794728999999999,
+        "Left SD (ddof=0)": 0.005685728510050402,
+        "Right mean": 0.7794483999999999,
+        "Right SD (ddof=0)": 0.004337633022744074,
+        "Mean difference": 2.4499999999971766e-05,
+        "Wilcoxon p (two-sided)": 0.845703125,
+        "Effect size r_rb": -0.09090909090909091,
+        "HL difference": -0.0005890000000000062,
+        "95% CI low": -0.004182499999999978,
+        "95% CI high": 0.004286000000000012,
+        "BH q": 0.845703125,
+        "Significant (q<0.05)": false
+      }
+    ],
+    "ablation_10run_primary": [
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUROC",
+        "Comparison": "Masked Transductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.93028124,
+        "Left SD (ddof=0)": 0.0011539816872030678,
+        "Right mean": 0.9305571,
+        "Right SD (ddof=0)": 0.0012320757484830143,
+        "Mean difference": -0.0002758599999999389,
+        "Wilcoxon p (two-sided)": 0.048828125,
+        "Effect size r_rb": -0.7090909090909091,
+        "HL difference": -0.0002516999999997993,
+        "95% CI low": -0.0005166000000000337,
+        "95% CI high": -2.4999999999941735e-05,
+        "BH q": 0.193359375,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUROC",
+        "Comparison": "Original Strict Inductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.93083,
+        "Left SD (ddof=0)": 0.0013184915623544622,
+        "Right mean": 0.9305571,
+        "Right SD (ddof=0)": 0.0012320757484830143,
+        "Mean difference": 0.00027290000000000924,
+        "Wilcoxon p (two-sided)": 0.431640625,
+        "Effect size r_rb": 0.3090909090909091,
+        "HL difference": 0.0002395000000000036,
+        "95% CI low": -0.00021569999999992984,
+        "95% CI high": 0.0007668000000001229,
+        "BH q": 0.51796875,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUROC",
+        "Comparison": "Masked Strict Inductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.930328,
+        "Left SD (ddof=0)": 0.0013258114496413106,
+        "Right mean": 0.9305571,
+        "Right SD (ddof=0)": 0.0012320757484830143,
+        "Mean difference": -0.0002290999999999821,
+        "Wilcoxon p (two-sided)": 0.232421875,
+        "Effect size r_rb": -0.45454545454545453,
+        "HL difference": -0.00017100000000003224,
+        "95% CI low": -0.0007049000000000083,
+        "95% CI high": 0.000326800000000127,
+        "BH q": 0.3486328125,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUPRC",
+        "Comparison": "Masked Transductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.85792682,
+        "Left SD (ddof=0)": 0.002947504089157513,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.003100474044787333,
+        "Mean difference": -0.0003564200000000017,
+        "Wilcoxon p (two-sided)": 0.130859375,
+        "Effect size r_rb": -0.5636363636363636,
+        "HL difference": -0.0003798000000000412,
+        "95% CI low": -0.0007103000000000526,
+        "95% CI high": 4.009999999993186e-05,
+        "BH q": 0.26171875,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUPRC",
+        "Comparison": "Original Strict Inductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.8592460000000001,
+        "Left SD (ddof=0)": 0.0030910587183035194,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.003100474044787333,
+        "Mean difference": 0.000962760000000018,
+        "Wilcoxon p (two-sided)": 0.064453125,
+        "Effect size r_rb": 0.6727272727272727,
+        "HL difference": 0.0009240000000000359,
+        "95% CI low": 0.00014209999999997835,
+        "95% CI high": 0.0018923999999999053,
+        "BH q": 0.193359375,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation",
+        "Metric": "AUPRC",
+        "Comparison": "Masked Strict Inductive - Original Transductive",
+        "Paired unit": "run mean (mean of 5 folds)",
+        "N": 10,
+        "Left mean": 0.8585379999999999,
+        "Left SD (ddof=0)": 0.003413695358405619,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.003100474044787333,
+        "Mean difference": 0.0002547599999999983,
+        "Wilcoxon p (two-sided)": 0.556640625,
+        "Effect size r_rb": 0.23636363636363636,
+        "HL difference": 0.00030239999999998046,
+        "95% CI low": -0.0011079000000000505,
+        "95% CI high": 0.001545799999999986,
+        "BH q": 0.556640625,
+        "Significant (q<0.05)": false
+      }
+    ],
+    "ablation_50fold_supplement": [
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUROC",
+        "Comparison": "Masked Transductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.93028124,
+        "Left SD (ddof=0)": 0.01276007865737511,
+        "Right mean": 0.9305570999999999,
+        "Right SD (ddof=0)": 0.012875166956975744,
+        "Mean difference": -0.0002758599999999944,
+        "Wilcoxon p (two-sided)": 0.08751575869770764,
+        "Effect size r_rb": -0.2776470588235294,
+        "HL difference": -0.00019399999999997197,
+        "95% CI low": -0.00043799999999999395,
+        "95% CI high": 1.4500000000028379e-05,
+        "BH q": 0.4151979033826304,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUROC",
+        "Comparison": "Original Strict Inductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.9308299999999999,
+        "Left SD (ddof=0)": 0.013386549219272308,
+        "Right mean": 0.9305570999999999,
+        "Right SD (ddof=0)": 0.012875166956975744,
+        "Mean difference": 0.0002728999999999981,
+        "Wilcoxon p (two-sided)": 0.35658693993847124,
+        "Effect size r_rb": 0.14980392156862746,
+        "HL difference": 0.00035599999999996745,
+        "95% CI low": -0.00032000000000004247,
+        "95% CI high": 0.0009610374999999902,
+        "BH q": 0.5348804099077069,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUROC",
+        "Comparison": "Masked Strict Inductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.9303279999999999,
+        "Left SD (ddof=0)": 0.012851615307034369,
+        "Right mean": 0.9305570999999999,
+        "Right SD (ddof=0)": 0.012875166956975744,
+        "Mean difference": -0.00022909999999999099,
+        "Wilcoxon p (two-sided)": 0.3084779739418636,
+        "Effect size r_rb": -0.16549019607843138,
+        "HL difference": -0.0002750000000000252,
+        "95% CI low": -0.000863500000000017,
+        "95% CI high": 0.000288000000000066,
+        "BH q": 0.5348804099077069,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUPRC",
+        "Comparison": "Masked Transductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.85792682,
+        "Left SD (ddof=0)": 0.02259943378555313,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.022480334852096842,
+        "Mean difference": -0.0003564199999999995,
+        "Wilcoxon p (two-sided)": 0.4720366364421994,
+        "Effect size r_rb": -0.11686274509803922,
+        "HL difference": -0.00014100000000000223,
+        "95% CI low": -0.0006154999999999911,
+        "95% CI high": 0.0002214999999999856,
+        "BH q": 0.5664439637306392,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUPRC",
+        "Comparison": "Original Strict Inductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.859246,
+        "Left SD (ddof=0)": 0.02320226032092563,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.022480334852096842,
+        "Mean difference": 0.0009627600000000048,
+        "Wilcoxon p (two-sided)": 0.13839930112754348,
+        "Effect size r_rb": 0.2407843137254902,
+        "HL difference": 0.0009704999999999853,
+        "95% CI low": -0.0004554999999999976,
+        "95% CI high": 0.0023190000000000155,
+        "BH q": 0.4151979033826304,
+        "Significant (q<0.05)": false
+      },
+      {
+        "Task": "Four-way ablation (supplement)",
+        "Metric": "AUPRC",
+        "Comparison": "Masked Strict Inductive - Original Transductive",
+        "Paired unit": "coordinate-matched fold value",
+        "N": 50,
+        "Left mean": 0.858538,
+        "Left SD (ddof=0)": 0.02273780015744707,
+        "Right mean": 0.8582832400000001,
+        "Right SD (ddof=0)": 0.022480334852096842,
+        "Mean difference": 0.00025476000000000274,
+        "Wilcoxon p (two-sided)": 0.9192651438406544,
+        "Effect size r_rb": -0.01647058823529412,
+        "HL difference": -6.650000000002487e-05,
+        "95% CI low": -0.001255899999999965,
+        "95% CI high": 0.0014250000000000096,
+        "BH q": 0.9192651438406544,
+        "Significant (q<0.05)": false
+      }
+    ],
+    "raw_clean_hit": [
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.928439
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.931373
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.933745
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.924707
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.928489
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.92774
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.932509
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.927041
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.924644
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.928427
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.897476
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.903874
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.911539
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.89295
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.901705
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.899654
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.906816
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.901165
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.898842
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.898825
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.899646
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.898205
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.90253
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.896408
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.900419
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.903472
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.896087
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.904932
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.896358
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.895806
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.783807
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.779712
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.782204
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.775835
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.783669
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.777812
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.777496
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.79102
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.772524
+      },
+      {
+        "Method": "BIMODriver",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.77065
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.926941
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.92774
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.926454
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.924869
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.925218
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.922185
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.927353
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.926517
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.923121
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.921598
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.896147
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.90233
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.895313
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.894396
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.898744
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.890997
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.897565
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.898719
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.892455
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.885103
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.889085
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.893743
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.886959
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.893107
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.88842
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.893336
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.885992
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.884888
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.892271
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.867887
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.776084
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.779516
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.763446
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.775691
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.762765
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.78045
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.767042
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.758573
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.772974
+      },
+      {
+        "Method": "DISFusion",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.731006
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.928477
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.935693
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.93201
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.933658
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.929076
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.927303
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.933159
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.934157
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.933358
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.934157
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.902139
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.908783
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.906901
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.905782
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.903611
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.896601
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.906919
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.907976
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.907914
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Clean -> Hit",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.906497
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fixed-test value": 0.891255
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fixed-test value": 0.893462
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fixed-test value": 0.892074
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fixed-test value": 0.89242
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fixed-test value": 0.896318
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fixed-test value": 0.895525
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fixed-test value": 0.896224
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fixed-test value": 0.892293
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fixed-test value": 0.890606
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fixed-test value": 0.886362
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fixed-test value": 0.779521
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fixed-test value": 0.773092
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fixed-test value": 0.782318
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fixed-test value": 0.78164
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fixed-test value": 0.781472
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fixed-test value": 0.786063
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fixed-test value": 0.784494
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fixed-test value": 0.777771
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fixed-test value": 0.773588
+      },
+      {
+        "Method": "MNGCL",
+        "Task": "Hit -> Clean",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fixed-test value": 0.774525
+      }
+    ],
+    "raw_ablation": [
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.926984,
+        "Run mean": 0.9310074
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.93043,
+        "Run mean": 0.9310074
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.928461,
+        "Run mean": 0.9310074
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.945166,
+        "Run mean": 0.9310074
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.923996,
+        "Run mean": 0.9310074
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.916573,
+        "Run mean": 0.9310824
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.939117,
+        "Run mean": 0.9310824
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.942677,
+        "Run mean": 0.9310824
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.923147,
+        "Run mean": 0.9310824
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.933898,
+        "Run mean": 0.9310824
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.93132,
+        "Run mean": 0.9312805999999998
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.937681,
+        "Run mean": 0.9312805999999998
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.929105,
+        "Run mean": 0.9312805999999998
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.917203,
+        "Run mean": 0.9312805999999998
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.941094,
+        "Run mean": 0.9312805999999998
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.924686,
+        "Run mean": 0.9318702
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.953232,
+        "Run mean": 0.9318702
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.939831,
+        "Run mean": 0.9318702
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.917059,
+        "Run mean": 0.9318702
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.924543,
+        "Run mean": 0.9318702
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.916961,
+        "Run mean": 0.9308796000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.95115,
+        "Run mean": 0.9308796000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.945981,
+        "Run mean": 0.9308796000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.913993,
+        "Run mean": 0.9308796000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.926313,
+        "Run mean": 0.9308796000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.894087,
+        "Run mean": 0.9289288000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.936432,
+        "Run mean": 0.9289288000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.915661,
+        "Run mean": 0.9289288000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.957702,
+        "Run mean": 0.9289288000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.940762,
+        "Run mean": 0.9289288000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.916502,
+        "Run mean": 0.9286161999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.923078,
+        "Run mean": 0.9286161999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.943636,
+        "Run mean": 0.9286161999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.931955,
+        "Run mean": 0.9286161999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.92791,
+        "Run mean": 0.9286161999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.945105,
+        "Run mean": 0.9326108
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.912538,
+        "Run mean": 0.9326108
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.937271,
+        "Run mean": 0.9326108
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.927579,
+        "Run mean": 0.9326108
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.940561,
+        "Run mean": 0.9326108
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.928879,
+        "Run mean": 0.929476
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.932354,
+        "Run mean": 0.929476
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.940789,
+        "Run mean": 0.929476
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.904898,
+        "Run mean": 0.929476
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.94046,
+        "Run mean": 0.929476
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.915209,
+        "Run mean": 0.929819
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.927472,
+        "Run mean": 0.929819
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.92889,
+        "Run mean": 0.929819
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.952852,
+        "Run mean": 0.929819
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.924672,
+        "Run mean": 0.929819
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.846329,
+        "Run mean": 0.8595535999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.870629,
+        "Run mean": 0.8595535999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.869076,
+        "Run mean": 0.8595535999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.867238,
+        "Run mean": 0.8595535999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.844496,
+        "Run mean": 0.8595535999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.821836,
+        "Run mean": 0.8603296
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.886321,
+        "Run mean": 0.8603296
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.876015,
+        "Run mean": 0.8603296
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.853444,
+        "Run mean": 0.8603296
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.864032,
+        "Run mean": 0.8603296
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.847427,
+        "Run mean": 0.8576186
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.864797,
+        "Run mean": 0.8576186
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.85041,
+        "Run mean": 0.8576186
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.83483,
+        "Run mean": 0.8576186
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.890629,
+        "Run mean": 0.8576186
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.851018,
+        "Run mean": 0.8598954000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.904111,
+        "Run mean": 0.8598954000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.859941,
+        "Run mean": 0.8598954000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.841503,
+        "Run mean": 0.8598954000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.842904,
+        "Run mean": 0.8598954000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.849483,
+        "Run mean": 0.8584244
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.882729,
+        "Run mean": 0.8584244
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.891626,
+        "Run mean": 0.8584244
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.821982,
+        "Run mean": 0.8584244
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.846302,
+        "Run mean": 0.8584244
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.816059,
+        "Run mean": 0.857596
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.861719,
+        "Run mean": 0.857596
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.827727,
+        "Run mean": 0.857596
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.907546,
+        "Run mean": 0.857596
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.874929,
+        "Run mean": 0.857596
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.828484,
+        "Run mean": 0.855313
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.846196,
+        "Run mean": 0.855313
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.883644,
+        "Run mean": 0.855313
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.870461,
+        "Run mean": 0.855313
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.84778,
+        "Run mean": 0.855313
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.877508,
+        "Run mean": 0.8652329999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.853708,
+        "Run mean": 0.8652329999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.868122,
+        "Run mean": 0.8652329999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.861338,
+        "Run mean": 0.8652329999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.865489,
+        "Run mean": 0.8652329999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.82263,
+        "Run mean": 0.8545865999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.857562,
+        "Run mean": 0.8545865999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.885328,
+        "Run mean": 0.8545865999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.822382,
+        "Run mean": 0.8545865999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.885031,
+        "Run mean": 0.8545865999999999
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.818822,
+        "Run mean": 0.8542822000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.861963,
+        "Run mean": 0.8542822000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.868053,
+        "Run mean": 0.8542822000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.880676,
+        "Run mean": 0.8542822000000001
+      },
+      {
+        "Configuration": "Original Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.841897,
+        "Run mean": 0.8542822000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.927587,
+        "Run mean": 0.9305620000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.92931,
+        "Run mean": 0.9305620000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.928161,
+        "Run mean": 0.9305620000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.944217,
+        "Run mean": 0.9305620000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.923535,
+        "Run mean": 0.9305620000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.916861,
+        "Run mean": 0.9306128000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.93883,
+        "Run mean": 0.9306128000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.940732,
+        "Run mean": 0.9306128000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.922528,
+        "Run mean": 0.9306128000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.934113,
+        "Run mean": 0.9306128000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.930574,
+        "Run mean": 0.9307058000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.937523,
+        "Run mean": 0.9307058000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.928647,
+        "Run mean": 0.9307058000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.915447,
+        "Run mean": 0.9307058000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.941338,
+        "Run mean": 0.9307058000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.925174,
+        "Run mean": 0.9319402
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.953419,
+        "Run mean": 0.9319402
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.938844,
+        "Run mean": 0.9319402
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.91716,
+        "Run mean": 0.9319402
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.925104,
+        "Run mean": 0.9319402
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.917478,
+        "Run mean": 0.929775
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.947115,
+        "Run mean": 0.929775
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.94661,
+        "Run mean": 0.929775
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.913374,
+        "Run mean": 0.929775
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.924298,
+        "Run mean": 0.929775
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.89446,
+        "Run mean": 0.9288168000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.936662,
+        "Run mean": 0.9288168000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.915289,
+        "Run mean": 0.9288168000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.957112,
+        "Run mean": 0.9288168000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.940561,
+        "Run mean": 0.9288168000000001
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.915999,
+        "Run mean": 0.9284725999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.922145,
+        "Run mean": 0.9284725999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.943836,
+        "Run mean": 0.9284725999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.933696,
+        "Run mean": 0.9284725999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.926687,
+        "Run mean": 0.9284725999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.94443,
+        "Run mean": 0.9322998
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.91149,
+        "Run mean": 0.9322998
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.935841,
+        "Run mean": 0.9322998
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.928544,
+        "Run mean": 0.9322998
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.941194,
+        "Run mean": 0.9322998
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.929051,
+        "Run mean": 0.929737
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.932397,
+        "Run mean": 0.929737
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.941433,
+        "Run mean": 0.929737
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.904883,
+        "Run mean": 0.929737
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.940921,
+        "Run mean": 0.929737
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.91587,
+        "Run mean": 0.9298904
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.927759,
+        "Run mean": 0.9298904
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.929062,
+        "Run mean": 0.9298904
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.952348,
+        "Run mean": 0.9298904
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.924413,
+        "Run mean": 0.9298904
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.846141,
+        "Run mean": 0.8590389999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.869799,
+        "Run mean": 0.8590389999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.870196,
+        "Run mean": 0.8590389999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.865223,
+        "Run mean": 0.8590389999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.843836,
+        "Run mean": 0.8590389999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.821406,
+        "Run mean": 0.8591156
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.886197,
+        "Run mean": 0.8591156
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.870066,
+        "Run mean": 0.8591156
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.852676,
+        "Run mean": 0.8591156
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.865233,
+        "Run mean": 0.8591156
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.84612,
+        "Run mean": 0.8572443999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.866259,
+        "Run mean": 0.8572443999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.849203,
+        "Run mean": 0.8572443999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.834017,
+        "Run mean": 0.8572443999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.890623,
+        "Run mean": 0.8572443999999999
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.851908,
+        "Run mean": 0.8603498
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.905109,
+        "Run mean": 0.8603498
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.858524,
+        "Run mean": 0.8603498
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.842346,
+        "Run mean": 0.8603498
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.843862,
+        "Run mean": 0.8603498
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.851317,
+        "Run mean": 0.8573886
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.879768,
+        "Run mean": 0.8573886
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.891555,
+        "Run mean": 0.8573886
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.822005,
+        "Run mean": 0.8573886
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.842298,
+        "Run mean": 0.8573886
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.816661,
+        "Run mean": 0.8573894
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.862216,
+        "Run mean": 0.8573894
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.827171,
+        "Run mean": 0.8573894
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.906589,
+        "Run mean": 0.8573894
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.87431,
+        "Run mean": 0.8573894
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.824908,
+        "Run mean": 0.8546296
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.845155,
+        "Run mean": 0.8546296
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.8839,
+        "Run mean": 0.8546296
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.872321,
+        "Run mean": 0.8546296
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.846864,
+        "Run mean": 0.8546296
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.879092,
+        "Run mean": 0.8646588000000002
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.852008,
+        "Run mean": 0.8646588000000002
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.86336,
+        "Run mean": 0.8646588000000002
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.862409,
+        "Run mean": 0.8646588000000002
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.866425,
+        "Run mean": 0.8646588000000002
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.823356,
+        "Run mean": 0.855291
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.857279,
+        "Run mean": 0.855291
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.886651,
+        "Run mean": 0.855291
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.822383,
+        "Run mean": 0.855291
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.886786,
+        "Run mean": 0.855291
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.819106,
+        "Run mean": 0.854162
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.862934,
+        "Run mean": 0.854162
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.868522,
+        "Run mean": 0.854162
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.879375,
+        "Run mean": 0.854162
+      },
+      {
+        "Configuration": "Masked Transductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.840873,
+        "Run mean": 0.854162
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.9282,
+        "Run mean": 0.93048
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.9269,
+        "Run mean": 0.93048
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.928,
+        "Run mean": 0.93048
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.9436,
+        "Run mean": 0.93048
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.9257,
+        "Run mean": 0.93048
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.9184,
+        "Run mean": 0.93104
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.938,
+        "Run mean": 0.93104
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.9434,
+        "Run mean": 0.93104
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.9195,
+        "Run mean": 0.93104
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.9359,
+        "Run mean": 0.93104
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.9303,
+        "Run mean": 0.93096
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.9374,
+        "Run mean": 0.93096
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.9286,
+        "Run mean": 0.93096
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.9151,
+        "Run mean": 0.93096
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.9434,
+        "Run mean": 0.93096
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.9252,
+        "Run mean": 0.9324600000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.9574,
+        "Run mean": 0.9324600000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.9371,
+        "Run mean": 0.9324600000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.9202,
+        "Run mean": 0.9324600000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.9224,
+        "Run mean": 0.9324600000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.92,
+        "Run mean": 0.9326399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.9526,
+        "Run mean": 0.9326399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.9456,
+        "Run mean": 0.9326399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.916,
+        "Run mean": 0.9326399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.929,
+        "Run mean": 0.9326399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.8883,
+        "Run mean": 0.92918
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.9419,
+        "Run mean": 0.92918
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.9137,
+        "Run mean": 0.92918
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.9579,
+        "Run mean": 0.92918
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.9441,
+        "Run mean": 0.92918
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.9172,
+        "Run mean": 0.92956
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.924,
+        "Run mean": 0.92956
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.942,
+        "Run mean": 0.92956
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.9334,
+        "Run mean": 0.92956
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.9312,
+        "Run mean": 0.92956
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.9409,
+        "Run mean": 0.9324999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.9117,
+        "Run mean": 0.9324999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.9406,
+        "Run mean": 0.9324999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.9289,
+        "Run mean": 0.9324999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.9404,
+        "Run mean": 0.9324999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.9303,
+        "Run mean": 0.9288000000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.9301,
+        "Run mean": 0.9288000000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.9388,
+        "Run mean": 0.9288000000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.9046,
+        "Run mean": 0.9288000000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.9402,
+        "Run mean": 0.9288000000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.9166,
+        "Run mean": 0.93068
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.9275,
+        "Run mean": 0.93068
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.9288,
+        "Run mean": 0.93068
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.9541,
+        "Run mean": 0.93068
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.9264,
+        "Run mean": 0.93068
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.8497,
+        "Run mean": 0.8571799999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.86,
+        "Run mean": 0.8571799999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.8663,
+        "Run mean": 0.8571799999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.8631,
+        "Run mean": 0.8571799999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.8468,
+        "Run mean": 0.8571799999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.8283,
+        "Run mean": 0.8597400000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.8829,
+        "Run mean": 0.8597400000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.8787,
+        "Run mean": 0.8597400000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.8431,
+        "Run mean": 0.8597400000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.8657,
+        "Run mean": 0.8597400000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.8494,
+        "Run mean": 0.8580200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.8652,
+        "Run mean": 0.8580200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.8467,
+        "Run mean": 0.8580200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.8273,
+        "Run mean": 0.8580200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.9015,
+        "Run mean": 0.8580200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.8519,
+        "Run mean": 0.86302
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.9134,
+        "Run mean": 0.86302
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.8547,
+        "Run mean": 0.86302
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.8524,
+        "Run mean": 0.86302
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.8427,
+        "Run mean": 0.86302
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.8581,
+        "Run mean": 0.86126
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.8834,
+        "Run mean": 0.86126
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.8922,
+        "Run mean": 0.86126
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.8206,
+        "Run mean": 0.86126
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.852,
+        "Run mean": 0.86126
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.8084,
+        "Run mean": 0.8585200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.8684,
+        "Run mean": 0.8585200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.828,
+        "Run mean": 0.8585200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.9051,
+        "Run mean": 0.8585200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.8827,
+        "Run mean": 0.8585200000000001
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.8256,
+        "Run mean": 0.8564399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.8477,
+        "Run mean": 0.8564399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.8831,
+        "Run mean": 0.8564399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.872,
+        "Run mean": 0.8564399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.8538,
+        "Run mean": 0.8564399999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.8732,
+        "Run mean": 0.86584
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.8549,
+        "Run mean": 0.86584
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.8737,
+        "Run mean": 0.86584
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.8647,
+        "Run mean": 0.86584
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.8627,
+        "Run mean": 0.86584
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.8228,
+        "Run mean": 0.8554999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.8605,
+        "Run mean": 0.8554999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.8851,
+        "Run mean": 0.8554999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.8242,
+        "Run mean": 0.8554999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.8849,
+        "Run mean": 0.8554999999999999
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.8271,
+        "Run mean": 0.85694
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.863,
+        "Run mean": 0.85694
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.8658,
+        "Run mean": 0.85694
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.8862,
+        "Run mean": 0.85694
+      },
+      {
+        "Configuration": "Original Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.8426,
+        "Run mean": 0.85694
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.9269,
+        "Run mean": 0.92974
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.927,
+        "Run mean": 0.92974
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.927,
+        "Run mean": 0.92974
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.9447,
+        "Run mean": 0.92974
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.9231,
+        "Run mean": 0.92974
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.9202,
+        "Run mean": 0.93102
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.938,
+        "Run mean": 0.93102
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.9424,
+        "Run mean": 0.93102
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.92,
+        "Run mean": 0.93102
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.9345,
+        "Run mean": 0.93102
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.9291,
+        "Run mean": 0.9312999999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.9351,
+        "Run mean": 0.9312999999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.9289,
+        "Run mean": 0.9312999999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.9183,
+        "Run mean": 0.9312999999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.9451,
+        "Run mean": 0.9312999999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.9253,
+        "Run mean": 0.9328000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.955,
+        "Run mean": 0.9328000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.9382,
+        "Run mean": 0.9328000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.9205,
+        "Run mean": 0.9328000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.925,
+        "Run mean": 0.9328000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.9194,
+        "Run mean": 0.9306000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.9473,
+        "Run mean": 0.9306000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.9453,
+        "Run mean": 0.9306000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.9112,
+        "Run mean": 0.9306000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.9298,
+        "Run mean": 0.9306000000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.896,
+        "Run mean": 0.93004
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.9391,
+        "Run mean": 0.93004
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.9149,
+        "Run mean": 0.93004
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.9586,
+        "Run mean": 0.93004
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.9416,
+        "Run mean": 0.93004
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.9176,
+        "Run mean": 0.92834
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.9221,
+        "Run mean": 0.92834
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.9422,
+        "Run mean": 0.92834
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.9325,
+        "Run mean": 0.92834
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.9273,
+        "Run mean": 0.92834
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.9411,
+        "Run mean": 0.93148
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.9102,
+        "Run mean": 0.93148
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.9411,
+        "Run mean": 0.93148
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.9263,
+        "Run mean": 0.93148
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.9387,
+        "Run mean": 0.93148
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.9304,
+        "Run mean": 0.92842
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.9294,
+        "Run mean": 0.92842
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.9406,
+        "Run mean": 0.92842
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.9026,
+        "Run mean": 0.92842
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.9391,
+        "Run mean": 0.92842
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.9143,
+        "Run mean": 0.9295399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.9273,
+        "Run mean": 0.9295399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.9279,
+        "Run mean": 0.9295399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.9536,
+        "Run mean": 0.9295399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUROC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.9246,
+        "Run mean": 0.9295399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 1,
+        "Fold value": 0.8439,
+        "Run mean": 0.8552399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 2,
+        "Fold value": 0.8623,
+        "Run mean": 0.8552399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 3,
+        "Fold value": 0.8636,
+        "Run mean": 0.8552399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 4,
+        "Fold value": 0.8638,
+        "Run mean": 0.8552399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 1,
+        "Fold": 5,
+        "Fold value": 0.8426,
+        "Run mean": 0.8552399999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 1,
+        "Fold value": 0.8321,
+        "Run mean": 0.86026
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 2,
+        "Fold value": 0.8839,
+        "Run mean": 0.86026
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 3,
+        "Fold value": 0.8731,
+        "Run mean": 0.86026
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 4,
+        "Fold value": 0.8472,
+        "Run mean": 0.86026
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 2,
+        "Fold": 5,
+        "Fold value": 0.865,
+        "Run mean": 0.86026
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 1,
+        "Fold value": 0.8493,
+        "Run mean": 0.8577199999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 2,
+        "Fold value": 0.8617,
+        "Run mean": 0.8577199999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 3,
+        "Fold value": 0.8432,
+        "Run mean": 0.8577199999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 4,
+        "Fold value": 0.8307,
+        "Run mean": 0.8577199999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 3,
+        "Fold": 5,
+        "Fold value": 0.9037,
+        "Run mean": 0.8577199999999999
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 1,
+        "Fold value": 0.8531,
+        "Run mean": 0.86356
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 2,
+        "Fold value": 0.9081,
+        "Run mean": 0.86356
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 3,
+        "Fold value": 0.8585,
+        "Run mean": 0.86356
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 4,
+        "Fold value": 0.8529,
+        "Run mean": 0.86356
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 4,
+        "Fold": 5,
+        "Fold value": 0.8452,
+        "Run mean": 0.86356
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 1,
+        "Fold value": 0.8567,
+        "Run mean": 0.8589600000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 2,
+        "Fold value": 0.8829,
+        "Run mean": 0.8589600000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 3,
+        "Fold value": 0.8898,
+        "Run mean": 0.8589600000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 4,
+        "Fold value": 0.8132,
+        "Run mean": 0.8589600000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 5,
+        "Fold": 5,
+        "Fold value": 0.8522,
+        "Run mean": 0.8589600000000001
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 1,
+        "Fold value": 0.8187,
+        "Run mean": 0.85958
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 2,
+        "Fold value": 0.8636,
+        "Run mean": 0.85958
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 3,
+        "Fold value": 0.831,
+        "Run mean": 0.85958
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 4,
+        "Fold value": 0.9081,
+        "Run mean": 0.85958
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 6,
+        "Fold": 5,
+        "Fold value": 0.8765,
+        "Run mean": 0.85958
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 1,
+        "Fold value": 0.8257,
+        "Run mean": 0.85382
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 2,
+        "Fold value": 0.8447,
+        "Run mean": 0.85382
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 3,
+        "Fold value": 0.8808,
+        "Run mean": 0.85382
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 4,
+        "Fold value": 0.8704,
+        "Run mean": 0.85382
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 7,
+        "Fold": 5,
+        "Fold value": 0.8475,
+        "Run mean": 0.85382
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 1,
+        "Fold value": 0.8738,
+        "Run mean": 0.86466
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 2,
+        "Fold value": 0.8507,
+        "Run mean": 0.86466
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 3,
+        "Fold value": 0.8751,
+        "Run mean": 0.86466
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 4,
+        "Fold value": 0.8638,
+        "Run mean": 0.86466
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 8,
+        "Fold": 5,
+        "Fold value": 0.8599,
+        "Run mean": 0.86466
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 1,
+        "Fold value": 0.8241,
+        "Run mean": 0.8552
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 2,
+        "Fold value": 0.8616,
+        "Run mean": 0.8552
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 3,
+        "Fold value": 0.8874,
+        "Run mean": 0.8552
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 4,
+        "Fold value": 0.8201,
+        "Run mean": 0.8552
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 9,
+        "Fold": 5,
+        "Fold value": 0.8828,
+        "Run mean": 0.8552
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 1,
+        "Fold value": 0.8269,
+        "Run mean": 0.85638
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 2,
+        "Fold value": 0.8646,
+        "Run mean": 0.85638
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 3,
+        "Fold value": 0.868,
+        "Run mean": 0.85638
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 4,
+        "Fold value": 0.8843,
+        "Run mean": 0.85638
+      },
+      {
+        "Configuration": "Masked Strict Inductive",
+        "Metric": "AUPRC",
+        "Run": 10,
+        "Fold": 5,
+        "Fold value": 0.8381,
+        "Run mean": 0.85638
+      }
+    ]
+  },
+  "input_manifest": {
+    "1_pan_cancer_10x5_cv/pan-cancer_auprc.txt": {
+      "sha256": "298d549ecdcc519821eccb3980d4dbe6aa6d84185fc3aefbbfc4bdd7ee77fa5b",
+      "bytes": 450
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_auroc.txt": {
+      "sha256": "23477cddb39fa628f24c9a74189b11dd0b360ddfc8b43b6abc8f99c4407beacc",
+      "bytes": 450
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_inductive_auprc.txt": {
+      "sha256": "b8ceeeab42d5c5f1a884170895821b76a7ef69cd001ab751c80c6bfaea57611c",
+      "bytes": 350
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_inductive_auroc.txt": {
+      "sha256": "f3643d9cac3ddd151628c22b92b4ae58f521c6e85fe7843081b525acfdf12d39",
+      "bytes": 350
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_masked_auprc.txt": {
+      "sha256": "39cb4b9319041f352e0d878cb194d87a8a8b7ba2efd3c8f6b70789753e92d02a",
+      "bytes": 450
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_masked_auroc.txt": {
+      "sha256": "59535c3433afdf440a7fae254b3c4d8a54cafa52a6223574641d4f8504b98dd0",
+      "bytes": 450
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_masked_inductive_auprc.txt": {
+      "sha256": "f94384bc010d15c6fa46868b885e07814ea8cb568e1de24713a38400e1d25421",
+      "bytes": 350
+    },
+    "1_pan_cancer_10x5_cv/pan-cancer_masked_inductive_auroc.txt": {
+      "sha256": "49d65c0c253435e5b19c29382aabe87e1ba7605afe41d2e2d23f02e3c6f31361",
+      "bytes": 350
+    },
+    "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_clean_to_hit_auprc.txt": {
+      "sha256": "b167ac7abcf1edab5a9d8e11e4576d7f491eb7bbf71d1cbd6e576f15939ee49b",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_clean_to_hit_auroc.txt": {
+      "sha256": "f0c0f488f909f150399ed427278db08946723192db057af62b2803f16ae44052",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_hit_to_clean_auprc.txt": {
+      "sha256": "55149a1eecbdd125bfc0ea382c1ea3790df03991ae909a7dff0a000e9b5715a1",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/bimodriver_original_leakage_hit_to_clean_auroc.txt": {
+      "sha256": "204ad30b1dbcf2834b2880a9e378c94999ac2ecb05cb23f9c1fa557de67bb785",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/disfusion_leakage_clean_to_hit_auprc.txt": {
+      "sha256": "c4774f79d7d1f2f21c0979c1c87f4799cc2f10fb391e83cc77b5686a380f82d2",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/disfusion_leakage_clean_to_hit_auroc.txt": {
+      "sha256": "154d6621110463b94f3fa2b5905ad9dc1db8048b7950b3f3ae01d536640797cf",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/disfusion_leakage_hit_to_clean_auprc.txt": {
+      "sha256": "d7028e6aa4bdecb2c3dbcc44a4f5161a26f8673b18175d5fb185ab41c874651f",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/disfusion_leakage_hit_to_clean_auroc.txt": {
+      "sha256": "5b172131e7e3d57b42f5fb4a30e36f6c8f8284f1c7db8da3d6b244e988f43eb2",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/mngcl_leakage_clean_to_hit_auprc.txt": {
+      "sha256": "e932cf6cc6219ebb3a3af95b4781520a84e67e1f7fd4b4e82b8fc817570a89d5",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/mngcl_leakage_clean_to_hit_auroc.txt": {
+      "sha256": "750acc47f60b3f5c2f7dfeec610a845ee3cfdcf11f67db94b866439a3fa48d80",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/mngcl_leakage_hit_to_clean_auprc.txt": {
+      "sha256": "8f7d200a23bc925f2ad7067a947cb2143478b39b03f0d5481fb1a02e91f54271",
+      "bytes": 90
+    },
+    "2_clean_hit_leakage_benchmark/mngcl_leakage_hit_to_clean_auroc.txt": {
+      "sha256": "23fb16b2a73fe30008ab5ede6d1faa3b52f9b536f4b81a00cf4de61bbc69f49d",
+      "bytes": 90
+    }
+  },
+  "seed": 20260910
+}

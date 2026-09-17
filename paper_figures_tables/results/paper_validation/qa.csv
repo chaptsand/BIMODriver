@@ -1,0 +1,11 @@
+check,expected,observed,status
+Pan-cancer method count,10,10,PASS
+STRING pan-cancer method count,10,10,PASS
+Cancer type count,15,15,PASS
+Cancer-specific method count,10,10,PASS
+Fold score rows,17000,17000,PASS
+Run score rows,3400,3400,PASS
+"Scores in [0,1]",True,True,PASS
+10x5 coordinate meaning,"row=repeat, column=fold",Explicitly stated in cancer-specific file headers; same matrix convention used for pan-cancer,PASS
+Split membership identifiers,k_sets / fold sample IDs for direct membership audit,Not included; pairing is by the supplied run/fold matrix coordinates,MISSING
+Prediction files present,Needed for reviewer release request,No y_true / probability / sample-ID files found,MISSING

@@ -1,0 +1,5 @@
+Metric,Comparator,Mean diff,Wilcoxon p,BH q,Effect size r_rb,HL diff,HL 95% CI,Conclusion
+AUROC,Masked Transductive vs Original Transductive BIMODriver,-0.0002,7.695E-01,1.000E+00,-0.127,-0.000233,"[-0.001009, 0.000578]",No statistically significant difference
+AUROC,Masked Inductive vs Original Transductive BIMODriver,-0.0002,1.000E+00,1.000E+00,+0.018,+0.000004,"[-0.000974, 0.000396]",No statistically significant difference
+AUPRC,Masked Transductive vs Original Transductive BIMODriver,-0.0007,4.316E-01,1.000E+00,-0.309,-0.000663,"[-0.002136, 0.000707]",No statistically significant difference
+AUPRC,Masked Inductive vs Original Transductive BIMODriver,-0.0001,8.457E-01,1.000E+00,-0.091,-0.000162,"[-0.001392, 0.001317]",No statistically significant difference

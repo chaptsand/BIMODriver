@@ -1,0 +1,19 @@
+Method: DISFusion
+Task: clean_to_hit
+Protocol: Transductive (Full graph message passing during training), Checkpoint selected on validation set, test set evaluated ONCE
+Runs: 10 (Smoke test: False)
+Epochs: 200
+Feature Dim: 64 (48 omics + 16 topology embeddings)
+Hypergraph Mode: kegg_go (Incidence matrix: (13627, 10362))
+LR: 1e-05, w_self: 0.005, lambdinter: 0.0001
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9215 ± 0.0099
+  Val AUPRC : 0.8216 ± 0.0187
+  Best Epochs: [184, 178, 167, 156, 164, 180, 170, 176, 150, 87]
+------------------------------------------------------------
+Final Fixed Test Metrics:
+  Test AUROC : 0.9247 ± 0.0019
+  Test AUPRC : 0.8951 ± 0.0046
+  Per-run AUROC: [0.9267 0.9272 0.9272 0.9238 0.9233 0.9236 0.925  0.9264 0.9221 0.9219]
+  Per-run AUPRC: [0.8969 0.9038 0.8984 0.8961 0.8953 0.8928 0.8913 0.8984 0.8916 0.8861]

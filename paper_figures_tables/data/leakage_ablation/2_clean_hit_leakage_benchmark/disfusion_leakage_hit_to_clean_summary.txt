@@ -1,0 +1,18 @@
+Method: DISFusion
+Task: hit_to_clean
+Runs: 10 (Smoke test: False)
+Epochs: 200
+Feature Dim: 64 (48 omics + 16 topology embeddings)
+Hypergraph Mode: kegg_go (Incidence matrix: (13627, 10362))
+LR: 1e-05, w_self: 0.005, lambdinter: 0.0001
+------------------------------------------------------------
+Validation Metrics (Best Checkpoint Average):
+  Val AUROC : 0.9158 ± 0.0203
+  Val AUPRC : 0.8896 ± 0.0226
+  Best Epochs: [187, 156, 74, 136, 71, 188, 77, 55, 85, 24]
+------------------------------------------------------------
+Final Fixed Test Metrics:
+  Test AUROC : 0.8876 ± 0.0072
+  Test AUPRC : 0.7668 ± 0.0139
+  Per-run AUROC: [0.8891 0.8937 0.887  0.8931 0.8884 0.8933 0.886  0.8849 0.8923 0.8679]
+  Per-run AUPRC: [0.7761 0.7795 0.7634 0.7757 0.7628 0.7805 0.767  0.7586 0.773  0.731 ]
