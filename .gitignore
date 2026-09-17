@@ -10,6 +10,8 @@ __pycache__/
 # Runtime experiment results and output logs
 result/
 result_backup*/
+cache/
+outputs/
 *.log
 *.zip
 

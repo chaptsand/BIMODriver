@@ -1,0 +1,405 @@
+# encoding: utf-8
+import numpy as np
+import pandas as pd
+import time
+import pickle
+import random
+import warnings
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import os
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = REPO_ROOT / 'data'
+if str(REPO_ROOT / 'BIMODriver') not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / 'BIMODriver'))
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from torch.nn import Linear
+import gcnPreprocessing
+import torch_geometric.transforms as T
+from torch_geometric.nn import ChebConv, GATConv, GCNConv, SAGEConv
+from torch_geometric.data import Data, DataLoader
+from torch_geometric.utils import dropout_adj, negative_sampling, remove_self_loops, add_self_loops
+import copy
+from sklearn import metrics
+from sklearn.model_selection import train_test_split, KFold
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+warnings.filterwarnings("ignore")
+from sklearn.model_selection import train_test_split as sk_train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+from sklearn import linear_model
+from sklearn.ensemble import StackingClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from model_sparse_dense import *
+from pathlib import Path
+from datetime import datetime
+import csv
+import argparse
+
+parser = argparse.ArgumentParser(description='Sparse/dense BIMODriver comparison')
+parser.add_argument(
+    '--setting', choices=('transductive', 'inductive'), default='inductive',
+    help=('inductive masks held-out features, removes held-out edges from both '
+          'training graphs, and excludes held-out genes from all losses')
+)
+parser.add_argument('--experiments', type=int, default=10,
+                    help='number of stored split repetitions to run (1 uses k_sets[0])')
+args = parser.parse_args()
+
+# Original data paths remain relative to the code/ working directory.
+RUN_DIR = Path(__file__).resolve().parents[2] / 'cache' / ('original_framework_sparse_dense_' + args.setting) / datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+N_EXPERIMENTS = args.experiments
+N_FOLDS = 5
+
+
+def remove_held_out_edges(edge_index, held_out_mask):
+    """Return the induced graph on all nodes except the held-out OOF genes."""
+    held_out_mask = held_out_mask.to(edge_index.device).bool()
+    src, dst = edge_index
+    keep = (~held_out_mask[src]) & (~held_out_mask[dst])
+    return edge_index[:, keep]
+
+
+def assert_no_held_out_edges(edge_index, held_out_mask, graph_name):
+    """Fail fast if a strict-inductive training graph contains a test node."""
+    held_out_mask = held_out_mask.to(edge_index.device).bool()
+    if edge_index.numel() and held_out_mask[edge_index].any():
+        raise AssertionError(f'{graph_name} still contains an edge incident to a test gene')
+
+
+def save_results_to_file(auroc, auprc, cancerType, dataset='cpdb', lr=0.001,
+                         dropout=0.2, lambdinter=0.005, fusion='sparse'):
+    output = RUN_DIR / dataset / fusion
+    output.mkdir(parents=True, exist_ok=True)
+    np.savetxt(output / f'final_auroc_{N_EXPERIMENTS}x{N_FOLDS}.csv', auroc, delimiter=',', fmt='%.10f')
+    np.savetxt(output / f'final_auprc_{N_EXPERIMENTS}x{N_FOLDS}.csv', auprc, delimiter=',', fmt='%.10f')
+    with (output / 'summary.csv').open('w', newline='', encoding='utf-8') as handle:
+        writer = csv.writer(handle)
+        writer.writerow(['model', 'metric', 'mean', 'sd', 'n_folds'])
+        for metric, values in [('AUROC', auroc), ('AUPRC', auprc)]:
+            writer.writerow([fusion, metric, values.mean(), values.std(), values.size])
+
+def load_label_single(cancerType):
+    path = str(DATA_DIR / "CPDB" / "Specific cancer") + "/"
+    label = np.loadtxt(path + "label_file-P-" + cancerType + ".txt")
+    Y = torch.tensor(label).type(torch.FloatTensor).to(device).unsqueeze(1)
+    label_pos = np.loadtxt(path + "pos-" + cancerType + ".txt", dtype=int)
+    label_neg = np.loadtxt(path + "neg.txt", dtype=int)
+    return Y, label_pos, label_neg
+def sample_division_single(pos_label, neg_label, l, l1, l2, i):
+    pos_val = pos_label[i * l1:(i + 1) * l1]
+    pos_train = list(set(pos_label) - set(pos_val))
+    neg_val = neg_label[i * l2:(i + 1) * l2]
+    neg_train = list(set(neg_label) - set(neg_val))
+    indexs1 = [False] * l
+    indexs2 = [False] * l
+    for j in range(len(pos_train)):
+        indexs1[pos_train[j]] = True
+    for j in range(len(neg_train)):
+        indexs1[neg_train[j]] = True
+    for j in range(len(pos_val)):
+        indexs2[pos_val[j]] = True
+    for j in range(len(neg_val)):
+        indexs2[neg_val[j]] = True
+    tr_mask = torch.from_numpy(np.array(indexs1))
+    val_mask = torch.from_numpy(np.array(indexs2))
+    return tr_mask, val_mask
+def get_class_weights(labels):
+    pos_counts = labels.sum(dim=0)
+    # neg_counts = 2983 - pos_counts
+    neg_counts = labels.shape[0] - pos_counts
+    weights = (neg_counts / (pos_counts + 1e-6))
+    return weights
+def train_test(data_model, optimizer, data, L_emb, edge_index, L_emb_edge,
+               tr_mask, te_mask, epochs, Y, setting='inductive'):
+    """Train one fold, then evaluate its held-out genes exactly once."""
+    model = data_model['model']
+
+    if setting == 'inductive':
+        # Construct the fold-specific training inputs once. Test genes remain
+        # addressable by index, but have no edges and every feature row that
+        # reaches a trainable layer is zero.
+        ppi_train = remove_held_out_edges(edge_index, te_mask)
+        semantic_train = remove_held_out_edges(L_emb_edge, te_mask)
+        training_node_mask = ~te_mask
+        contrastive_mask = training_node_mask
+        assert_no_held_out_edges(ppi_train, te_mask, 'CPDB graph')
+        assert_no_held_out_edges(semantic_train, te_mask, 'semantic KNN graph')
+    else:
+        ppi_train = edge_index
+        semantic_train = L_emb_edge
+        training_node_mask = None
+        contrastive_mask = None
+
+    for epoch in range(epochs):
+        # ===== ѵ���׶� =====
+        model.train()
+        optimizer.zero_grad()
+        
+        # ģ��ǰ�򴫲�
+        edge_index_train = dropout_adj(ppi_train, p=0.3)[0]
+        loss_inter, label_G, label_self, label_neighbor, label_together, label_concat, label_satment, final_output = model(
+            data.x, edge_index_train, L_emb, semantic_train,
+            contrastive_mask=contrastive_mask,
+            input_node_mask=training_node_mask
+        )
+
+        class_weights = get_class_weights(Y[tr_mask])
+        loss_G = F.binary_cross_entropy_with_logits(label_G[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_self = F.binary_cross_entropy_with_logits(label_self[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_neighbor = F.binary_cross_entropy_with_logits(label_neighbor[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_together = F.binary_cross_entropy_with_logits(label_together[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_concat = F.binary_cross_entropy_with_logits(label_concat[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_satment = F.binary_cross_entropy_with_logits(label_satment[tr_mask], Y[tr_mask], pos_weight=class_weights)
+        loss_topk_fused = F.binary_cross_entropy_with_logits(final_output[tr_mask], Y[tr_mask], pos_weight=class_weights)
+
+        loss_cls = loss_G + loss_self + loss_neighbor + loss_together + loss_concat + loss_satment + loss_topk_fused
+
+        total_loss = loss_cls + data_model['lambdinter'] * loss_inter
+
+        total_loss.backward()
+        optimizer.step()
+
+    # The held-out labels are first accessed after all parameter updates have
+    # finished. Restore both complete graphs and the untouched, pre-computed
+    # feature tensors; input_node_mask=None deliberately disables zeroing.
+    model.eval()
+    with torch.no_grad():
+        outputs = model(data.x, edge_index, L_emb, L_emb_edge)
+        final_output = outputs[-1]
+        pred = torch.sigmoid(final_output[te_mask]).cpu().numpy().ravel()
+        truth = Y[te_mask].cpu().numpy()
+        precision, recall, _thresholds = metrics.precision_recall_curve(truth, pred)
+        auc = metrics.roc_auc_score(truth, pred)
+        auprc = metrics.auc(recall, precision)
+        print(f"Final test AUC: {auc:.4f}, Test AUPRC: {auprc:.4f}")
+
+    return auc, auprc
+
+def trainPred_k_sets(input_dim ,k_sets, data, L_emb, edge_index,L_emb_edge,
+                    lr=0.001, epochs=200, lambdinter=0.005,
+                    dropout=0.2,cancerType='pan-cancer', dataset='cpdb', fusion='sparse'):
+    """Run the stored folds and retain one post-training test result per fold."""
+    if cancerType == 'pan-cancer':
+        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
+        y_all = np.logical_or(data.y, data.y_te)
+        mask_all = np.logical_or(data.mask, data.mask_te)
+        print(mask_all.sum())
+    else:
+        label, label_pos, label_neg = load_label_single(cancerType)
+        random.shuffle(label_pos)
+        random.shuffle(label_neg)
+        print(label.sum())
+        y_train_pos = label_pos[:int(0.75 * len(label_pos))]
+        y_test_pos = label_pos[int(0.75 * len(label_pos)):]
+        y_train_neg = label_neg[:int(0.75 * len(label_neg))]
+        y_test_neg = label_neg[int(0.75 * len(label_neg)):]
+        l = len(label)
+        l1 = int(len(y_train_pos) / 5)
+        l2 = int(len(y_train_neg) / 5)
+        Y = label
+    list_aurocs = np.zeros((N_EXPERIMENTS, N_FOLDS))
+    list_auprcs = np.zeros((N_EXPERIMENTS, N_FOLDS))
+    # Preserve the source main.py protocol: ten stored five-fold split sets.
+    for exp_id in range(N_EXPERIMENTS):
+
+        for fold_id in range(N_FOLDS):
+        # for fold_id, (tr_idx, val_idx) in enumerate(kf.split(valid_indices)):
+            print(f"\nExp {exp_id+1}/{N_EXPERIMENTS} | Fold {fold_id+1}/{N_FOLDS}")
+            
+            if cancerType == 'pan-cancer':
+                _, _, tr_mask, te_mask = k_sets[exp_id][fold_id]
+                print(tr_mask.sum())
+                print(te_mask.sum())
+                train_mask = torch.tensor(tr_mask).bool().to(device)
+                test_mask = torch.tensor(te_mask).bool().to(device)
+
+            else:
+                tr_mask, te_mask = sample_division_single(y_train_pos, y_train_neg, l, l1, l2, fold_id)
+                train_mask = torch.tensor(tr_mask).bool().to(device)
+                test_mask = torch.tensor(te_mask).bool().to(device)
+                print(tr_mask.sum())
+                print(te_mask.sum())
+            
+            # ��ʼ��ģ��
+            model = combine_net_gate_without_ac(input_dim = input_dim,lambdinter=lambdinter,dropout=dropout, fusion=fusion).to(device)
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+            auc, auprc = train_test(
+                data_model = {
+                    'model': model,
+                    'lambdinter': lambdinter
+                },
+                optimizer = optimizer,
+                data = data,
+                L_emb = L_emb,
+                edge_index = edge_index.to(device),
+                L_emb_edge = L_emb_edge,
+                tr_mask = train_mask.nonzero().squeeze(),
+                te_mask = test_mask,
+                epochs=epochs,
+                Y = Y,
+                setting=args.setting
+            )
+            
+            # # �洢���
+            list_aurocs[exp_id, fold_id] = auc
+            list_auprcs[exp_id, fold_id] = auprc
+            output = RUN_DIR / dataset / fusion
+            output.mkdir(parents=True, exist_ok=True)
+            fold_file = output / 'fold_metrics.csv'
+            exists = fold_file.exists()
+            with fold_file.open('a', newline='', encoding='utf-8') as handle:
+                writer = csv.writer(handle)
+                if not exists:
+                    writer.writerow(['model', 'setting', 'exp_id', 'fold_id', 'top_k',
+                                     'parameter_count', 'train_n', 'test_n', 'auc', 'auprc'])
+                writer.writerow([fusion, args.setting, exp_id, fold_id,
+                                 model.top_k if fusion == 'sparse' else 'all_mlp',
+                                 sum(p.numel() for p in model.parameters()),
+                                 int(train_mask.sum()), int(test_mask.sum()), auc, auprc])
+    save_results_to_file(list_aurocs, list_auprcs, cancerType, dataset=dataset, lr=lr, dropout=dropout, lambdinter=lambdinter, fusion=fusion)
+    return {
+        'fusion': fusion,
+        'auroc_mean': float(list_aurocs.mean()),
+        'auroc_std': float(list_aurocs.std()),
+        'auprc_mean': float(list_auprcs.mean()),
+        'auprc_std': float(list_auprcs.std()),
+        'n_evaluations': int(list_aurocs.size),
+    }
+
+cancers = ['pan-cancer']
+dataset = 'cpdb'  # 'cpdb' or 'string'
+for cancerType in cancers:
+    if dataset == 'cpdb':
+        data = torch.load(DATA_DIR / "CPDB" / "CPDB_new_data.pt")
+        data = data.to(device)
+        data.x = data.x[:, :48]
+        if cancerType == 'pan-cancer':
+            data.x = data.x[:, :48]
+        else:
+            cancerType_dict = {
+                'kirc': [0, 16, 32],
+                'brca': [1, 17, 33],
+                'prad': [3, 19, 35],
+                'stad': [4, 20, 36],
+                'hnsc': [5, 21, 37],
+                'luad': [6, 22, 38],
+                'thca': [7, 23, 39],
+                'blca': [8, 24, 40],
+                'esca': [9, 25, 41],
+                'lihc': [10, 26, 42],
+                'ucec': [11, 27, 43],
+                'coad': [12, 28, 44],
+                'lusc': [13, 29, 45],
+                'cesc': [14, 30, 46],
+                'kirp': [15, 31, 47]
+            }
+            data.x = data.x[:, cancerType_dict[cancerType]]
+
+        datas = torch.load(DATA_DIR / "CPDB" / "Str_feature.pkl")
+        data.x = torch.cat((data.x, datas), 1)
+        data = data.to(device)
+
+        with open(DATA_DIR / "CPDB" / "k_sets.pkl", 'rb') as handle:
+            k_sets = pickle.load(handle)
+
+        statement = torch.load(DATA_DIR / "CPDB" / "PAN-CANCER_statement_features.pt").to(device)
+        L_emb = {}
+        L_emb['self_emb'] = statement[:, 0:768]
+        L_emb['neighbor_emb'] = statement[:, 768:1536]
+        L_emb['together_emb'] = statement[:, 1536:2304]
+
+        L_emb_edge = torch.load(DATA_DIR / "cpdb_network_LLM" / "merged_k5_edge_index.pt").to(device)
+
+        if isinstance(L_emb, dict):
+            for key in L_emb:
+                if torch.is_tensor(L_emb[key]):
+                    L_emb[key] = L_emb[key].to(device)
+    elif dataset == 'string':
+        data = torch.load(DATA_DIR / "STRING" / "STRING_data.pkl")
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        data = data.to(device)
+        Y = torch.tensor(np.logical_or(data.y, data.y_te)).type(torch.FloatTensor).to(device)
+        y_all = np.logical_or(data.y, data.y_te)
+        mask_all = np.logical_or(data.mask, data.mask_te)
+        data.x = data.x[:, :48]
+
+        datas = torch.load(DATA_DIR / "STRING" / "Str_feature.pkl").to(device)
+        data.x = torch.cat((data.x, datas), 1)
+
+        data = data.to(device)
+        k_sets = torch.load(DATA_DIR / "STRING" / "k_sets.pkl")
+
+        statement = torch.load(DATA_DIR / "STRING" / "PAN-CANCER_string_new_neiber2.pt").to(device)
+        L_emb = {}
+        L_emb['self_emb'] = statement[:, 0:768]
+        L_emb['neighbor_emb'] = statement[:, 768:1536]
+        L_emb['together_emb'] = statement[:, 1536:2304]
+        L_emb_edge = torch.load(DATA_DIR / "string_network_LLM" / "merged_k5_edge_index.pt").to(device)
+
+        if isinstance(L_emb, dict):
+            for key in L_emb:
+                if torch.is_tensor(L_emb[key]):
+                    L_emb[key] = L_emb[key].to(device)
+                    
+        
+    else:
+        raise ValueError("Unsupported dataset. Please choose 'cpdb' or 'string'.")
+    input_dim = data.x.shape[1]
+    pb, _ = remove_self_loops(data.edge_index)
+
+    pb, _ = add_self_loops(pb)
+    E = data.edge_index
+    EPOCH = 160
+
+    dropout_rates = [0.3]
+    
+    lrs = [0.0005]
+    # lambdinter = 0.01
+    lambdinters = [0.001]
+
+    for dropoutrate in dropout_rates:
+        for lr in lrs:
+            for lambdinter in lambdinters:
+                # ѵ��ģ��
+                print(f"\nTraining for cancer type: {cancerType}, dropout rate: {dropoutrate}, learning rate: {lr}, lambda inter: {lambdinter}")
+
+                comparison_rows = []
+                for fusion in ('sparse', 'dense'):
+                    print('Fusion:', fusion)
+                    results = trainPred_k_sets(
+                        input_dim = input_dim,      # ��������ά��
+                        k_sets = k_sets,          # ���صĽ�����֤��������
+                        data = data,              # ͼ���ݶ���
+                        L_emb = L_emb,            # �ı�����
+                        edge_index = pb,          # ������ı����������Ի���
+                        L_emb_edge = L_emb_edge,
+                        lr = lr,               # ѧϰ��
+                        epochs = EPOCH,             # ��ѵ���ִ�
+                        lambdinter = lambdinter,       # ��������ϵ��
+                        dropout = dropoutrate,           # ������
+                        cancerType=cancerType,
+                        dataset=dataset,
+                        fusion=fusion
+                    )
+                    comparison_rows.append(results)
+
+                comparison_file = RUN_DIR / dataset / 'dense_sparse_comparison.csv'
+                comparison_file.parent.mkdir(parents=True, exist_ok=True)
+                with comparison_file.open('w', newline='', encoding='utf-8') as handle:
+                    writer = csv.DictWriter(handle, fieldnames=[
+                        'fusion', 'auroc_mean', 'auroc_std',
+                        'auprc_mean', 'auprc_std', 'n_evaluations'
+                    ])
+                    writer.writeheader()
+                    writer.writerows(comparison_rows)
+                    
